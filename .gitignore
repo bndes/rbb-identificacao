@@ -18,6 +18,8 @@ src/assets/web3.min.js
 # dependencies
 /node_modules
 /Back/node_modules
+/Back-Blockchain/node_modules
+/Back-Blockchain/build
 /Front/node_modules
 
 # IDEs and editors
