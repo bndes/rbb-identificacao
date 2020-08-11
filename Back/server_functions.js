@@ -2,13 +2,24 @@ var config    = require('./config.json');
 var request   = require('request');
 var jwt       = require('jsonwebtoken');
 
-module.exports = { prepareAssociacao, prepareLoginUnico, prepareAutorizacao };
+module.exports = { prepareAssociacao, prepareLoginUnico, prepareAutorizacao, storeIDAccessToken };
+
+function storeIDAccessToken(_req, _res) {
+    const id            = _req.params.id;
+    const accesstoken   = _req.params.accesstoken;
+    
+    console.debug('/storeIDAccessToken::id = ' + id);
+    console.debug('/storeIDAccessToken::accesstoken = ' + accesstoken);
+    
+    _res.send("Well done!");
+    _res.end();
+}
 
 function prepareAssociacao(_req, _res) {
     const address = _req.params.address;
     const id      = _req.params.id;
-    console.log('/prepareAssociacao/' + address)
-    console.log('/prepareAssociacao/' + id)
+    console.debug('/prepareAssociacao::address = ' + address)
+    console.debug('/prepareAssociacao:: id = ' + id)
     const isValidAddress = testParam(address);
 
     if (isValidAddress) {

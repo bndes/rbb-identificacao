@@ -21,6 +21,9 @@ var cpf;
 
 var serverFunctions    = require('./server_functions.js');
 
+
+app.get('/storeIDAccessToken/:id/:accesstoken', serverFunctions.storeIDAccessToken );
+
 app.get('/prepareAssociacao/:address/:id', serverFunctions.prepareAssociacao );
 app.get('/loginunico', serverFunctions.prepareLoginUnico);
 app.get('/loginunico/autorizado/:code', serverFunctions.prepareAutorizacao);
