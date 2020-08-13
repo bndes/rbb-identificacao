@@ -1,6 +1,8 @@
-var config    = require('./config.json');
-var request   = require('request');
-var jwt       = require('jsonwebtoken');
+const config    = require('./config.json');
+const request   = require('request');
+const jwt       = require('jsonwebtoken');
+const keccak256 = require('keccak256'); 
+const mongoose  = require('mongoose');                     // mongoose for mongodb
 
 module.exports = { prepareAssociacao, prepareLoginUnico, prepareAutorizacao, storeIDAccessToken };
 
@@ -11,8 +13,14 @@ function storeIDAccessToken(_req, _res) {
     console.debug('/storeIDAccessToken::id = ' + id);
     console.debug('/storeIDAccessToken::accesstoken = ' + accesstoken);
     
-    _res.send("Well done!");
+    let hashedAccessToken = computeHash(accesstoken);
+    _res.send("Well done! Hashed accesstoken = " + hashedAccessToken);
     _res.end();
+}
+
+function computeHash(input) {
+	let hashedResult = keccak256(input).toString('hex');	
+	return hashedResult;					
 }
 
 function prepareAssociacao(_req, _res) {
@@ -167,6 +175,8 @@ function prepareAutorizacao(_req, _res) {
             expires_in = jsonBody.expires_in
 
             processToClaimsId(id_token);
+            console.log ("id_token");
+            console.log(id_token);
             profileAccess(_res);
         }
         else {
