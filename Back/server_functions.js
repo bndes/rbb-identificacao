@@ -3,17 +3,30 @@ const request   = require('request');
 const jwt       = require('jsonwebtoken');
 const keccak256 = require('keccak256'); 
 const mongoose  = require('mongoose');                     // mongoose for mongodb
+const Promise   = require('bluebird');
 
-module.exports = { prepareAssociacao, prepareLoginUnico, prepareAutorizacao, storeIDAccessToken };
+module.exports = { prepareAssociacao, prepareLoginUnico, prepareAutorizacao, storeIDAccessToken, databaseInit };
 
-function storeIDAccessToken(_req, _res) {
+var conn;
+var Registry;
+
+async function storeIDAccessToken(_req, _res) {
     const id            = _req.params.id;
     const accesstoken   = _req.params.accesstoken;
     
     console.debug('/storeIDAccessToken::id = ' + id);
     console.debug('/storeIDAccessToken::accesstoken = ' + accesstoken);
-    
+        
+    const registry = new Registry();
+    registry.id = id;
+    registry.id_type = 'CNPJ';
+    registry.access_token = accesstoken;
+    registry.registrytime = Date.now();
+
+    await registry.save();
+
     let hashedAccessToken = computeHash(accesstoken);
+
     _res.send("Well done! Hashed accesstoken = " + hashedAccessToken);
     _res.end();
 }
@@ -21,6 +34,22 @@ function storeIDAccessToken(_req, _res) {
 function computeHash(input) {
 	let hashedResult = keccak256(input).toString('hex');	
 	return hashedResult;					
+}
+
+function databaseInit() {
+    console.log("::databaseInit::");
+
+    // Database Configuration
+    conn = mongoose.connect(config.infra.addr_bd);
+    Promise.promisifyAll(mongoose); // key part - promisification
+
+    //  Database Model 
+    Registry = mongoose.model('Registry', {
+        id: Number,
+        id_type: String,
+        access_token: String,
+        registrytime: Date
+    });
 }
 
 function prepareAssociacao(_req, _res) {
@@ -146,7 +175,7 @@ function prepareAutorizacao(_req, _res) {
     //acessar via POST o https://sso.staging.acesso.gov.br/token com o code
 
     console.log("URL : " + url);
-    let data = config.CLIENT_ID + ":" + config.CLIENT_SECRET;
+    let data = config.infra.CLIENT_ID + ":" + config.infra.CLIENT_SECRET;
     let buff = Buffer.from(data);
     let base64data = buff.toString('base64');
 

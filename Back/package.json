@@ -4,6 +4,7 @@
   "description": "",
   "main": "server.js",
   "dependencies": {
+    "bluebird": "^3.7.2",
     "ethers": "^4.0.39",
     "express": "^4.17.1",
     "fs": "0.0.1-security",

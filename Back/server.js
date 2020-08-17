@@ -21,6 +21,7 @@ var cpf;
 
 var serverFunctions    = require('./server_functions.js');
 
+serverFunctions.databaseInit();
 
 app.get('/storeIDAccessToken/:id/:accesstoken', serverFunctions.storeIDAccessToken );
 
