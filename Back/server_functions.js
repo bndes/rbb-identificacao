@@ -4,11 +4,42 @@ const jwt       = require('jsonwebtoken');
 const keccak256 = require('keccak256'); 
 const mongoose  = require('mongoose');                     // mongoose for mongodb
 const Promise   = require('bluebird');
+const ethers  = require('ethers');
 
-module.exports = { prepareAssociacao, prepareLoginUnico, prepareAutorizacao, storeIDAccessToken, databaseInit };
+module.exports = { prepareAssociacao, prepareLoginUnico, prepareAutorizacao, storeIDAccessToken, databaseInit, checkIDStatus };
 
 var conn;
 var Registry;
+
+async function checkIDStatus(_req, _res) {
+    const id            = _req.params.id;
+    
+    console.debug('/checkIDStatus::id = ' + id);
+
+// The Contract interface
+let abi = [
+    "event ValueChanged(address indexed author, string oldValue, string newValue)",
+    "constructor(string value)",
+    "function getValue() view returns (string value)",
+    "function setValue(string value)"
+];
+
+// Connect to the network
+let provider = ethers.getDefaultProvider();
+
+// The address from the above deployment example
+let contractAddress = "0x2bD9aAa2953F988153c8629926D22A6a5F69b14E";
+
+// We connect to the Contract using a Provider, so we will only
+// have read-only access to the Contract
+let contract = new ethers.Contract(contractAddress, abi, provider);
+
+    _res.json( { "id" : id,
+                 "address" : contractAddress, //TODO: address
+                 "status" : contract //TODO: status
+               } );
+    _res.end();
+}
 
 async function storeIDAccessToken(_req, _res) {
     const id            = _req.params.id;
@@ -27,7 +58,7 @@ async function storeIDAccessToken(_req, _res) {
 
     let hashedAccessToken = computeHash(accesstoken);
 
-    _res.send("Well done! Hashed accesstoken = " + hashedAccessToken);
+    _res.json( { "hashedAccessToken" : hashedAccessToken } );
     _res.end();
 }
 

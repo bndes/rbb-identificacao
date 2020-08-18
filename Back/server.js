@@ -23,6 +23,7 @@ var serverFunctions    = require('./server_functions.js');
 
 serverFunctions.databaseInit();
 
+app.get('/checkIDStatus/:id', serverFunctions.checkIDStatus );
 app.get('/storeIDAccessToken/:id/:accesstoken', serverFunctions.storeIDAccessToken );
 
 app.get('/prepareAssociacao/:address/:id', serverFunctions.prepareAssociacao );
