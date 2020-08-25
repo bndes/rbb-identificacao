@@ -6,37 +6,75 @@ const mongoose  = require('mongoose');                     // mongoose for mongo
 const Promise   = require('bluebird');
 const ethers  = require('ethers');
 
-module.exports = { prepareAssociacao, prepareLoginUnico, prepareAutorizacao, storeIDAccessToken, databaseInit, checkIDStatus };
+module.exports = { prepareAssociacao, 
+                   prepareLoginUnico, 
+                   prepareAutorizacao, 
+                   storeIDAccessToken, 
+                   databaseInit, 
+                   blockchainInit, 
+                   checkIDStatus        
+                };
 
-var conn;
 var Registry;
+
+var privateKey;
+var wallet    ;
+var valueInETH;
+var gasLimit  ;
+var provider  ;
 
 async function checkIDStatus(_req, _res) {
     const id            = _req.params.id;
     
-    console.debug('/checkIDStatus::id = ' + id);
+    console.debug('/checkIDStatus::id = ' + id);  
 
-// The Contract interface
-let abi = [
-    "event ValueChanged(address indexed author, string oldValue, string newValue)",
-    "constructor(string value)",
-    "function getValue() view returns (string value)",
-    "function setValue(string value)"
-];
+    // The Contract interface
+    let abi = [
+        "event AccountRegistration(address addr, uint id,  string idProofHash)",
+        "event AccountChange(address oldAddr, address newAddr, uint id, string idProofHash)",
+        "event AccountValidation(address addr, uint id)",
+        "event AccountInvalidation(address addr, uint id)",
+        "constructor (uint idResposibleForValidation) public",
+        "function registryLegalEntity(uint cnpj, string idProofHash)",
+        "function changeAccountLegalEntity(uint cnpj, address newAddr, string idProofHash)",
+        "function validateRegistryLegalEntity(address addr) public",
+        "function invalidateRegistryLegalEntity(address addr) public",
+        "function setResponsibleForRegistryValidation(address rs) public onlyOwner",
+        "function enableChangeAccount (address rs) public",
+        "function isChangeAccountEnabled (address rs) public view returns (bool)",
+        "function isResponsibleForRegistryValidation(address addr) public view returns (bool)",
+        "function isOwner(address addr) public view returns (bool)",
+        "function isAvailableAccount(address addr) public view returns (bool)",
+        "function isWaitingValidationAccount(address addr) public view returns (bool)",
+        "function isValidatedAccount(address addr) public view returns (bool)",
+        "function isValidatedId(uint id) public view returns (bool)",
+        "function isInvalidatedByValidatorAccount(address addr) public view returns (bool)",
+        "function isInvalidatedByChangeAccount(address addr) public view returns (bool)",
+        "function getResponsibleForRegistryValidation() public view returns (address)",
+        "function getId (address addr) public view returns (uint)",
+        "function getLegalEntityInfo (address addr) public view returns (uint, string memory, uint, address)",
+        "function getBlockchainAccount(uint cnpj) public view returns (address)",
+        "function getLegalEntityInfoById (uint cnpj) public view",
+        "function getAccountState(address addr) public view returns (int)",
+        "function registryMock(uint cnpj)"
+    ];
 
 // Connect to the network
-let provider = ethers.getDefaultProvider();
+//let provider = ethers.getDefaultProvider();
 
 // The address from the above deployment example
-let contractAddress = "0x2bD9aAa2953F988153c8629926D22A6a5F69b14E";
+let contractAddress = "0xeFDE680898e90cf837ef7D372021df4AAAecaE87";
 
 // We connect to the Contract using a Provider, so we will only
 // have read-only access to the Contract
 let contract = new ethers.Contract(contractAddress, abi, provider);
 
-    _res.json( { "id" : id,
-                 "address" : contractAddress, //TODO: address
-                 "status" : contract //TODO: status
+let blockchainAccount = await contract.getBlockchainAccount (id);
+let blockchainAccountStatus = await contract.getAccountState(blockchainAccount);
+
+    _res.json( { "id"      : id,
+                 "address" : blockchainAccount, 
+                 "status"  : blockchainAccountStatus
                } );
     _res.end();
 }
@@ -71,7 +109,7 @@ function databaseInit() {
     console.log("::databaseInit::");
 
     // Database Configuration
-    conn = mongoose.connect(config.infra.addr_bd);
+    var conn = mongoose.connect(config.infra.addr_bd);
     Promise.promisifyAll(mongoose); // key part - promisification
 
     //  Database Model 
@@ -81,6 +119,18 @@ function databaseInit() {
         access_token: String,
         registrytime: Date
     });
+}
+
+function blockchainInit() {
+    console.log("::blockchainInit::");
+
+    privateKey = "0x4f3edf983ac636a65a842ce7c78d9aa706d3b113bce9c46f30d7d21715b23b1d"; //FIXME
+    wallet     = new ethers.Wallet(privateKey);
+    valueInETH = "0.001"; //FIXME
+    gasLimit   = "53000"; //FIXME
+    // provider   = ethers.getDefaultProvider('rinkeby'); 
+    let url = "http://localhost:9545";   
+    provider   = new ethers.providers.JsonRpcProvider(url);// Default: http://localhost:8545 //FIXME
 }
 
 function prepareAssociacao(_req, _res) {
@@ -101,6 +151,8 @@ function prepareAssociacao(_req, _res) {
 }
 
 function requestETH(_addressto) {
+    //let provider = ethers.getDefaultProvider();
+
     var gasPricePromise = provider.getGasPrice();
     var balancePromise = provider.getBalance(wallet.address);
     var transactionCountPromise = provider.getTransactionCount(wallet.address);
