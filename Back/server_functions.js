@@ -23,6 +23,17 @@ var valueInETH;
 var gasLimit  ;
 var provider  ;
 
+function validateHash(_cnpj, _accessTokenHash) {
+    let registries = mongoose.model( 'Registry', config.infra.name_bd );
+
+    // find all registries where cnpj = _cpnj, selecting the 'cnpj' and 'access_token' fields
+    registries.find({ 'cnpj': _cnpj }, 'cnpj access_token', function (err, reg) {
+      //if (err) return handleError(err);
+      console.log(err);
+    })
+    
+}
+
 async function checkIDStatus(_req, _res) {
     const id            = _req.params.id;
     
@@ -80,17 +91,22 @@ let blockchainAccountStatus = await contract.getAccountState(blockchainAccount);
 }
 
 async function storeIDAccessToken(_req, _res) {
-    const id            = _req.params.id;
+    const cnpj          = _req.params.cnpj;
+    const cpf           = _req.params.cpf;
     const accesstoken   = _req.params.accesstoken;
+    const idtoken       = _req.params.idtoken;
     
-    console.debug('/storeIDAccessToken::id = ' + id);
+    console.debug('/storeIDAccessToken::cnpj = '        + cnpj);
+    console.debug('/storeIDAccessToken::cpf  = '        + cpf);
     console.debug('/storeIDAccessToken::accesstoken = ' + accesstoken);
+    console.debug('/storeIDAccessToken::idtoken = '     + idtoken);
         
-    const registry = new Registry();
-    registry.id = id;
-    registry.id_type = 'CNPJ';
-    registry.access_token = accesstoken;
-    registry.registrytime = Date.now();
+    const registry          = new Registry();
+    registry.cnpj           = cnpj;
+    registry.cpf            = cpf;
+    registry.access_token   = accesstoken;
+    registry.id_token       = idtoken;
+    registry.registrytime   = Date.now();
 
     await registry.save();
 
@@ -109,14 +125,15 @@ function databaseInit() {
     console.log("::databaseInit::");
 
     // Database Configuration
-    var conn = mongoose.connect(config.infra.addr_bd);
+    var conn = mongoose.connect(config.infra.addr_bd + config.infra.name_bd );
     Promise.promisifyAll(mongoose); // key part - promisification
 
     //  Database Model 
     Registry = mongoose.model('Registry', {
-        id: Number,
-        id_type: String,
+        cnpj: Number,
+        cpf: Number,
         access_token: String,
+        id_token: String,
         registrytime: Date
     });
 }
@@ -222,7 +239,6 @@ function testParam(_param) {
 
 function prepareLoginUnico(_req, _res) {
     var response_type = "code";
-    var client_id = "token-h.bndes.gov.br";
     var redirect_uri = "https%3A%2F%2Ftoken-h.bndes.gov.br";
     var scope = "openid+email+phone+profile+govbr_empresa";
     var nonce = Math.round(Math.random() * 100000);
@@ -231,7 +247,7 @@ function prepareLoginUnico(_req, _res) {
 
     var url = "https://sso.staging.acesso.gov.br/authorize?"
         + "response_type=" + response_type
-        + "&client_id=" + client_id
+        + "&client_id=" + config.acessogovbr.client_id
         + "&scope=" + scope
         + "&redirect_uri=" + redirect_uri
         + "&nonce=" + nonce
@@ -258,7 +274,7 @@ function prepareAutorizacao(_req, _res) {
     //acessar via POST o https://sso.staging.acesso.gov.br/token com o code
 
     console.log("URL : " + url);
-    let data = config.infra.CLIENT_ID + ":" + config.infra.CLIENT_SECRET;
+    let data = config.acessogovbr.client_id + ":" + config.acessogovbr.client_secret;
     let buff = Buffer.from(data);
     let base64data = buff.toString('base64');
 

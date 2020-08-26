@@ -21,7 +21,14 @@ export class MainComponent implements OnInit {
   }
 
   storeIDAccessToken() {    
-    window.open('http://localhost:3000/storeIDAccessToken/' + this.id  + '/' + this.accesstoken, "_blank");
+    let cpf = '11111111111';
+    let idtoken = 'kfdakjfdakjfdakfdsjkfdajkfldjlkfdsjfdasjlkadfs';
+    window.open('http://localhost:3000/storeIDAccessToken/' 
+    + this.id  
+    + '/' + cpf
+    + '/' + this.accesstoken 
+    + '/' + idtoken,
+    "_blank");
   }    
 
   prepareAssociacao() {
