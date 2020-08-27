@@ -22,6 +22,29 @@ var wallet    ;
 var valueInETH;
 var gasLimit  ;
 var provider  ;
+var jwk       ;
+
+async function requestAcessoGovBrJWK() {
+    var self = this;
+    request.get(
+                {
+                    url: config.acessogovbr.jwk_url
+                }, 
+                function (error, response, body) {
+                    console.log(error);
+                    //console.log(response);
+                    console.log(body);
+                    
+                    self.jwk = body;
+                }
+            )
+}
+
+async function checkSignatureWithJWK(token) {
+    let keys = jwk.keys;
+    console.log(keys);
+    console.log("keys");
+}
 
 function validateHash(_cnpj, _accessTokenHash) {
     let registries = mongoose.model( 'Registry', config.infra.name_bd );
@@ -101,11 +124,18 @@ async function storeIDAccessToken(_req, _res) {
     console.debug('/storeIDAccessToken::accesstoken = ' + accesstoken);
     console.debug('/storeIDAccessToken::idtoken = '     + idtoken);
         
+    await requestAcessoGovBrJWK();
+    console.log ("jwk")
+    console.log (this.jwk)
+    console.log (jwk)
+    await checkSignatureWithJWK(accesstoken);
+
     const registry          = new Registry();
     registry.cnpj           = cnpj;
     registry.cpf            = cpf;
     registry.access_token   = accesstoken;
     registry.id_token       = idtoken;
+    registry.jwk            = jwk;
     registry.registrytime   = Date.now();
 
     await registry.save();
@@ -134,6 +164,7 @@ function databaseInit() {
         cpf: Number,
         access_token: String,
         id_token: String,
+        jwk: String,
         registrytime: Date
     });
 }
