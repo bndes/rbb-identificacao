@@ -9,7 +9,7 @@ const ethers  = require('ethers');
 module.exports = { prepareAssociacao, 
                    prepareLoginUnico, 
                    prepareAutorizacao, 
-                   storeIDAccessToken, 
+                   prepareToStoreAssociation, 
                    databaseInit, 
                    blockchainInit, 
                    checkIDStatus        
@@ -22,22 +22,23 @@ var wallet    ;
 var valueInETH;
 var gasLimit  ;
 var provider  ;
-var jwk       ;
+var jwk       = "init";      
 
 async function requestAcessoGovBrJWK() {
-    var self = this;
+    let self=this;
     request.get(
-                {
-                    url: config.acessogovbr.jwk_url
-                }, 
-                function (error, response, body) {
-                    console.log(error);
-                    //console.log(response);
-                    console.log(body);
-                    
-                    self.jwk = body;
-                }
-            )
+        {
+            url: config.acessogovbr.jwk_url
+        },
+        function (error, response, body) {
+            //console.log(error);
+            //console.log(response);
+            //console.log(body);
+  
+            jwk = body;
+            
+        }
+    )    
 }
 
 async function checkSignatureWithJWK(token) {
@@ -113,7 +114,14 @@ let blockchainAccountStatus = await contract.getAccountState(blockchainAccount);
     _res.end();
 }
 
-async function storeIDAccessToken(_req, _res) {
+async function prepareToStoreAssociation(_req, _res) {
+    await requestAcessoGovBrJWK();
+
+    //console.log ("jwk")
+    //console.log (jwk)
+    //console.log (this.jwk)
+    //await checkSignatureWithJWK(accesstoken);
+
     const cnpj          = _req.params.cnpj;
     const cpf           = _req.params.cpf;
     const accesstoken   = _req.params.accesstoken;
@@ -123,27 +131,29 @@ async function storeIDAccessToken(_req, _res) {
     console.debug('/storeIDAccessToken::cpf  = '        + cpf);
     console.debug('/storeIDAccessToken::accesstoken = ' + accesstoken);
     console.debug('/storeIDAccessToken::idtoken = '     + idtoken);
-        
-    await requestAcessoGovBrJWK();
-    console.log ("jwk")
-    console.log (this.jwk)
-    console.log (jwk)
-    await checkSignatureWithJWK(accesstoken);
 
+    let hashedAccessToken = await storeIDAccessToken(cnpj, cpf, accesstoken, idtoken, jwk);
+    _res.json( { "hashedAccessToken" : hashedAccessToken } );
+    _res.end();
+}
+
+async function storeIDAccessToken(_cnpj, _cpf, _accesstoken, _idtoken, _jwk) {
+
+        
     const registry          = new Registry();
-    registry.cnpj           = cnpj;
-    registry.cpf            = cpf;
-    registry.access_token   = accesstoken;
-    registry.id_token       = idtoken;
-    registry.jwk            = jwk;
+    registry.cnpj           = _cnpj;
+    registry.cpf            = _cpf;
+    registry.access_token   = _accesstoken;
+    registry.id_token       = _idtoken;
+    registry.jwk            = _jwk;
     registry.registrytime   = Date.now();
 
     await registry.save();
 
-    let hashedAccessToken = computeHash(accesstoken);
+    let hashedAccessToken = computeHash(_accesstoken);
 
-    _res.json( { "hashedAccessToken" : hashedAccessToken } );
-    _res.end();
+    return hashedAccessToken;
+    
 }
 
 function computeHash(input) {

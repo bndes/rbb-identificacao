@@ -8,7 +8,7 @@ serverFunctions.databaseInit();
 serverFunctions.blockchainInit();
 
 app.get('/checkIDStatus/:id', serverFunctions.checkIDStatus );
-app.get('/storeIDAccessToken/:cnpj/:cpf/:accesstoken/:idtoken', serverFunctions.storeIDAccessToken );
+app.get('/prepareToStoreAssociation/:cnpj/:cpf/:accesstoken/:idtoken', serverFunctions.prepareToStoreAssociation );
 
 app.get('/prepareAssociacao/:address/:id', serverFunctions.prepareAssociacao );
 app.get('/loginunico', serverFunctions.prepareLoginUnico);
