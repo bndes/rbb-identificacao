@@ -1,0 +1,71 @@
+#bg {
+    position: absolute; 
+    background-size: contain;
+    left: 0; 
+    min-width: 100%; 
+    max-height: 110%;
+    overflow: hidden;
+    height: auto;
+  }
+
+
+.container-fluid{
+    padding-top: 30px;
+    position: relative;
+    max-width: 85%;
+    padding-bottom: 60px;
+    
+}
+
+
+.br-table table th {
+  font-weight: 550;
+  font-size: 16px;
+}
+
+.br-table table td {
+  color: #000000;
+  font-weight: 400;
+}
+
+
+#tabela{
+  padding-top: 55px
+}
+
+
+
+
+#searchbtn:hover{
+  background-color: var(--color-primary-pastel-02, #dbe8fb);
+  cursor: pointer;
+}
+
+mat-paginator{
+   background-color: rgb(237, 237, 237);
+   color: rgb(12, 50, 111);
+}
+table {
+  width: 100%;
+}
+th
+{
+  color: #ffffff;
+  background-color: #2D73C3;
+}
+
+
+::ng-deep .mat-select-value {
+  color: #2D73C3;
+}
+::ng-deep .mat-select-arrow {
+  color: #2D73C3;
+}
+
+.valid {
+  background-color: #0edd1870;
+}
+
+.invalid {
+  background-color: #b30e0e70;
+}

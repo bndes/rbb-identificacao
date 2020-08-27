@@ -1,0 +1,156 @@
+
+
+#maincard{
+    box-shadow: 5px -9px 3px #000;
+  }
+  
+  #box{
+    width: 50%;
+  }
+  
+  #test{
+    max-width: 100%;
+  }
+  
+  body,
+          html {
+              margin: 0;
+              padding: 0;
+              height: 100%;
+              width: 100%;
+              
+              
+		  }
+      #bg {
+        position: absolute; 
+        background-size: cover;
+        left: 0; 
+        top: 100px;
+        right: 0;
+        min-width: 100%; 
+        max-width: 100%;
+        max-height: 120%;
+        background-size: 100% 100%;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-attachment: fixed;
+        
+      }
+          .user_card {
+              height: 350px;
+              width: 300px;
+              margin-top: auto;
+              margin-bottom: auto;
+              background: #ffffff;
+              position: relative;
+              display: flex;
+              justify-content: center;
+              flex-direction: column;
+                padding: 10px;
+              box-shadow: 0 6px 9px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+              -webkit-box-shadow: 0px 25px 17px 0px rgba(0, 0, 0, 0.2), 0 17px 20px 0px rgba(0, 0, 0, 0.19);
+              -moz-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+              border-radius: 5px;
+              border: 1px solid black;
+  
+          }
+          .brand_logo_container {
+              position: absolute;
+              height: 190px;
+              width: 190px;
+              top: -90px;
+              border-radius: 50%;
+              background: #ffffff;
+              padding: 10px;
+              text-align: center;
+              border-top: 0.1px solid #000;
+              
+          }
+          .brand_logo {
+              height: 160px;
+              width: 160px;
+              
+          }
+          .form_container{
+                margin-top: 9px;
+                margin-bottom: 120px;
+          }
+      
+          
+          .login_container {
+              padding: 0 2rem;
+  
+          }
+          .input-group-text {
+              background: #034d9f !important;
+              color: white !important;
+              border: 0.1px solid black !important;
+              border-radius: 0.25rem 0 0 0.25rem !important;
+      }
+          .input_user,
+          .input_pass:focus {
+                box-shadow: none !important;
+              outline: 0px !important;
+          }
+          .custom-checkbox .custom-control-input:checked~.custom-control-label::before {
+              background-color: #00a651 !important;
+              width: 1000px;
+      }
+      #name{
+        text-align: center;
+        color: rgb(0, 0, 0);
+        font-family: 'rawline', sans-serif;
+        font-size: 40px;
+        padding-top: 60px; 
+        padding-bottom: 1px;
+        text-shadow: 2px 2px 1px #0000;
+        font-weight: 700;
+        font-style: bold;
+        
+      }
+      
+      #normal-text{
+          font-family: 'rawline', sans-serif;
+          text-align: center;
+          color: rgb(0, 0, 0);
+          font-size: 27px;
+          font-weight: 300;
+            font-style: italic;
+      }
+  
+      #inputbox{
+          width: 200px;
+          max-width: 350px;
+      }
+      
+      #inputbox:hover{
+        background-color: rgb(226, 226, 226);
+        border: 2px solid rgb(0, 0, 0);
+      }
+     
+      #keyicon{
+        color: rgb(255, 255, 255);
+      }
+      .br-button {
+          
+          cursor: pointer;
+          display: inline-block;
+          font-size: 20px;
+          font-family: 'rawline', sans-serif;
+          height: 60px;
+          line-height: 45px;
+          text-align: center;
+          width: 600px;
+          transition-duration: 0.4s;
+        }
+      
+      
+  
+      hr.rounded {
+          border-top: 0.5px solid rgb(0, 0, 0);
+          border-radius: 0.4px; 
+          font-size:1.6em;
+          font-weight:600;
+          color:#000000;
+        }
+        
