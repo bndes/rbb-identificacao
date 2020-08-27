@@ -4,7 +4,9 @@
   "description": "",
   "main": "server.js",
   "dependencies": {
+    "base64url": "^3.0.1",
     "bluebird": "^3.7.2",
+    "crypto": "^1.0.1",
     "ethers": "^4.0.39",
     "express": "^4.17.1",
     "fs": "0.0.1-security",

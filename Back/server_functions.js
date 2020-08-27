@@ -2,9 +2,11 @@ const config    = require('./config.json');
 const request   = require('request');
 const jwt       = require('jsonwebtoken');
 const keccak256 = require('keccak256'); 
-const mongoose  = require('mongoose');                     // mongoose for mongodb
+const base64    = require('base64url');
+const crypto    = require('crypto');
+const mongoose  = require('mongoose');           // mongoose for mongodb
 const Promise   = require('bluebird');
-const ethers  = require('ethers');
+const ethers    = require('ethers');
 
 module.exports = { prepareAssociacao, 
                    prepareLoginUnico, 
@@ -22,29 +24,48 @@ var wallet    ;
 var valueInETH;
 var gasLimit  ;
 var provider  ;
-var jwk       = "init";      
+//var jwk       = "init";      
 
 async function requestAcessoGovBrJWK() {
-    let self=this;
-    request.get(
-        {
-            url: config.acessogovbr.jwk_url
-        },
-        function (error, response, body) {
-            //console.log(error);
-            //console.log(response);
-            //console.log(body);
-  
-            jwk = body;
-            
-        }
-    )    
+    return new Promise((resolve,reject) => {
+        request.get(
+            {
+                url: config.acessogovbr.jwk_url
+            },
+            function (error, response, body) {
+                if (response) {
+                    return resolve(body);
+                  }
+                  if (error) {
+                    return reject(error);
+                  }
+            }
+        )
+    })
 }
 
 async function checkSignatureWithJWK(token) {
+
     let keys = jwk.keys;
-    console.log(keys);
-    console.log("keys");
+/*
+    const verifyFunction = crypto.createVerify('RSA-SHA256');
+        
+    const JWT = 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.POstGetfAytaZS82wHcjoTyoqhMyxXiWdR7Nn7A29DNSl0EiXLdwJ6xC6AfgZWF1bOsS_TuYI3OG85AmiExREkrS6tDfTQ2B3WXlrr-wp5AokiRbz3_oB4OxG-W9KcEEbDRcZc0nH3L7LzYptiy1PtAylQGxHTWZXtGz4ht0bAecBgmpdgXMguEIcoqPJ1n3pIWk_dUZegpqx0Lka21H6XxUTxiy8OcaarA8zdnPUnV6AmNP3ecFawIFYdvJB_cm-GvpCSbr8G8y_Mllj8f4x9nBH8pQux89_6gUY618iYv7tuPWBFfEbLxtF2pZS6YC1aSfLQxeNe8djT9YjpvRZA';
+    
+    const PUB_KEY = fs.readFileSync(__dirname + '/id_rsa_pub.pem', 'utf8');
+    
+    const jwtHeader = JWT.split('.')[0];
+    const jwtPayload = JWT.split('.')[1];
+    const jwtSignature = JWT.split('.')[2];
+    
+    verifyFunction.write(jwtHeader + '.' + jwtPayload);
+    verifyFunction.end();
+    
+    const jwtSignatureBase64 = base64.toBase64(jwtSignature);
+    const signatureIsValid = verifyFunction.verify(PUB_KEY, jwtSignatureBase64, 'base64');
+    
+    console.log(signatureIsValid); // true    
+*/    
 }
 
 function validateHash(_cnpj, _accessTokenHash) {
@@ -115,31 +136,37 @@ let blockchainAccountStatus = await contract.getAccountState(blockchainAccount);
 }
 
 async function prepareToStoreAssociation(_req, _res) {
-    await requestAcessoGovBrJWK();
+    const cnpj          = _req.params.cnpj;
+    const cpf           = _req.params.cpf;
+    const accesstoken   = _req.params.accesstoken;
+    const idtoken       = _req.params.idtoken;
+    
+    console.debug('/prepareToStoreAssociation::cnpj = '        + cnpj);
+    console.debug('/prepareToStoreAssociation::cpf  = '        + cpf);
+    console.debug('/prepareToStoreAssociation::accesstoken = ' + accesstoken);
+    console.debug('/prepareToStoreAssociation::idtoken = '     + idtoken);
 
     //console.log ("jwk")
     //console.log (jwk)
     //console.log (this.jwk)
     //await checkSignatureWithJWK(accesstoken);
 
-    const cnpj          = _req.params.cnpj;
-    const cpf           = _req.params.cpf;
-    const accesstoken   = _req.params.accesstoken;
-    const idtoken       = _req.params.idtoken;
-    
-    console.debug('/storeIDAccessToken::cnpj = '        + cnpj);
-    console.debug('/storeIDAccessToken::cpf  = '        + cpf);
-    console.debug('/storeIDAccessToken::accesstoken = ' + accesstoken);
-    console.debug('/storeIDAccessToken::idtoken = '     + idtoken);
+    //let hashedAccessToken;
+        
+    await requestAcessoGovBrJWK().then( jwk =>  { 
+        console.log(jwk);   
+        setTimeout(async () => {
+            hashedAccessToken = await storeIDAccessToken(cnpj, cpf, accesstoken, idtoken, jwk);
+            _res.json( { "hashedAccessToken" : hashedAccessToken } );
+            _res.end();
+          }, 1); //miliseconds to wait the jws retrieval
+        
+    })
 
-    let hashedAccessToken = await storeIDAccessToken(cnpj, cpf, accesstoken, idtoken, jwk);
-    _res.json( { "hashedAccessToken" : hashedAccessToken } );
-    _res.end();
 }
 
 async function storeIDAccessToken(_cnpj, _cpf, _accesstoken, _idtoken, _jwk) {
 
-        
     const registry          = new Registry();
     registry.cnpj           = _cnpj;
     registry.cpf            = _cpf;
@@ -148,12 +175,10 @@ async function storeIDAccessToken(_cnpj, _cpf, _accesstoken, _idtoken, _jwk) {
     registry.jwk            = _jwk;
     registry.registrytime   = Date.now();
 
-    await registry.save();
-
+    registry.save()
     let hashedAccessToken = computeHash(_accesstoken);
-
     return hashedAccessToken;
-    
+
 }
 
 function computeHash(input) {
