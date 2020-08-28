@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { Cliente, Subcredito } from './Cliente';
-import { Utils } from '../../utils';
+
 
 @Component({
   selector: 'app-loginrbb',
