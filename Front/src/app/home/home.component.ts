@@ -16,8 +16,6 @@ export class HomeComponent {
   
   loginUnico() {
     window.open('http://localhost:3000/loginunico/');
-    
-    
   }
 
   
