@@ -2,6 +2,7 @@ const config    = require('./config.json');
 const request   = require('request');
 const jwt       = require('jsonwebtoken');
 const keccak256 = require('keccak256'); 
+const jwkToPem  = require('jwk-to-pem');
 const base64    = require('base64url');
 const crypto    = require('crypto');
 const mongoose  = require('mongoose');           // mongoose for mongodb
@@ -44,28 +45,34 @@ async function requestAcessoGovBrJWK() {
     })
 }
 
-async function checkSignatureWithJWK(token) {
+async function checkSignatureWithJWK(token, jwk) {
 
-    let keys = jwk.keys;
-/*
+    let jwkJSON = JSON.parse(jwk);   
+    let keys = jwkJSON.keys;
+
     const verifyFunction = crypto.createVerify('RSA-SHA256');
-        
-    const JWT = 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.POstGetfAytaZS82wHcjoTyoqhMyxXiWdR7Nn7A29DNSl0EiXLdwJ6xC6AfgZWF1bOsS_TuYI3OG85AmiExREkrS6tDfTQ2B3WXlrr-wp5AokiRbz3_oB4OxG-W9KcEEbDRcZc0nH3L7LzYptiy1PtAylQGxHTWZXtGz4ht0bAecBgmpdgXMguEIcoqPJ1n3pIWk_dUZegpqx0Lka21H6XxUTxiy8OcaarA8zdnPUnV6AmNP3ecFawIFYdvJB_cm-GvpCSbr8G8y_Mllj8f4x9nBH8pQux89_6gUY618iYv7tuPWBFfEbLxtF2pZS6YC1aSfLQxeNe8djT9YjpvRZA';
     
-    const PUB_KEY = fs.readFileSync(__dirname + '/id_rsa_pub.pem', 'utf8');
-    
-    const jwtHeader = JWT.split('.')[0];
-    const jwtPayload = JWT.split('.')[1];
-    const jwtSignature = JWT.split('.')[2];
+//FIXME TODO
+token = 'eyJraWQiOiJyc2ExIiwiYWxnIjoiUlMyNTYifQ.eyJzdWIiOiI2ODI1NjQwNzA0MiIsImF1ZCI6InRva2VuLWguYm5kZXMuZ292LmJyIiwic2NvcGUiOlsiZW1haWwiLCJnb3Zicl9lbXByZXNhIiwib3BlbmlkIiwicGhvbmUiLCJwcm9maWxlIl0sImFtciI6InBhc3N3ZCIsImlzcyI6Imh0dHBzOlwvXC9zc28uc3RhZ2luZy5hY2Vzc28uZ292LmJyXC8iLCJleHAiOjE1OTg2NDI1NjcsImlhdCI6MTU5ODYzODk2NywianRpIjoiODZiNTNlODMtOWIzZC00NDVkLTgzZWMtYmE0YzNjOGU2Yjk0In0.ZOHmxjJMsw4bR1pjvdwILBaFT3u-rOqii2mv49rfj-XQCuwQDOGDVfO8izVlONRODsqdSBua3tbJF6NjVKwJxOTpiuKMoZ3nu2l0uto1DCC3CrNw9uqZDBpfr06kkxeyUXbSCjDOg9ON05mbgDziXhs6vm2wcD56V_Bf-eVgi6RC5jWsLfRaks_JPROkZFb4zlb6tAj740K1Yy11nRYlaoV9D7CEGKhKF6bk35-sbFZATYe1UzYJZrpG5gheRdV0LkT4KUKp1dxmhiNiWWFIfKWHkFONJDDYAfBdp57Gq_PjP91NHedxHKK9iTJ5jvn4qcpK0E0AUx3qMVGcTrt-eg'
+
+    pem = jwkToPem(keys[0]);
+ 
+    const jwtHeader = token.split('.')[0];
+    const jwtPayload = token.split('.')[1];
+    const jwtSignature = token.split('.')[2];
+
+    console.log(jwtHeader);
+    console.log(jwtPayload);
+    console.log(jwtSignature);
     
     verifyFunction.write(jwtHeader + '.' + jwtPayload);
     verifyFunction.end();
     
     const jwtSignatureBase64 = base64.toBase64(jwtSignature);
-    const signatureIsValid = verifyFunction.verify(PUB_KEY, jwtSignatureBase64, 'base64');
+    const signatureIsValid = verifyFunction.verify(pem, jwtSignatureBase64, 'base64');
     
-    console.log(signatureIsValid); // true    
-*/    
+    return signatureIsValid; // true is expected
+ 
 }
 
 function validateHash(_cnpj, _accessTokenHash) {
@@ -145,19 +152,13 @@ async function prepareToStoreAssociation(_req, _res) {
     console.debug('/prepareToStoreAssociation::cpf  = '        + cpf);
     console.debug('/prepareToStoreAssociation::accesstoken = ' + accesstoken);
     console.debug('/prepareToStoreAssociation::idtoken = '     + idtoken);
-
-    //console.log ("jwk")
-    //console.log (jwk)
-    //console.log (this.jwk)
-    //await checkSignatureWithJWK(accesstoken);
-
-    //let hashedAccessToken;
         
     await requestAcessoGovBrJWK().then( jwk =>  { 
         console.log(jwk);   
         setTimeout(async () => {
+            let valid = await checkSignatureWithJWK(accesstoken, jwk);
             hashedAccessToken = await storeIDAccessToken(cnpj, cpf, accesstoken, idtoken, jwk);
-            _res.json( { "hashedAccessToken" : hashedAccessToken } );
+            _res.json( { "hashedAccessToken" : hashedAccessToken, "signture valid" : valid } );
             _res.end();
           }, 1); //miliseconds to wait the jws retrieval
         
