@@ -1,8 +1,11 @@
 const express           = require('express');
+const cors              = require('cors');
 const app               = express();
 const port              = 3000; //FIXME
 
 var serverFunctions     = require('./server_functions.js');
+
+app.use(cors());
 
 serverFunctions.databaseInit();
 serverFunctions.blockchainInit();

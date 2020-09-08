@@ -1,3 +1,8 @@
+const HDWalletProvider = require("@truffle/hdwallet-provider");
+const privateKey;
+const privateKeyProvider;
+
+
 module.exports = {
   // See <http://truffleframework.com/docs/advanced/configuration>
   // to customize your Truffle configuration!
@@ -28,7 +33,16 @@ module.exports = {
       from: "0xfe3b557e8fb62b89f4916b721be55ceb828dbd73", // owner BNDESToken na Besu
       network_id: 0x7e2,
       gas:   4612388
-    }    
+    },
+    bid:  {
+      host: "35.239.231.134",  //geth --testnet --fast --rpc --rpcapi eth,net,web3,personal
+      port:  4545,
+      provider: privateKeyProvider,
+      network_id: 648629,
+      gasPrice: 0
+    }     
+
+    
   }
 
 };
