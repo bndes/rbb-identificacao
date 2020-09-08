@@ -1,24 +1,35 @@
-<div class="container h-100">
-    <img  src="../../assets/blockchain.png" id="bg" alt="">   
-    <div id="ba" class="d-flex justify-content-center h-100">
-        <div class="user_card">
-            <div class="d-flex justify-content-center">
-                <div class="brand_logo_container">
-                    <img src="../assets/logo.png" class="brand_logo" alt="Logo">
-                </div>
-            </div>
-            <div class="" id="name">RBB ID</div>
-            <div><hr class="br-divider"></div>
-            <h2 id='normal-text'>Crie seu ID na RBB</h2>
-            <form>
-                <div class="d-flex justify-content-center input-group mb-2">
-                </div>
-                <div class="d-flex justify-content-center mt-3 login_container">
-                    <button id="teste" mat-raised-button class=" br-button btn-primary" type="button" primary (click)='loginUnico()' >Entrar com Gov.br
-                    </button>
-                </div>
-            </form>
-        </div>
+<div class="container">
+
+    <div class="form-group" *ngIf="!selectedAccount">
+		<button (click)="conectar()" type="button" class="btn btn-success btn-cabecalho" placement="bottom" ngbTooltip="Conectar com Metamask">
+		  <i class="fa fa-floppy-o" aria-hidden="true"></i> Conectar com Metamask
+		</button>
     </div>
+
+	<div *ngIf = "selectedAccount">
+		Conectado com Metamask
+	</div>
+	
+
+	<div *ngIf = "contractAddr">
+	Rede em uso pelo sistema: {{blockchainNetworkAsString}}
+	</div>
+
+	<div *ngIf = "contractAddr">
+	Endereço BNDESToken: {{contractAddr}}
+	</div>
+
+	<div *ngIf = "contractAddr">
+		Endereço BNDESRegistry: {{registryAddr}}
+	</div>
+	
+
+	<div class="row">
+    		<div class="col-sm-12 text-center"> 
+  				<img class="img-responsive" src='../assets/img/logo-bndescoin.png'>
+  			</div>
+	</div>
+
 </div>
 
+  
