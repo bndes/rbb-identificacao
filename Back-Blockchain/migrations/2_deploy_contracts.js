@@ -1,11 +1,9 @@
-var BNDESRegistry = artifacts.require("./BNDESRegistry.sol");
-var BNDESToken = artifacts.require("./BNDESToken.sol");
+var RBBRegistry = artifacts.require("./RBBRegistry.sol");
+var RBBLib = artifacts.require("./RBBLib.sol");
 
 module.exports = async (deployer) => {
-	await deployer.deploy(BNDESRegistry, {gas: 6721975})    
-    await deployer.deploy(BNDESToken, BNDESRegistry.address, 2, 3 ) 
-	BNDESRegistryInstance = await BNDESRegistry.deployed();
-	BNDESTokenInstance = await BNDESToken.deployed();
-	await BNDESRegistryInstance.setTokenAddress(BNDESTokenInstance.address);	
+	await deployer.deploy(RBBLib);
+	await deployer.link(RBBLib, RBBRegistry);
+	await deployer.deploy(RBBRegistry, 33657248000189, {gas: 6721975})
 	
 };
