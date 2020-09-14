@@ -23,7 +23,6 @@ import { HomeComponent } from './home/home.component';
 import { BlocoAnimadoComponent } from './shared/bloco-animado/bloco-animado.component';
 
 /* BNDES */
-import { ConfirmaDoacaoComponent } from './confirma-doacao/confirma-doacao.component';
 import { LiberacaoComponent } from './liberacao/liberacao.component';
 import { LiquidacaoResgateComponent } from './liquidacao-resgate/liquidacao-resgate.component';
 
@@ -33,10 +32,6 @@ import { RecuperaAcessoClienteComponent } from './recupera-acesso-cliente/recupe
 import { ResgateComponent } from './resgate/resgate.component';
 
 /* Doador */
-import { RegistraDoacaoComponent } from './registra-doacao/registra-doacao.component'
-import { AssociaContaDoadorComponent } from './associa-conta-doador/associa-conta-doador.component';
-import { RecuperaAcessoDoadorComponent } from './recupera-acesso-doador/recupera-acesso-doador.component';
-
 /* Sociedade */
 import { DashboardIdEmpresaComponent } from './dashboard-id-empresa/dashboard-id-empresa.component';
 import { DashboardDoacaoComponent } from './dashboard-doacao/dashboard-doacao.component';
@@ -65,7 +60,6 @@ import localePT from '@angular/common/locales/pt';
 
 import { FileUploadModule } from 'ng2-file-upload';
 import { ValidacaoCadastroComponent } from './validacao-cadastro/validacao-cadastro.component';
-import { HabilitaCadastroComponent } from './habilita-cadastro/habilita-cadastro.component';
 import { DashboardManualComponent } from './dashboard-manual/dashboard-manual.component';
 
 
@@ -102,8 +96,6 @@ export const optionsMaskCurrencyBND: CurrencyMaskConfig = {
     RecuperaAcessoClienteComponent,
     ResgateComponent,
     HomeComponent,
-    AssociaContaDoadorComponent,
-    RecuperaAcessoDoadorComponent,
     BlocoAnimadoComponent,
     MetamsgComponent,
     AssinadorComponent,
@@ -113,9 +105,6 @@ export const optionsMaskCurrencyBND: CurrencyMaskConfig = {
     HashPipe,
     ValidacaoCadastroComponent,
     DashboardDoacaoComponent,
-    RegistraDoacaoComponent,
-    ConfirmaDoacaoComponent,
-    HabilitaCadastroComponent,
     DashboardManualComponent,
   ],
   imports: [

@@ -35,7 +35,7 @@
       </div> 
       <div class="row">
         <div class="form-group col-md-10 col-sm-10">
-          <label>1. Selecione a conta blockchain desejada no Metamask. A conta deve aparecer no estado "Disponível".</label>
+          <label>Selecione a conta blockchain desejada no Metamask. A conta deve aparecer no estado "Disponível".</label>
         </div>
       </div>
       <div class="row">
@@ -44,26 +44,6 @@
             disabled size="45">
           <div class="msg-conta-invalida" >
             {{contaEstaValida}}
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="form-group col-md-10 col-sm-10">          
-            <label class="required">2. Escolha o contrato com o BNDES ao qual deseja associar a conta blockchain</label>
-        </div>
-      </div>
-      <div class="row">
-        <div class="form-group col-md-5 col-sm-5">                              
-          <app-input-validation errorMessage="Campo Obrigatório">
-            <select name="subcreditoSelecionado" class="form-control form-control-sm" [disabled]="subcreditoSelecionado === undefined || this.flagUploadConcluido"
-              [(ngModel)]="subcreditoSelecionado" required (change)="changeContrato()">
-              <option *ngFor="let subcredito of cliente.subcreditos" [attr.value]="subcredito.numero">{{subcredito.numero}}</option>
-            </select>
-          </app-input-validation>
-          <div *ngIf="subcreditoSelecionado === undefined">
-            <div class="msg-aviso">
-            Não existem contratos para serem associados.
-            </div>
           </div>
         </div>
       </div>

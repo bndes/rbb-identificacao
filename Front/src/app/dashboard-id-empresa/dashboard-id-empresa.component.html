@@ -19,8 +19,6 @@
           </td>
           <td >CNPJ
           </td>
-          <td>Contrato Financeiro
-            </td>
             <td>Perfil
             </td>
             <td>Declaração
@@ -40,7 +38,6 @@
         <tr *ngFor="let transacaoPJ of listaTransacoesPJ | orderBy: order: reverse: 'caseInsensitive':customComparator | filter:filter | paginate: { itemsPerPage: 10, currentPage: p } ; let i = index">
           <td>{{transacaoPJ.razaoSocial}}</td>
           <td>{{transacaoPJ.cnpj | cnpjMask}}</td>
-          <td>{{transacaoPJ.nomeConta | contratoMask}}</td>
           <td>{{transacaoPJ.perfil}}</td>
           <td class="tooltipCaixa">
             <a *ngIf="transacaoPJ.hashDeclaracao.length > 1 && transacaoPJ.filePathAndName.length > 1" target="_blank" href="{{transacaoPJ.filePathAndName}}">

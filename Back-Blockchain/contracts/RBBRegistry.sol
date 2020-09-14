@@ -53,7 +53,7 @@ contract RBBRegistry is Ownable() {
         Since the Ethereum account can be changed once, it is not necessary to put the bool to false.
         TODO: Discuss later what is the best solution to this
      */
-    mapping(address => bool) public legalEntitiesChangeAccount;
+    //mapping(address => bool) public legalEntitiesChangeAccount;
 
 
     event AccountRegistration(address addr, uint id,  string idProofHash);
@@ -85,9 +85,6 @@ contract RBBRegistry is Ownable() {
         require (isAvailableAccount(addr), "Endereço não pode ter sido cadastrado anteriormente");
 
         require (RBBLib.isValidHash(idProofHash), "O hash da declaração é inválido");
-
-//?? Avaliar se essa verificacao serah feita
-        require (isChangeAccountEnabled(addr), "A conta informada não está habilitada para cadastro");
 
         address account = getBlockchainAccount(cnpj);
 
@@ -123,9 +120,6 @@ contract RBBRegistry is Ownable() {
         require(!isAvailableAccount(oldAddr), "Tem que haver um endereço associado a esse cnpj");
 
         require(isAvailableAccount(newAddr), "Novo endereço não está disponível");
-
-//TODO: avaliar se serah mantido
-        require (isChangeAccountEnabled(newAddr), "A conta nova não está habilitada para troca");
 
         require (RBBLib.isValidHash(idProofHash), "O hash da declaração é inválido");
 
@@ -184,19 +178,6 @@ contract RBBRegistry is Ownable() {
     function setResponsibleForRegistryValidation(address rs) public onlyOwner {
         responsibleForRegistryValidation = rs;
         //TODOO: evento quando trocar papeis
-    }
-
-   /**
-    * Enable the legal entity to change the account
-    * @param rs account that can be changed.
-    */
-    function enableChangeAccount (address rs) public {
-        require(isResponsibleForRegistryValidation(msg.sender), "Somente o responsável pela validação pode habilitar a troca de conta");
-        legalEntitiesChangeAccount[rs] = true;
-    }
-
-    function isChangeAccountEnabled (address rs) public view returns (bool) {
-        return legalEntitiesChangeAccount[rs] == true;
     }
 
     function isResponsibleForRegistryValidation(address addr) public view returns (bool) {

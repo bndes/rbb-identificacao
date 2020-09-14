@@ -49,7 +49,7 @@ export class AssociaContaClienteComponent implements OnInit, DeclarationComponen
 
   inicializaDadosDerivadosPessoaJuridica() {
     this.cliente.dadosCadastrais = undefined;
-    this.subcreditoSelecionado = undefined;
+    this.subcreditoSelecionado = 0;
     this.hashdeclaracao = undefined;    
     this.flagUploadConcluido = false;
     this.cliente.subcreditos = new Array<Subcredito>();
@@ -64,7 +64,9 @@ export class AssociaContaClienteComponent implements OnInit, DeclarationComponen
     if ( cnpj.length == 14 ) { 
       console.log (" Buscando o CNPJ do cliente (14 digitos fornecidos)...  " + cnpj)
       this.recuperaClientePorCNPJ(cnpj);
-    } 
+    }
+    
+    this.preparaUpload(this.cliente.cnpj, this.subcreditoSelecionado, this.selectedAccount, this);
   }
 
   changeContrato() {
@@ -79,7 +81,7 @@ export class AssociaContaClienteComponent implements OnInit, DeclarationComponen
     console.log("selectedAccount=" + selectedAccount);
     const tipo = "declaracao";
 
-    if (cnpj && contrato &&  selectedAccount) {
+    if (cnpj  &&  selectedAccount) {
       this.fileHandleService.atualizaUploaderComponent(cnpj, contrato, selectedAccount, tipo, self);
     }
   }  
@@ -155,7 +157,7 @@ export class AssociaContaClienteComponent implements OnInit, DeclarationComponen
           for (var i = 0; i < empresa["subcreditos"].length; i++) {
            
             let subStr = JSON.parse(JSON.stringify(empresa["subcreditos"][i]));
-            self.includeAccountIfNoAssociated(self, cnpj, subStr);
+            //self.includeAccountIfNoAssociated(self, cnpj, subStr);
 
           }
 
@@ -234,15 +236,7 @@ export class AssociaContaClienteComponent implements OnInit, DeclarationComponen
       this.bnAlertsService.criarAlerta("error", "Erro", s, 2)
       return;
     }
-    let bChangeAccountSync = await this.web3Service.isChangeAccountEnabledSync(this.selectedAccount);
-    if (!bChangeAccountSync) {
-      let s = "A conta não está habilitada para troca. Contacte o BNDES";
-      this.bnAlertsService.criarAlerta("error", "Erro", s, 5);
-      return;
-    }
-
-    
-
+      
     this.web3Service.isContaDisponivel(this.selectedAccount, 
     
       (result) => {

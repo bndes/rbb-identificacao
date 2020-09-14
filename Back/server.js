@@ -106,20 +106,20 @@ configAcessoBDPJ.password = process.env.BNC_BD_PJ_PASSWORD;
 
 
 
-var contrato_json_BNDESToken = require(config.infra.contrato_json_BNDESToken);
+//var contrato_json_BNDESToken = require(config.infra.contrato_json_BNDESToken);
 var contrato_json_BNDESRegistry = require(config.infra.contrato_json_BNDESRegistry);
 
-var n = contrato_json_BNDESToken.networks;
+var n = contrato_json_BNDESRegistry.networks;
 
 console.log("config.infra.rede_blockchain (1=Main|4=Rinkeby|4447=local) = " + config.infra.rede_blockchain);
 
 //ABI = contrato_json_BNDESToken['abi']
 
-let addrContratoBNDESToken;
+//let addrContratoBNDESToken;
 let addrContratoBNDESRegistry;
 if (config.infra.rede_blockchain < 10) {  
 	console.log ("config.infra.rede_blockchain=" + config.infra.rede_blockchain);
-	addrContratoBNDESToken = config.infra.endereco_BNDESToken;
+	//addrContratoBNDESToken = config.infra.endereco_BNDESToken;
 	addrContratoBNDESRegistry = config.infra.endereco_BNDESRegistry;
 }
 else { //TODO: testar localhost
@@ -136,11 +136,11 @@ else { //TODO: testar localhost
 		console.log ("	networks[config.infra.rede_blockchain] = " + n[config.infra.rede_blockchain])		
 		process.exit();
 	}
-	addrContratoBNDESToken = n[config.infra.rede_blockchain].address;
+	//addrContratoBNDESToken = n[config.infra.rede_blockchain].address;
 	addrContratoBNDESRegistry = contrato_json_BNDESRegistry.networks[config.infra.rede_blockchain].address;
 }
 
-console.log("endereco do contrato BNDESToken=" + addrContratoBNDESToken);
+//console.log("endereco do contrato BNDESToken=" + addrContratoBNDESToken);
 console.log("endereco do contrato BNDESRegistry=" + addrContratoBNDESRegistry);
 
 
@@ -162,10 +162,11 @@ async function calculaHash(filename) {
 
 //recupera constantes front
 app.post('/api/constantesFront', function (req, res) {
-	res.json({ addrContratoBNDESToken: addrContratoBNDESToken, 
+	res.json({ 
+		//addrContratoBNDESToken: addrContratoBNDESToken, 
 		addrContratoBNDESRegistry: addrContratoBNDESRegistry,
 		blockchainNetwork: config.infra.rede_blockchain,
-		abiBNDESToken: contrato_json_BNDESToken['abi'],
+		//abiBNDESToken: contrato_json_BNDESToken['abi'],
 		abiBNDESRegistry: contrato_json_BNDESRegistry['abi']
 	 });
 });

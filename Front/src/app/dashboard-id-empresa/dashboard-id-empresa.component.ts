@@ -108,7 +108,7 @@ export class DashboardIdEmpresaComponent implements OnInit {
                 console.log(eventoCadastro);
 
                 transacaoPJ = {
-                    cnpj: eventoCadastro.args.cnpj,
+                    cnpj: eventoCadastro.args.id,
                     razaoSocial: "",
                     contaBlockchain: eventoCadastro.args.addr,
                     hashID: eventoCadastro.transactionHash,
