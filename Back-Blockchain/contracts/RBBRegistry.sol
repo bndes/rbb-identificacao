@@ -159,7 +159,7 @@ contract RBBRegistry is Ownable() {
     */
     function setResponsibleForRegistryValidation(address addr) public {
         require ( ( legalEntitiesInfo[addr].role == BlockchainAccountRole.ADMIN || 
-                 legalEntitiesInfo[addr].role == BlockchainAccountRole.SYSTEM || isOwner(addr) ), "Apenas Owener, Admin ou System podem dar poder de Admin");
+                 legalEntitiesInfo[addr].role == BlockchainAccountRole.SYSTEM || isOwner(addr) ), "Apenas Owner, Admin ou System podem dar poder de Admin");
         legalEntitiesInfo[addr].role = BlockchainAccountRole.ADMIN;        
         emit AccountAdminUpgrade(addr, legalEntitiesInfo[addr].id, msg.sender);
     }
