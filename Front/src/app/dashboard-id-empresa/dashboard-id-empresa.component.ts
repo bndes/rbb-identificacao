@@ -2,10 +2,12 @@ import { Component, OnInit, NgZone } from '@angular/core';
 import { ChangeDetectorRef } from '@angular/core';
 import { DashboardPessoaJuridica } from './DashboardPessoaJuridica';
 import {FileHandleService} from "../file-handle.service";
+import { PessoaJuridica } from '../PessoaJuridica';
 import { Web3Service } from './../Web3Service';
 import { PessoaJuridicaService } from '../pessoa-juridica.service';
 import { Utils } from '../shared/utils';
 import { ConstantesService } from '../ConstantesService';
+import { Router } from '@angular/router';
 
 
 import { BnAlertsService } from 'bndes-ux4';
@@ -36,7 +38,7 @@ export class DashboardIdEmpresaComponent implements OnInit {
     constructor(private pessoaJuridicaService: PessoaJuridicaService, 
         private fileHandleService: FileHandleService,
         protected bnAlertsService: BnAlertsService, private web3Service: Web3Service,
-        private ref: ChangeDetectorRef, private zone: NgZone) {
+        private ref: ChangeDetectorRef, private router: Router, private zone: NgZone) {
 
             let self = this;
             self.recuperaContaSelecionada();
@@ -385,5 +387,80 @@ export class DashboardIdEmpresaComponent implements OnInit {
 
 
     }
+
+    async validarCadastro(contaBlockchainValidar) {
+        console.log(contaBlockchainValidar);
+        if (contaBlockchainValidar === undefined) {
+          let s = "A conta blockchain é um Campo Obrigatório";
+          this.bnAlertsService.criarAlerta("error", "Erro", s, 2);
+          return;
+        }    
+    //let x = await this.identificaUsuario();
+    console.log("this.usuario.address = "+ this.usuario.address)
+        let bRV = await this.web3Service.isResponsibleForRegistryValidationSync(this.usuario.address);
+        if (!bRV) 
+        {
+            let s = "Conta selecionada no Metamask não pode executar uma validação.";
+            this.bnAlertsService.criarAlerta("error", "Erro", s, 5);
+            return;
+        }
+      
+    
+        let self = this;
+    
+        let booleano = this.web3Service.validarCadastro(contaBlockchainValidar, 
+    
+          
+             (txHash) => {
+              Utils.criarAlertasAvisoConfirmacao( txHash, 
+                                                  self.web3Service, 
+                                                  self.bnAlertsService, 
+                                                  "Validação de conta enviada. Aguarde a confirmação.", 
+                                                  "O cadastro da conta foi validado e confirmado na blockchain.", 
+                                                  self.zone)
+              self.router.navigate(['registro/dash-empresas']);                                                     
+              }        
+            ,(error) => {
+              Utils.criarAlertaErro( self.bnAlertsService, 
+                                     "Erro ao validar cadastro na blockchain", 
+                                     error )  
+            }
+          );
+          Utils.criarAlertaAcaoUsuario( self.bnAlertsService, 
+                                        "Confirme a operação no metamask e aguarde a confirmação." )         
+      }
+    
+      async invalidarCadastro(contaBlockchainInvalidar) {
+    
+        let self = this;
+    
+        if (contaBlockchainInvalidar === undefined) {
+          let s = "A conta blockchain é um Campo Obrigatório";
+          this.bnAlertsService.criarAlerta("error", "Erro", s, 2)
+          return;
+        }
+    
+        let bRV = await this.web3Service.isResponsibleForRegistryValidationSync(this.usuario.address);
+        if (!bRV) 
+        {
+            let s = "Conta selecionada no Metamask não pode executar a ação de invalidar.";
+            this.bnAlertsService.criarAlerta("error", "Erro", s, 5);
+            return;
+        }
+    
+        let booleano = this.web3Service.invalidarCadastro(contaBlockchainInvalidar, 
+          (result) => {
+              let s = "O cadastro da conta foi invalidado.";
+              self.bnAlertsService.criarAlerta("info", "Sucesso", s, 5);
+              console.log(s);
+    
+              self.router.navigate(['registro/dash-empresas'])
+        },
+        (error) => {
+          console.log("Erro ao invalidar cadastro")
+        });
+      }
+
+      
 
 }

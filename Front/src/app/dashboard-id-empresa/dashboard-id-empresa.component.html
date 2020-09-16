@@ -39,6 +39,7 @@
           <td>Status
           </td>
           <td>Link Etherscan</td>
+          <td>Processar</td>
         </tr>
       </thead>
 
@@ -68,6 +69,18 @@
             <a target="_blank" href="https://{{blockchainNetworkPrefix}}etherscan.io/tx/{{transacaoPJ.hashID}}">
               <i class="fa fa-link" aria-hidden="true"></i>
             </a>
+          </td>
+          <td>
+
+            <button type="submit" (click)="validarCadastro(transacaoPJ.contaBlockchain)" class="btn btn-success btn-cabecalho" placement="bottom" ngbTooltip="Validar" >
+              <i class="fa fa-check-square" aria-hidden="true"></i>
+            </button>
+      
+          <button type="button" (click)="invalidarCadastro(transacaoPJ.contaBlockchain)" class="btn btn-danger btn-cabecalho" placement="bottom" ngbTooltip="Invalidar" >
+            <i class="fa fa-square" aria-hidden="true"></i>
+          </button>
+            
+            
           </td>
         </tr>
       </tbody>
