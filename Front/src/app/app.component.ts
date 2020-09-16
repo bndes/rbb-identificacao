@@ -33,8 +33,8 @@ export class AppComponent implements OnInit {
     if (path.indexOf("/bndes") != -1) {
       console.log("Perfil BNDES")
       this.url = 'assets/menu-bndes.json';
-    } else if (path.indexOf("/cliente") != -1) {
-      console.log("Perfil Cliente")
+    } else if (path.indexOf("/registro") != -1) {
+      console.log("Registro")
       this.url = 'assets/menu-cliente.json';
     } else if (path.indexOf("/doador") != -1) {
       console.log("Perfil Doador")

@@ -260,7 +260,7 @@ export class AssociaContaClienteComponent implements OnInit, DeclarationComponen
                                                 "Associação do cnpj " + self.cliente.cnpj + " enviada. Aguarde a confirmação.", 
                                                 "A associação foi confirmada na blockchain.", 
                                                 self.zone) 
-            self.router.navigate(['sociedade/dash-empresas']);
+            self.router.navigate(['registro/dash-empresas']);
             
             }        
           ,(error) => {

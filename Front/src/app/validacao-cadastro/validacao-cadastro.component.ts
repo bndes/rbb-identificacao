@@ -185,7 +185,7 @@ export class ValidacaoCadastroComponent implements OnInit {
                                               "Validação de conta enviada. Aguarde a confirmação.", 
                                               "O cadastro da conta foi validado e confirmado na blockchain.", 
                                               self.zone)
-          self.router.navigate(['sociedade/dash-empresas']);                                                     
+          self.router.navigate(['registro/dash-empresas']);                                                     
           }        
         ,(error) => {
           Utils.criarAlertaErro( self.bnAlertsService, 
@@ -221,7 +221,7 @@ export class ValidacaoCadastroComponent implements OnInit {
           self.bnAlertsService.criarAlerta("info", "Sucesso", s, 5);
           console.log(s);
 
-          self.router.navigate(['sociedade/dash-empresas'])
+          self.router.navigate(['registro/dash-empresas'])
     },
     (error) => {
       console.log("Erro ao invalidar cadastro")

@@ -12,21 +12,6 @@
 				"titulo": "Dashboard Cadastro",
 				"url": "/sociedade/dash-empresas",
 				"separador": false
-			},
-			{
-				"titulo": "Dashboard Doação",
-				"url": "/sociedade/dash-doacao",
-				"separador": false
-			},			
-			{
-				"titulo": "Dashboard Liberação e Resgate",
-				"url": "/sociedade/dash-transf",
-				"separador": false
-			},			
-			{
-				"titulo": "Dashboard Intervenções Manuais",
-				"url": "/sociedade/dash-manuais",
-				"separador": false
 			}
 		]
 	}

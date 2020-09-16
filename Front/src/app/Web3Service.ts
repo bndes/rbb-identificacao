@@ -253,6 +253,19 @@ export class Web3Service {
             });
     }
 
+    getPJInfoSync(address: string) {
+        let self = this;
+
+        return new Promise (function(resolve) {
+            self.getPJInfo(address, function(result) {
+                resolve(result);
+            }, function(reject) {
+                console.log("ERRO getPJInfo  SYNC");
+                reject(false);
+            });
+        })
+    }    
+
     getAddressOwner(fSuccess: any, fError: any): number {
         return this.RBBRegistrySmartContract.owner(
             (error, result) => {
@@ -410,8 +423,6 @@ export class Web3Service {
         });
     }
 
-//TODO: getPapelContaAsString
-
     //Métodos de tradução back-front
 
     montaPJInfo(result): any {
@@ -420,12 +431,13 @@ export class Web3Service {
         console.log(result);
         pjInfo  = {};
         pjInfo.cnpj = result[0].c[0];
-        pjInfo.idSubcredito = result[1].c[0];
-        pjInfo.hashDeclaracao = result[2];
-        pjInfo.status = result[3].c[0];
+        pjInfo.hashDeclaracao = result[1];
+        pjInfo.status = result[2].c[0];
+        pjInfo.role = result[3].c[0];
         pjInfo.address = result[4];
 
         pjInfo.statusAsString = this.getEstadoContaAsStringByCodigo(pjInfo.status);
+        pjInfo.roleAsString   = this.getPapelContaAsString(pjInfo.role);
 
         if (pjInfo.status == 2) {
             pjInfo.isValidada =  true;
@@ -469,18 +481,31 @@ export class Web3Service {
             return "Validada";
         }    
         else if (result==3) {
-            return "Conta invalidada pelo Validador";
-        }    
-        else if (result==4) {
-            return "Conta invalidada por Troca de Conta";
-        }                                                       
+            return "Conta invalidada";
+        }                                                        
         else {
             return "N/A";
         }        
     }
 
 
-    
+    getPapelContaAsString (result): string {
+        if (result==0) {
+            return "Indefinido";
+        }
+        else if (result==1) {
+            return "Normal";
+        }                
+        else if (result==2) {
+            return "Admin";
+        }    
+        else if (result==3) {
+            return "Sistema";
+        }                                                        
+        else {
+            return "N/A";
+        }        
+    }
 
 
 }

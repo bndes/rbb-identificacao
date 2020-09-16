@@ -16,12 +16,12 @@ import {DashboardManualComponent } from './dashboard-manual/dashboard-manual.com
 
 const routes: Routes = [
   { path: 'bndes', component: HomeComponent },
-  { path: 'cliente', component: HomeComponent },
+  { path: 'registro', component: HomeComponent },
   { path: 'doador', component: HomeComponent },
   { path: 'sociedade', component: HomeComponent },
-  { path: 'bndes/val-cadastro', component: ValidacaoCadastroComponent},
-  { path: 'cliente/associa-conta-cliente', component: AssociaContaClienteComponent },
-  { path: 'sociedade/dash-empresas', component: DashboardIdEmpresaComponent },
+  { path: 'registro/val-cadastro', component: ValidacaoCadastroComponent},
+  { path: 'registro/associa-conta-cliente', component: AssociaContaClienteComponent },
+  { path: 'registro/dash-empresas', component: DashboardIdEmpresaComponent },
   { path: 'sociedade/dash-manuais', component: DashboardManualComponent },
   { path: '', redirectTo: '/sociedade', pathMatch: 'full' },
 ];

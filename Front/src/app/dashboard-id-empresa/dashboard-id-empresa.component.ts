@@ -25,6 +25,8 @@ export class DashboardIdEmpresaComponent implements OnInit {
 
     estadoLista: string = "undefined";
 
+    usuario: any;
+
     p: number = 1;
     order: string = 'dataHora';
     reverse: boolean = false;
@@ -69,9 +71,15 @@ export class DashboardIdEmpresaComponent implements OnInit {
     
           this.selectedAccount = newSelectedAccount;
           console.log("selectedAccount=" + this.selectedAccount);
+          this.identificaUsuario();
         }
     
       }    
+
+    async identificaUsuario() {
+        this.usuario = await this.web3Service.getPJInfoSync(this.selectedAccount);
+        console.log(this.usuario);
+    }
 
     registrarExibicaoEventos() {
 
