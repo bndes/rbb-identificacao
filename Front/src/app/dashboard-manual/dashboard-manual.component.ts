@@ -68,6 +68,7 @@ export class DashboardManualComponent implements OnInit {
 
 
     let self = this;    
+    /*
     this.web3Service.registraEventosIntervencaoManualMintBurn(function (error, event) {
 
         if (!error) {
@@ -173,7 +174,7 @@ export class DashboardManualComponent implements OnInit {
         }
     });
 
-
+    */
 }
 
 

@@ -22,20 +22,10 @@ import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { BlocoAnimadoComponent } from './shared/bloco-animado/bloco-animado.component';
 
-/* BNDES */
-import { LiberacaoComponent } from './liberacao/liberacao.component';
-import { LiquidacaoResgateComponent } from './liquidacao-resgate/liquidacao-resgate.component';
-
-/* Cliente */
 import { AssociaContaClienteComponent } from './associa-conta-cliente/associa-conta-cliente.component';
-import { RecuperaAcessoClienteComponent } from './recupera-acesso-cliente/recupera-acesso-cliente.component';
-import { ResgateComponent } from './resgate/resgate.component';
 
-/* Doador */
 /* Sociedade */
 import { DashboardIdEmpresaComponent } from './dashboard-id-empresa/dashboard-id-empresa.component';
-import { DashboardDoacaoComponent } from './dashboard-doacao/dashboard-doacao.component';
-import { DashboardTransferenciasComponent } from './dashboard-transferencias/dashboard-transferencias.component';
 
 
 
@@ -87,14 +77,9 @@ export const optionsMaskCurrencyBND: CurrencyMaskConfig = {
 @NgModule({
   declarations: [
     AppComponent,
-    LiberacaoComponent,
     DashboardIdEmpresaComponent,
-    DashboardTransferenciasComponent,
     HomeComponent,
-    LiquidacaoResgateComponent,
     AssociaContaClienteComponent,
-    RecuperaAcessoClienteComponent,
-    ResgateComponent,
     HomeComponent,
     BlocoAnimadoComponent,
     MetamsgComponent,
@@ -104,7 +89,6 @@ export const optionsMaskCurrencyBND: CurrencyMaskConfig = {
     ContratoPipe,
     HashPipe,
     ValidacaoCadastroComponent,
-    DashboardDoacaoComponent,
     DashboardManualComponent,
   ],
   imports: [

@@ -210,6 +210,10 @@ contract RBBRegistry is Ownable() {
         return ((int) (legalEntitiesInfo[addr].state));
     }
 
+    function getAccountRole(address addr) public view returns (int) {
+        return ((int) (legalEntitiesInfo[addr].role));
+    }
+
     function registryMock(uint id)
         public {
         

@@ -175,7 +175,7 @@ export class ValidacaoCadastroComponent implements OnInit {
     let self = this;
     console.log("validarConta(): " + self.pj.contaBlockchain + " - " + self.pj.hashDeclaracao);
 
-    let booleano = this.web3Service.validarCadastro(self.pj.contaBlockchain, self.pj.hashDeclaracao, 
+    let booleano = this.web3Service.validarCadastro(self.pj.contaBlockchain, 
 
       
          (txHash) => {

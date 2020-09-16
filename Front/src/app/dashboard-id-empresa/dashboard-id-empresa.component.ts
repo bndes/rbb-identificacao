@@ -82,13 +82,12 @@ export class DashboardIdEmpresaComponent implements OnInit {
         console.log("*** Executou o metodo de registrar exibicao eventos");
 
         this.registraEventosCadastro();
-
-        this.registraEventosTroca();
-
         this.registraEventosValidacao();
-
         this.registraEventosInvalidacao();
-        
+
+        this.registraEventosAdminUpgrade(); 
+        //TODO: this.registraEventosPausa();
+        //TODO: this.registraEventosDespausa();
     }
 
 
@@ -136,18 +135,18 @@ export class DashboardIdEmpresaComponent implements OnInit {
     }
 
 
-    registraEventosTroca() {
+    registraEventosAdminUpgrade() {
 
-        console.log("*** Executou o metodo de registrar eventos TROCA");
+        console.log("*** Executou o metodo de registrar eventos upgrade para Admin");
 
         let self = this;
 
-        self.web3Service.registraEventosTroca(function (error, event) {
+        self.web3Service.registraEventosAdminUpgrade(function (error, event) {
 
             let transacaoPJ: DashboardPessoaJuridica
             let eventoTroca = event
 
-            console.log("Evento Troca");
+            console.log("Evento upgrade Admin");
             console.log(eventoTroca);
 
             if (!error) {
