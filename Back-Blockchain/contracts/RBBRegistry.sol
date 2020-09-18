@@ -12,9 +12,8 @@ contract RBBRegistry is Ownable() {
         WAITING_VALIDATION - The account was linked to a legal entity but it still needs to be validated
         VALIDATED - The account was validated
         INVALIDATED - The account was invalidated
-        PAUSED - The account was paused and can be reactived anytime (it returns to VALIDATED)
      */
-    enum BlockchainAccountState {AVAILABLE,WAITING_VALIDATION,VALIDATED,INVALIDATED,PAUSED}
+    enum BlockchainAccountState {AVAILABLE,WAITING_VALIDATION,VALIDATED,INVALIDATED}
     BlockchainAccountState blockchainState; /* Variable not used, only defined to create the enum type. */
 
     enum BlockchainAccountRole {NORMAL, ADMIN, SYSADMIN} 
@@ -28,6 +27,7 @@ contract RBBRegistry is Ownable() {
         string idProofHash; //hash of declaration
         BlockchainAccountState state;
         BlockchainAccountRole role;
+        bool paused;
     }
 
     /**
@@ -39,8 +39,7 @@ contract RBBRegistry is Ownable() {
         Links Legal Entity IDs to Ethereum addresses.
      */
     mapping(uint => address[]) legalEntityId_To_Addr;
-//TODO: pensar sobre o vencimento do ECNPJ e se deveria vencer o RBBID associado.
-//PROPOSTA: O Back poderia ler a data de expiracao do certificado e confirmar a duracao da validade na blockchain.
+
     event AccountRegistration(address addr, uint id,  string idProofHash);
     event AccountValidation(address addr, uint id, address responsible);
     event AccountInvalidation(address addr, uint id, address responsible);
@@ -48,12 +47,10 @@ contract RBBRegistry is Ownable() {
     event AccountPaused(address addr, uint id, address responsible);
     event AccountUnpaused(address addr, uint id, address responsible);
 
-//todo: pensar vale a pena ter auto-declaracao do bndes e colocar o hash aqui no construtor
-//PROPOSTA: acho legal o BNDES ter a auto-declaracao de propriedade e responsabilidade pelas transacoes do endereco e preencher o hash
     /* The responsible for the System-Admin is the Owner. It could be or not be the same address (sysadmin=owner) */
     constructor (uint idSysAdmin, string memory proofHashSysAdmin) public {        
         address addrSysAdmin = msg.sender;
-        legalEntitiesInfo[addrSysAdmin] = LegalEntityInfo(idSysAdmin, proofHashSysAdmin, BlockchainAccountState.VALIDATED, BlockchainAccountRole.SYSADMIN);
+        legalEntitiesInfo[addrSysAdmin] = LegalEntityInfo(idSysAdmin, proofHashSysAdmin, BlockchainAccountState.VALIDATED, BlockchainAccountRole.SYSADMIN, false);
         legalEntityId_To_Addr[idSysAdmin].push(addrSysAdmin);
         emit AccountRegistration(addrSysAdmin, idSysAdmin, proofHashSysAdmin); 
         
@@ -74,11 +71,13 @@ contract RBBRegistry is Ownable() {
         if ( RBBLib.isValidHash(idProofHash) ) { 
             legalEntitiesInfo[addr] = LegalEntityInfo(id, idProofHash, 
                                                        BlockchainAccountState.WAITING_VALIDATION, 
-                                                       BlockchainAccountRole.ADMIN );
+                                                       BlockchainAccountRole.ADMIN,
+                                                       false );
         } else {
             legalEntitiesInfo[addr] = LegalEntityInfo(id, idProofHash, 
                                                        BlockchainAccountState.WAITING_VALIDATION, 
-                                                       BlockchainAccountRole.NORMAL );
+                                                       BlockchainAccountRole.NORMAL,
+                                                       false );
         }
 
         legalEntityId_To_Addr[id].push(addr);
@@ -86,8 +85,8 @@ contract RBBRegistry is Ownable() {
         emit AccountRegistration(addr, id, idProofHash);
     }
 
-    modifier onlyValidatedAccount() { 
-        require( legalEntitiesInfo[msg.sender].state == BlockchainAccountState.VALIDATED, "Apenas conta validada pode acessar a função" );
+    modifier onlyWhenNotPaused() { 
+        require( ! legalEntitiesInfo[msg.sender].paused , "Apenas quem não está pausada pode acessar" );
         _;
     }
 
@@ -95,7 +94,7 @@ contract RBBRegistry is Ownable() {
     * Validates the initial registry of a legal entity 
     * @param userAddr Ethereum address that needs to be validated
     */
-    function validateRegistryLegalEntity(address userAddr) public onlyValidatedAccount {
+    function validateRegistryLegalEntity(address userAddr) public onlyWhenNotPaused {
 
         address responsible = msg.sender;
 
@@ -119,32 +118,30 @@ contract RBBRegistry is Ownable() {
     * Pause an account     
     * @param addr Ethereum address that needs to be paused
     */
-    function pauseRegistryLegalEntity(address addr) public onlyValidatedAccount {
+    function pauseRegistryLegalEntity(address addr) public onlyWhenNotPaused {
 
         address responsible = msg.sender;
 
         require ( legalEntitiesInfo[addr].role != BlockchainAccountRole.SYSADMIN , "A conta SYSADMIN não pode ser pausada");
-        require( isTheSameID(responsible, addr) || legalEntitiesInfo[reponsible].role == BlockchainAccountRole.SYSADMIN, "Somente pode pausar uma conta quem for da mesma organização ou System Administrator" );
+        require( isTheSameID(responsible, addr) || legalEntitiesInfo[responsible].role == BlockchainAccountRole.SYSADMIN, "Somente pode pausar uma conta quem for da mesma organização ou System Administrator" );
         require( isValidatedAccount(addr) , "Somente uma conta válida pode ser pausada");
-        //TODO: deveria pausar em qualquer estado??
-        //PROPOSTA: pausar apenas contas validas/ativas, porque o unpause nao precisa guardar o estado anterior.
 
-        legalEntitiesInfo[addr].state = BlockchainAccountState.PAUSED;
+        legalEntitiesInfo[addr].paused = true;
         
         emit AccountPaused(addr, legalEntitiesInfo[addr].id, responsible);
     }
 
-    function pauseLegalEntity(uint id) public onlyValidatedAccount {
+    function pauseLegalEntity(uint id) public onlyWhenNotPaused {
 
         address responsible = msg.sender;
         address[] memory addresses  = legalEntityId_To_Addr[id];
 
-        require( isTheSameID(responsible, addresses[0]) || legalEntitiesInfo[reponsible].role == BlockchainAccountRole.SYSADMIN, "Somente pode pausar uma conta quem for da mesma organização ou System Administrator" );
+        require( isTheSameID(responsible, addresses[0]) || legalEntitiesInfo[responsible].role == BlockchainAccountRole.SYSADMIN, "Somente pode pausar uma conta quem for da mesma organização ou System Administrator" );
 
         for (uint i=0; i < addresses.length ; i++) {
             address candidate = addresses[i];
             if( isValidatedAccount( candidate ) ) {
-                legalEntitiesInfo[ candidate ].state = BlockchainAccountState.PAUSED;
+                legalEntitiesInfo[candidate].paused = true;
                 emit AccountPaused( candidate, legalEntitiesInfo[candidate].id, responsible );
             }
         }   
@@ -154,15 +151,15 @@ contract RBBRegistry is Ownable() {
     * Unpause an account     
     * @param addr Ethereum address that needs to be validated
     */
-    function unpauseRegistryLegalEntity(address addr) public onlyValidatedAccount {
+    function unpauseRegistryLegalEntity(address addr) public onlyWhenNotPaused {
 
         address responsible = msg.sender;
 
         require ( responsible != addr , "Uma pessoa não é capaz de retirar o pause de sua própria conta");
         require( isResponsibleForRegistryValidation(responsible) , "Somente uma conta responsável validadora pode despausar outras contas" );        
-        require( ( legalEntitiesInfo[addr].state == BlockchainAccountState.PAUSED ) , "Somente uma conta pausada pode ser despausada" ); 
+        require( legalEntitiesInfo[addr].paused  , "Somente uma conta pausada pode ser despausada" ); 
 
-        legalEntitiesInfo[addr].state = BlockchainAccountState.VALIDATED;
+        legalEntitiesInfo[addr].paused = false;
         
         emit AccountUnpaused(addr, legalEntitiesInfo[addr].id, responsible);
     }
@@ -173,7 +170,7 @@ contract RBBRegistry is Ownable() {
     * The invalidation can be called at any time in the lifecycle of the address (not only when it is WAITING_VALIDATION)
     * @param addr Ethereum address that needs to be validated
     */
-    function invalidateRegistryLegalEntity(address addr) public onlyValidatedAccount {
+    function invalidateRegistryLegalEntity(address addr) public onlyWhenNotPaused {
 
         address responsible = msg.sender;
 
@@ -232,11 +229,12 @@ contract RBBRegistry is Ownable() {
         return legalEntitiesInfo[addr].id;
     }
 
-    function getLegalEntityInfo (address addr) public view returns (uint, string memory, uint, uint, address) {
+    function getLegalEntityInfo (address addr) public view returns (uint, string memory, uint, uint, bool, address) {
         return (  legalEntitiesInfo[addr].id, 
                   legalEntitiesInfo[addr].idProofHash, 
                   (uint) (legalEntitiesInfo[addr].state),
                   (uint) (legalEntitiesInfo[addr].role),
+                  legalEntitiesInfo[addr].paused,
                   addr 
                );
     }
@@ -258,7 +256,7 @@ contract RBBRegistry is Ownable() {
         address addr = msg.sender;
         string memory idProofHash = "";
 
-        legalEntitiesInfo[addr] = LegalEntityInfo(id, idProofHash, BlockchainAccountState.VALIDATED, BlockchainAccountRole.ADMIN );
+        legalEntitiesInfo[addr] = LegalEntityInfo(id, idProofHash, BlockchainAccountState.VALIDATED, BlockchainAccountRole.ADMIN, false );
 
         legalEntityId_To_Addr[id].push(addr);
 
