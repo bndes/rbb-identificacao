@@ -23800,14 +23800,14 @@
         }
       },
       "links": {
-        "RBBLib": "0x4f82Ed225C001FD91deCB72E5A033FE936432689"
+        "RBBLib": "0xA54B9dA174C84DeD0179D165C089DE0dCd02391d"
       },
-      "address": "0x45Ab97B17B869566E373da7943D90Fa1C70fFc8e",
-      "transactionHash": "0x62d1f4ecd98db1085682fe1c7214fb7f004e42e354418bd7c4ffe8771eee6556"
+      "address": "0x37cC7714cD39Db0c36f52B4313378E68606eE8Ee",
+      "transactionHash": "0xea00b35533c4d2eb4e1e7834e32579c0e74f0b3b59e8a89b0c0c3511d08335fb"
     }
   },
   "schemaVersion": "3.0.16",
-  "updatedAt": "2020-09-18T20:37:49.926Z",
+  "updatedAt": "2020-09-21T20:57:29.397Z",
   "devdoc": {
     "methods": {
       "invalidateRegistryLegalEntity(address)": {

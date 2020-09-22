@@ -206,8 +206,11 @@ app.post('/api/pj-por-cnpj', buscaPJPorCnpj);
 
 
 		if (mockPJ) {
-			
 			console.log("mock PJ ON!");
+
+			if ( cnpjRecebido == undefined || cnpjRecebido == '00000undefined' || cnpjRecebido == '00000000000000')	
+				return;
+
 			https.get('https://www.receitaws.com.br/v1/cnpj/' + cnpjRecebido, (resp) => {
 				let data = '';
 

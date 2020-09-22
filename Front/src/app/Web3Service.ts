@@ -212,13 +212,13 @@ export class Web3Service {
     }
 
 
-    async cadastra(cnpj: number, idSubcredito: number, hashdeclaracao: string,
+    async cadastra(cnpj: number, hashdeclaracao: string,
         fSuccess: any, fError: any) {
 
         let contaBlockchain = await this.getCurrentAccountSync();    
 
         console.log("Web3Service - Cadastra")
-        console.log("CNPJ: " + cnpj + ", Contrato: " + idSubcredito + 
+        console.log("CNPJ: " + cnpj +  
             ", hashdeclaracao: " + hashdeclaracao
             )
 
@@ -434,7 +434,8 @@ export class Web3Service {
         pjInfo.hashDeclaracao = result[1];
         pjInfo.status = result[2].c[0];
         pjInfo.role = result[3].c[0];
-        pjInfo.address = result[4];
+        pjInfo.paused = result[4];
+        pjInfo.address = result[5];
 
         pjInfo.statusAsString = this.getEstadoContaAsStringByCodigo(pjInfo.status);
         pjInfo.roleAsString   = this.getPapelContaAsString(pjInfo.role);
@@ -453,15 +454,6 @@ export class Web3Service {
         else {
             pjInfo.isAssociavel = false;
         }
-
-
-        if (pjInfo.status == 1 || pjInfo.status == 2 || pjInfo.status == 3 || pjInfo.status == 4) {
-            pjInfo.isTrocavel =  true;
-        }
-        else {
-            pjInfo.isTrocavel = false;
-        }
-
 
         return pjInfo;
     }
