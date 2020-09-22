@@ -1,18 +1,18 @@
 // Set up
-const express = require('express');
-const app = express();                               // create our app w/ express
-//const mongoose = require('mongoose');                     // mongoose for mongodb
-const bodyParser = require('body-parser');    // pull information from HTML POST (express4)
-const methodOverride = require('method-override'); // simulate DELETE and PUT (express4)
-const cors = require('cors');
-const Promise = require('bluebird');
-const config = require('./config.json');
-const sql = require("mssql");
-const fs 		= require('fs');
-const keccak256 = require('keccak256'); 
-const https = require ('https');
+const express 			= require('express');
+const app 				= express();                               
+const bodyParser 		= require('body-parser');    // pull information from HTML POST (express4)
+const methodOverride 	= require('method-override'); // simulate DELETE and PUT (express4)
+const cors 				= require('cors');
+const Promise 			= require('bluebird');
+const config 			= require('./config.json');
+const sql		 		= require("mssql");
+const fs 				= require('fs');
+const keccak256 		= require('keccak256'); 
+const https 			= require ('https');
+const multer 			= require('multer');
 
-const multer = require('multer');
+var serverFunctions     = require('./server_functions.js');
 
 const DIR_UPLOAD = config.infra.caminhoArquivos + config.infra.caminhoUpload;
 const DIR_CAMINHO_DECLARACAO = config.infra.caminhoArquivos + config.infra.caminhoDeclaracao;
@@ -59,6 +59,8 @@ app.use(bodyParser.json());                                     // parse applica
 app.use(bodyParser.json({ type: 'application/vnd.api+json' })); // parse application/vnd.api+json as json
 app.use(methodOverride());
 app.use(cors());
+
+serverFunctions.databaseInit();
 
 app.use(function (req, res, next) {
 	res.header("Access-Control-Allow-Origin", "*");
