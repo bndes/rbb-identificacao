@@ -78,3 +78,13 @@ function databaseInit() {
     });
 }
 
+function validateDocumentSignature() {
+    let URL = "http://web.dsv.bndes.net/vra/rest/validar-assinatura?verificacaoSimplificada=true";
+    //TODO: implement this method
+}
+
+function signDocument() {
+    //TODO: verify whether this functionality is available through a REST API
+    //https://gitlab.bndes.net/sist-smd/smd_spa/blob/develop/smd-back/src/main/java/br/gov/bndes/smd/feature/tramite/laudopericial/LaudoPericialServico.java 
+    //  private File assinarDocumentoFinal(DocumentoTramite documentoTramite, long paginaInclusaoAssinaturaVisual, File arquivo, boolean apagarArquivoOrigem)10:39:17
+}
