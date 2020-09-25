@@ -28,6 +28,7 @@ contract RBBRegistry is Ownable() {
         BlockchainAccountState state;
         BlockchainAccountRole role;
         bool paused;
+        uint256 dateTimeCertificateExpiration; 
     }
 
     /**
@@ -40,7 +41,7 @@ contract RBBRegistry is Ownable() {
      */
     mapping(uint => address[]) legalEntityId_To_Addr;
 
-    event AccountRegistration(address addr, uint id,  string idProofHash);
+    event AccountRegistration(address addr, uint id,  string idProofHash, uint256 dateTimeCertificateExpiration);
     event AccountValidation(address addr, uint id, address responsible);
     event AccountInvalidation(address addr, uint id, address responsible);
     event AccountAdminUpgrade(address addr, uint id, address responsible);
@@ -48,11 +49,11 @@ contract RBBRegistry is Ownable() {
     event AccountUnpaused(address addr, uint id, address responsible);
 
     /* The responsible for the System-Admin is the Owner. It could be or not be the same address (sysadmin=owner) */
-    constructor (uint idSysAdmin, string memory proofHashSysAdmin) public {        
+    constructor (uint idSysAdmin, string memory proofHashSysAdmin, uint256 dateTimeCertificateExpiration) public {        
         address addrSysAdmin = msg.sender;
-        legalEntitiesInfo[addrSysAdmin] = LegalEntityInfo(idSysAdmin, proofHashSysAdmin, BlockchainAccountState.VALIDATED, BlockchainAccountRole.SYSADMIN, false);
+        legalEntitiesInfo[addrSysAdmin] = LegalEntityInfo(idSysAdmin, proofHashSysAdmin, BlockchainAccountState.VALIDATED, BlockchainAccountRole.SYSADMIN, false, dateTimeCertificateExpiration);
         legalEntityId_To_Addr[idSysAdmin].push(addrSysAdmin);
-        emit AccountRegistration(addrSysAdmin, idSysAdmin, proofHashSysAdmin); 
+        emit AccountRegistration(addrSysAdmin, idSysAdmin, proofHashSysAdmin, dateTimeCertificateExpiration); 
         
     }
 
@@ -62,27 +63,29 @@ contract RBBRegistry is Ownable() {
     * @param idProofHash The legal entities have to send BNDES a PDF where it assumes as responsible for an Ethereum account.
     *                   This PDF is signed with eCNPJ and send to BNDES.
     */
-    function registryLegalEntity(uint id, string memory idProofHash) public {
+    function registryLegalEntity(uint id, string memory idProofHash, uint256 dateTimeCertificateExpiration) public {
         
         address addr = msg.sender;
 
         require (isAvailableAccount(addr), "Endereço não pode ter sido cadastrado anteriormente");
 
-        if ( RBBLib.isValidHash(idProofHash) ) { 
+        if ( isValidHash(idProofHash) ) { 
             legalEntitiesInfo[addr] = LegalEntityInfo(id, idProofHash, 
                                                        BlockchainAccountState.WAITING_VALIDATION, 
                                                        BlockchainAccountRole.ADMIN,
-                                                       false );
+                                                       false,
+                                                       dateTimeCertificateExpiration );
         } else {
             legalEntitiesInfo[addr] = LegalEntityInfo(id, idProofHash, 
                                                        BlockchainAccountState.WAITING_VALIDATION, 
                                                        BlockchainAccountRole.NORMAL,
-                                                       false );
+                                                       false,
+                                                       dateTimeCertificateExpiration );
         }
 
         legalEntityId_To_Addr[id].push(addr);
 
-        emit AccountRegistration(addr, id, idProofHash);
+        emit AccountRegistration(addr, id, idProofHash, dateTimeCertificateExpiration);
     }
 
     modifier onlyWhenNotPaused() { 
@@ -90,11 +93,16 @@ contract RBBRegistry is Ownable() {
         _;
     }
 
+    modifier onlyWhenNotExpired() { 
+        require( legalEntitiesInfo[msg.sender].dateTimeCertificateExpiration > now , "Apenas contas com declarações cujos certificados ainda são válidos." );
+        _;
+    }
+
    /**
     * Validates the initial registry of a legal entity 
     * @param userAddr Ethereum address that needs to be validated
     */
-    function validateRegistryLegalEntity(address userAddr) public onlyWhenNotPaused {
+    function validateRegistryLegalEntity(address userAddr) public onlyWhenNotPaused onlyWhenNotExpired {
 
         address responsible = msg.sender;
 
@@ -118,7 +126,7 @@ contract RBBRegistry is Ownable() {
     * Pause an account     
     * @param addr Ethereum address that needs to be paused
     */
-    function pauseRegistryLegalEntity(address addr) public onlyWhenNotPaused {
+    function pauseAddress(address addr) public onlyWhenNotPaused {
 
         address responsible = msg.sender;
 
@@ -151,7 +159,7 @@ contract RBBRegistry is Ownable() {
     * Unpause an account     
     * @param addr Ethereum address that needs to be validated
     */
-    function unpauseRegistryLegalEntity(address addr) public onlyWhenNotPaused {
+    function unpauseAddress(address addr) public onlyWhenNotPaused onlyWhenNotExpired {
 
         address responsible = msg.sender;
 
@@ -170,7 +178,7 @@ contract RBBRegistry is Ownable() {
     * The invalidation can be called at any time in the lifecycle of the address (not only when it is WAITING_VALIDATION)
     * @param addr Ethereum address that needs to be validated
     */
-    function invalidateRegistryLegalEntity(address addr) public onlyWhenNotPaused {
+    function invalidateRegistryLegalEntity(address addr) public onlyWhenNotPaused onlyWhenNotExpired {
 
         address responsible = msg.sender;
 
@@ -229,12 +237,13 @@ contract RBBRegistry is Ownable() {
         return legalEntitiesInfo[addr].id;
     }
 
-    function getLegalEntityInfo (address addr) public view returns (uint, string memory, uint, uint, bool, address) {
+    function getLegalEntityInfo (address addr) public view returns (uint, string memory, uint, uint, bool, uint256, address) {
         return (  legalEntitiesInfo[addr].id, 
                   legalEntitiesInfo[addr].idProofHash, 
                   (uint) (legalEntitiesInfo[addr].state),
                   (uint) (legalEntitiesInfo[addr].role),
                   legalEntitiesInfo[addr].paused,
+                  legalEntitiesInfo[addr].dateTimeCertificateExpiration,
                   addr 
                );
     }
@@ -255,13 +264,29 @@ contract RBBRegistry is Ownable() {
         
         address addr = msg.sender;
         string memory idProofHash = "";
+        uint256 dateTimeCertificateExpiration = 4294967296; //2106 = 2^32 (Max 2^256 -1)
 
-        legalEntitiesInfo[addr] = LegalEntityInfo(id, idProofHash, BlockchainAccountState.VALIDATED, BlockchainAccountRole.ADMIN, false );
+        legalEntitiesInfo[addr] = LegalEntityInfo(id, idProofHash, BlockchainAccountState.VALIDATED, BlockchainAccountRole.ADMIN, false, dateTimeCertificateExpiration );
 
         legalEntityId_To_Addr[id].push(addr);
 
-        emit AccountRegistration(addr, id, idProofHash);
+        emit AccountRegistration(addr, id, idProofHash, dateTimeCertificateExpiration);
     }
+
+    
+  function isValidHash(string memory str) public pure returns (bool)  {
+
+    bytes memory b = bytes(str);
+    if(b.length != 64) return false;
+
+    for (uint i = 0; i < 64; i++) {
+        if (b[i] < "0") return false;
+        if (b[i] > "9" && b[i] < "a") return false;
+        if (b[i] > "f") return false;
+    }
+
+    return true;
+  }
 
 
 }
