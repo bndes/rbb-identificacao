@@ -24,7 +24,7 @@ contract RBBRegistry is Ownable() {
      */
     struct LegalEntityInfo {
         uint id; //Brazilian identification of legal entity
-        string idProofHash; //hash of declaration
+        bytes32 idProofHash; //hash of declaration
         BlockchainAccountState state;
         BlockchainAccountRole role;
         bool paused;
@@ -41,7 +41,7 @@ contract RBBRegistry is Ownable() {
      */
     mapping(uint => address[]) legalEntityId_To_Addr;
 
-    event AccountRegistration(address addr, uint id,  string idProofHash, uint256 dateTimeCertificateExpiration);
+    event AccountRegistration(address addr, uint id,  bytes32 idProofHash, uint256 dateTimeCertificateExpiration);
     event AccountValidation(address addr, uint id, address responsible);
     event AccountInvalidation(address addr, uint id, address responsible);
     event AccountAdminUpgrade(address addr, uint id, address responsible);
@@ -51,9 +51,10 @@ contract RBBRegistry is Ownable() {
     /* The responsible for the System-Admin is the Owner. It could be or not be the same address (sysadmin=owner) */
     constructor (uint idSysAdmin, string memory proofHashSysAdmin, uint256 dateTimeCertificateExpiration) public {        
         address addrSysAdmin = msg.sender;
-        legalEntitiesInfo[addrSysAdmin] = LegalEntityInfo(idSysAdmin, proofHashSysAdmin, BlockchainAccountState.VALIDATED, BlockchainAccountRole.SYSADMIN, false, dateTimeCertificateExpiration);
+        bytes32 proofHash = RBBLib.stringBytes32(proofHashSysAdmin);
+        legalEntitiesInfo[addrSysAdmin] = LegalEntityInfo(idSysAdmin, proofHash, BlockchainAccountState.VALIDATED, BlockchainAccountRole.SYSADMIN, false, dateTimeCertificateExpiration);
         legalEntityId_To_Addr[idSysAdmin].push(addrSysAdmin);
-        emit AccountRegistration(addrSysAdmin, idSysAdmin, proofHashSysAdmin, dateTimeCertificateExpiration); 
+        emit AccountRegistration(addrSysAdmin, idSysAdmin, proofHash, dateTimeCertificateExpiration); 
         
     }
 
@@ -66,17 +67,18 @@ contract RBBRegistry is Ownable() {
     function registryLegalEntity(uint id, string memory idProofHash, uint256 dateTimeCertificateExpiration) public {
         
         address addr = msg.sender;
+        bytes32 proofHash = RBBLib.stringBytes32(idProofHash);
 
         require (isAvailableAccount(addr), "Endereço não pode ter sido cadastrado anteriormente");
 
-        if ( isValidHash(idProofHash) ) { 
-            legalEntitiesInfo[addr] = LegalEntityInfo(id, idProofHash, 
+        if ( proofHash == 0 ) { 
+            legalEntitiesInfo[addr] = LegalEntityInfo(id, proofHash, 
                                                        BlockchainAccountState.WAITING_VALIDATION, 
                                                        BlockchainAccountRole.ADMIN,
                                                        false,
                                                        dateTimeCertificateExpiration );
         } else {
-            legalEntitiesInfo[addr] = LegalEntityInfo(id, idProofHash, 
+            legalEntitiesInfo[addr] = LegalEntityInfo(id, proofHash, 
                                                        BlockchainAccountState.WAITING_VALIDATION, 
                                                        BlockchainAccountRole.NORMAL,
                                                        false,
@@ -85,7 +87,7 @@ contract RBBRegistry is Ownable() {
 
         legalEntityId_To_Addr[id].push(addr);
 
-        emit AccountRegistration(addr, id, idProofHash, dateTimeCertificateExpiration);
+        emit AccountRegistration(addr, id, proofHash, dateTimeCertificateExpiration);
     }
 
     modifier onlyWhenNotPaused() { 
@@ -239,7 +241,7 @@ contract RBBRegistry is Ownable() {
 
     function getLegalEntityInfo (address addr) public view returns (uint, string memory, uint, uint, bool, uint256, address) {
         return (  legalEntitiesInfo[addr].id, 
-                  legalEntitiesInfo[addr].idProofHash, 
+                  RBBLib.bytes32ToStr(legalEntitiesInfo[addr].idProofHash), 
                   (uint) (legalEntitiesInfo[addr].state),
                   (uint) (legalEntitiesInfo[addr].role),
                   legalEntitiesInfo[addr].paused,
@@ -263,14 +265,14 @@ contract RBBRegistry is Ownable() {
     function registryMock(uint id) public {
         
         address addr = msg.sender;
-        string memory idProofHash = "";
+        bytes32 proofHash = 0;
         uint256 dateTimeCertificateExpiration = 4294967296; //2106 = 2^32 (Max 2^256 -1)
 
-        legalEntitiesInfo[addr] = LegalEntityInfo(id, idProofHash, BlockchainAccountState.VALIDATED, BlockchainAccountRole.ADMIN, false, dateTimeCertificateExpiration );
+        legalEntitiesInfo[addr] = LegalEntityInfo(id, proofHash, BlockchainAccountState.VALIDATED, BlockchainAccountRole.ADMIN, false, dateTimeCertificateExpiration );
 
         legalEntityId_To_Addr[id].push(addr);
 
-        emit AccountRegistration(addr, id, idProofHash, dateTimeCertificateExpiration);
+        emit AccountRegistration(addr, id, proofHash, dateTimeCertificateExpiration);
     }
 
     
