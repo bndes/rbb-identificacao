@@ -19,14 +19,14 @@ contract RBBRegistry is Ownable() {
     enum BlockchainAccountRole {NORMAL, ADMIN, SYSADMIN} 
     BlockchainAccountRole blockchainRole;  /* Variable not used, only defined to create the enum type. */
 
-    /* This is a helper variable to emulate a sequence and autoincrementBRIds*/
+    /* This is a helper variable to emulate a sequence and autoincrement Ids*/
     uint public currentRBBId = 0;
 
      /**
         This represents a real life organization
      */
     struct LegalEntityInfo {
-        uint RBBId; //Unique ID for RBBID
+        uint RBBId; //Unique ID for RBB 
         uint BRId; //Brazilian identification of legal entity
         bytes32 idProofHash; //hash of declaration
         BlockchainAccountState state;
@@ -45,18 +45,19 @@ contract RBBRegistry is Ownable() {
      */
     mapping(uint => address[]) legalEntityId_To_Addr;
 
-    event AccountRegistration(address addr, uint BRId,  bytes32 idProofHash, uint256 dateTimeCertificateExpiration);
-    event AccountValidation(address addr, uint BRId, address responsible);
-    event AccountInvalidation(address addr, uint BRId, address responsible);
-    event AccountAdminUpgrade(address addr, uint BRId, address responsible);
-    event AccountPaused(address addr, uint BRId, address responsible);
-    event AccountUnpaused(address addr, uint BRId, address responsible);
+    event AccountRegistration(address addr, uint RBBId, uint BRId,  bytes32 idProofHash, uint256 dateTimeCertificateExpiration);
+    event AccountValidation(address addr, uint RBBId,  uint BRId, address responsible);
+    event AccountInvalidation(address addr, uint RBBId,  uint BRId, address responsible);
+    event AccountAdminUpgrade(address addr, uint RBBId,  uint BRId, address responsible);
+    event AccountPaused(address addr, uint RBBId,  uint BRId, address responsible);
+    event AccountUnpaused(address addr, uint RBBId,  uint BRId, address responsible);
 
     /* The responsible for the System-Admin is the Owner. It could be or not be the same address (sysadmin=owner) */
     constructor (uint BRIdSysAdmin, string memory proofHashSysAdmin, uint256 dateTimeCertificateExpiration) public {                
         address addrSysAdmin = msg.sender;
         bytes32 proofHash = RBBLib.stringBytes32(proofHashSysAdmin);
-        legalEntitiesInfo[addrSysAdmin] = LegalEntityInfo(  getNextRBBId(), 
+        uint RBBId = getNextRBBId();
+        legalEntitiesInfo[addrSysAdmin] = LegalEntityInfo(  RBBId, 
                                                             BRIdSysAdmin, 
                                                             proofHash, 
                                                             BlockchainAccountState.VALIDATED, 
@@ -64,7 +65,7 @@ contract RBBRegistry is Ownable() {
                                                             false, 
                                                             dateTimeCertificateExpiration     );
         legalEntityId_To_Addr[BRIdSysAdmin].push(addrSysAdmin);
-        emit AccountRegistration(addrSysAdmin, BRIdSysAdmin, proofHash, dateTimeCertificateExpiration); 
+        emit AccountRegistration(addrSysAdmin, RBBId, BRIdSysAdmin, proofHash, dateTimeCertificateExpiration); 
         
     }
 
@@ -78,11 +79,12 @@ contract RBBRegistry is Ownable() {
         
         address addr = msg.sender;
         bytes32 proofHash = RBBLib.stringBytes32(BRIdProofHash);
+        uint RBBId = getNextRBBId();
 
         require (isAvailableAccount(addr), "Endereço não pode ter sido cadastrado anteriormente");
 
         if ( proofHash == 0 ) { 
-            legalEntitiesInfo[addr] = LegalEntityInfo(  getNextRBBId(),
+            legalEntitiesInfo[addr] = LegalEntityInfo(  RBBId,
                                                         BRId, 
                                                         proofHash, 
                                                         BlockchainAccountState.WAITING_VALIDATION, 
@@ -90,7 +92,7 @@ contract RBBRegistry is Ownable() {
                                                         false,
                                                         dateTimeCertificateExpiration );
         } else {
-            legalEntitiesInfo[addr] = LegalEntityInfo(  getNextRBBId(),
+            legalEntitiesInfo[addr] = LegalEntityInfo(  RBBId,
                                                         BRId, 
                                                         proofHash, 
                                                         BlockchainAccountState.WAITING_VALIDATION, 
@@ -101,7 +103,7 @@ contract RBBRegistry is Ownable() {
 
         legalEntityId_To_Addr[BRId].push(addr);
 
-        emit AccountRegistration(addr, BRId, proofHash, dateTimeCertificateExpiration);
+        emit AccountRegistration(addr, RBBId, BRId, proofHash, dateTimeCertificateExpiration);
     }
 
     modifier onlyWhenNotPaused() { 
@@ -135,7 +137,10 @@ contract RBBRegistry is Ownable() {
 
         legalEntitiesInfo[userAddr].state = BlockchainAccountState.VALIDATED;
 
-        emit AccountValidation(userAddr, legalEntitiesInfo[userAddr].BRId, responsible);
+        emit AccountValidation( userAddr, 
+                                legalEntitiesInfo[userAddr].RBBId, 
+                                legalEntitiesInfo[userAddr].BRId, 
+                                responsible);
     }
 
 /**
@@ -152,7 +157,10 @@ contract RBBRegistry is Ownable() {
 
         legalEntitiesInfo[addr].paused = true;
         
-        emit AccountPaused(addr, legalEntitiesInfo[addr].BRId, responsible);
+        emit AccountPaused( addr, 
+                            legalEntitiesInfo[addr].RBBId,
+                            legalEntitiesInfo[addr].BRId, 
+                            responsible);
     }
 
     function pauseLegalEntity(uint BRId) public onlyWhenNotPaused {
@@ -166,7 +174,10 @@ contract RBBRegistry is Ownable() {
             address candidate = addresses[i];
             if( isValidatedAccount( candidate ) ) {
                 legalEntitiesInfo[candidate].paused = true;
-                emit AccountPaused( candidate, legalEntitiesInfo[candidate].BRId, responsible );
+                emit AccountPaused( candidate, 
+                                    legalEntitiesInfo[candidate].RBBId,
+                                    legalEntitiesInfo[candidate].BRId, 
+                                    responsible );
             }
         }   
     }
@@ -185,7 +196,10 @@ contract RBBRegistry is Ownable() {
 
         legalEntitiesInfo[addr].paused = false;
         
-        emit AccountUnpaused(addr, legalEntitiesInfo[addr].BRId, responsible);
+        emit AccountUnpaused(   addr, 
+                                legalEntitiesInfo[addr].RBBId,
+                                legalEntitiesInfo[addr].BRId, 
+                                responsible);
     }
 
 
@@ -204,7 +218,10 @@ contract RBBRegistry is Ownable() {
 
         legalEntitiesInfo[addr].state = BlockchainAccountState.INVALIDATED;
         
-        emit AccountInvalidation(addr, legalEntitiesInfo[addr].BRId, responsible);
+        emit AccountInvalidation(   addr, 
+                                    legalEntitiesInfo[addr].RBBId, 
+                                    legalEntitiesInfo[addr].BRId, 
+                                    responsible );
     }
 
 
@@ -217,7 +234,10 @@ contract RBBRegistry is Ownable() {
         require ( ( legalEntitiesInfo[addr].role == BlockchainAccountRole.ADMIN || 
                  legalEntitiesInfo[addr].role == BlockchainAccountRole.SYSADMIN || isOwner(addr) ), "Apenas Owner, Admin ou System-Admin podem dar poder de Admin");
         legalEntitiesInfo[addr].role = BlockchainAccountRole.ADMIN;        
-        emit AccountAdminUpgrade(addr, legalEntitiesInfo[addr].BRId, msg.sender);
+        emit AccountAdminUpgrade(   addr, 
+                                    legalEntitiesInfo[addr].RBBId, 
+                                    legalEntitiesInfo[addr].BRId, 
+                                    msg.sender );
     }
 
     function isResponsibleForRegistryValidation(address addr) public view returns (bool) {
@@ -250,8 +270,16 @@ contract RBBRegistry is Ownable() {
     }
 
     function getId (address addr) public view returns (uint) {
-        return legalEntitiesInfo[addr].BRId;
+        return getRBBId(addr);
     }
+
+    function getRBBId (address addr) public view returns (uint) {
+        return legalEntitiesInfo[addr].RBBId;
+    }
+
+    function getBRId (address addr) public view returns (uint) {
+        return legalEntitiesInfo[addr].BRId;
+    }    
 
     function getLegalEntityInfo (address addr) public view returns (uint, uint, string memory, uint, uint, bool, uint256) {
         LegalEntityInfo memory reg = legalEntitiesInfo[addr];
@@ -284,8 +312,8 @@ contract RBBRegistry is Ownable() {
         address addr = msg.sender;
         bytes32 proofHash = 0;
         uint256 dateTimeCertificateExpiration = 4294967296; //2106 = 2^32 (Max 2^256 -1)
-
-        legalEntitiesInfo[addr] = LegalEntityInfo(  getNextRBBId(), 
+        uint RBBId = getNextRBBId();
+        legalEntitiesInfo[addr] = LegalEntityInfo(  RBBId, 
                                                     BRId, 
                                                     proofHash, 
                                                     BlockchainAccountState.VALIDATED, 
@@ -295,7 +323,7 @@ contract RBBRegistry is Ownable() {
 
         legalEntityId_To_Addr[BRId].push(addr);
 
-        emit AccountRegistration(addr, BRId, proofHash, dateTimeCertificateExpiration);
+        emit AccountRegistration(addr, RBBId, BRId, proofHash, dateTimeCertificateExpiration);
     }
 
     function getNextRBBId() private returns (uint) {
