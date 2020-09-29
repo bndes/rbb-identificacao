@@ -3,8 +3,6 @@ pragma solidity ^0.5.0;
 import "@openzeppelin/contracts/ownership/Ownable.sol";
 import "./RBBLib.sol";
 
-//TODO: Pensar numa nova chave ao inves do CNPJ, seria o RBBID 
-
 contract RBBRegistry is Ownable() {
 
     /** Account States:
