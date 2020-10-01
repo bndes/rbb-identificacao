@@ -8,6 +8,11 @@ contract RBBRegistry is Ownable() {
     enum BlockchainAccountState {AVAILABLE,WAITING_VALIDATION,VALIDATED,INVALIDATED}
     BlockchainAccountState blockchainState; /* Variable not used, only defined to create the enum type. */
                                 
+    /**
+    REGULAR  - operates 
+    ADMIN    - validates the regular.
+    SUPADMIN - validates the ADMIN. Contract Owner can set multiple SUPADMINs (including himself, machines and human accounts).
+     */
     enum BlockchainAccountRole {REGULAR, ADMIN, SUPADMIN} 
     BlockchainAccountRole blockchainRole;  /* Variable not used, only defined to create the enum type. */
 
@@ -37,12 +42,13 @@ contract RBBRegistry is Ownable() {
      */
     mapping(uint => address[]) legalEntityId_To_Addr;
 
-    event AccountRegistration (address addr, uint RBBId, uint CNPJ, bytes32 idProofHash, uint256 dateTimeExpiration);
-    event AccountValidation   (address addr, uint RBBId, uint CNPJ, address responsible);
-    event AccountInvalidation (address addr, uint RBBId, uint CNPJ, address responsible);
-    event AccountAdminUpgrade (address addr, uint RBBId, uint CNPJ, address responsible);
-    event AccountPaused       (address addr, uint RBBId, uint CNPJ, address responsible);
-    event AccountUnpaused     (address addr, uint RBBId, uint CNPJ, address responsible);
+    event AccountRegistration       (address addr, uint RBBId, uint CNPJ, bytes32 idProofHash, uint256 dateTimeExpiration);
+    event AccountValidation         (address addr, uint RBBId, uint CNPJ, address responsible);
+    event AccountInvalidation       (address addr, uint RBBId, uint CNPJ, address responsible);
+    event AccountPaused             (address addr, uint RBBId, uint CNPJ, address responsible);
+    event AccountUnpaused           (address addr, uint RBBId, uint CNPJ, address responsible);
+    event AccountRoleChange         (address addr, uint RBBId, uint CNPJ, address responsible, BlockchainAccountRole roleBefore, BlockchainAccountRole roleNew);
+    event AccountExpirationChange   (address addr, uint RBBId, uint CNPJ, address responsible, uint256 dateTimeExpirationBefore, uint256 dateTimeExpirationNew);        
 
     /* The responsible for the System-Admin is the Owner. It could be or not be the same address (SUPADMIN=owner) */
     constructor (uint CNPJSUPADMIN, string memory proofHashSUPADMIN, uint256 dateTimeExpiration) public {                
@@ -229,9 +235,9 @@ contract RBBRegistry is Ownable() {
 
         address responsible = msg.sender;
 
-        require(isResponsibleForRegistryValidation(responsible), "Somente responsável pela validação pode invalidar contas");
-        require ( legalEntitiesInfo[addr].role != BlockchainAccountRole.SUPADMIN , "A conta SUPADMIN não pode ser invalidada");
-        require ( legalEntitiesInfo[addr].state != BlockchainAccountState.INVALIDATED, "A conta foi invalidada previamente." );
+        require( isResponsibleForRegistryValidation(responsible), "Somente responsável pela validação pode invalidar contas");
+        require( legalEntitiesInfo[addr].role != BlockchainAccountRole.SUPADMIN , "A conta SUPADMIN não pode ser invalidada");
+        require( legalEntitiesInfo[addr].state != BlockchainAccountState.INVALIDATED, "A conta foi invalidada previamente." );
 
         legalEntitiesInfo[addr].state = BlockchainAccountState.INVALIDATED;
         
@@ -243,18 +249,38 @@ contract RBBRegistry is Ownable() {
 
 
    /**
-    * By default, the owner is also the Responsible for Validation.
-    * The owner can assign other address to be the Responsible for Validation.
-    * @param addr Ethereum address to be assigned as Responsible for Validation.
+    * The Owner can assign roles REGULAR, ADMIN and SUPERADMIN to anyone
+    * @param addr Ethereum address to be assigned the new role
+    * @param roleNew the new role itself
     */
-    function setResponsibleForRegistryValidation(address addr) public {
-        require ( ( legalEntitiesInfo[addr].role == BlockchainAccountRole.ADMIN || 
-                 legalEntitiesInfo[addr].role == BlockchainAccountRole.SUPADMIN || isOwner(addr) ), "Apenas Owner, Admin ou System-Admin podem dar poder de Admin");
-        legalEntitiesInfo[addr].role = BlockchainAccountRole.ADMIN;        
-        emit AccountAdminUpgrade(   addr, 
-                                    legalEntitiesInfo[addr].RBBId, 
-                                    legalEntitiesInfo[addr].CNPJ, 
-                                    msg.sender );
+    function setRole(address addr, BlockchainAccountRole roleNew) public onlyOwner {
+
+        BlockchainAccountRole roleBefore = legalEntitiesInfo[addr].role;
+        legalEntitiesInfo[addr].role     = roleNew;        
+
+        emit AccountRoleChange(   addr, 
+                                  legalEntitiesInfo[addr].RBBId, 
+                                  legalEntitiesInfo[addr].CNPJ, 
+                                  msg.sender,
+                                  roleBefore, 
+                                  legalEntitiesInfo[addr].role  );
+    }
+
+    /**
+    * The Owner can assign new account's expiration time
+    * @param addr Ethereum address to be assigned
+    * @param dateTimeExpirationNew the new expiration time 
+    */
+    function setExpiration(address addr, uint256 dateTimeExpirationNew) public onlyOwner {
+        uint256 dateTimeExpirationBefore = legalEntitiesInfo[addr].dateTimeExpiration;
+        legalEntitiesInfo[addr].dateTimeExpiration = dateTimeExpirationNew;
+
+        emit AccountExpirationChange(   addr, 
+                                        legalEntitiesInfo[addr].RBBId, 
+                                        legalEntitiesInfo[addr].CNPJ, 
+                                        msg.sender,
+                                        dateTimeExpirationBefore, 
+                                        legalEntitiesInfo[addr].dateTimeExpiration  );        
     }
 
     function isResponsibleForRegistryValidation(address addr) public view returns (bool) {
