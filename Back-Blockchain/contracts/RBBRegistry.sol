@@ -25,7 +25,7 @@ contract RBBRegistry is Ownable() {
     struct Registry {
         uint RBBId; //Unique ID for RBB 
         uint CNPJ; //Brazilian identification of legal entity
-        bytes32 idProofHash; //hash of declaration
+        bytes32 hashProof; //hash of declaration
         BlockchainAccountState state;
         BlockchainAccountRole role;
         bool paused;
@@ -42,7 +42,7 @@ contract RBBRegistry is Ownable() {
      */
     mapping(uint => address[]) legalEntityId_To_Addr;
 
-    event AccountRegistration       (address addr, uint RBBId, uint CNPJ, bytes32 idProofHash, uint256 dateTimeExpiration);
+    event AccountRegistration       (address addr, uint RBBId, uint CNPJ, bytes32 hashProof, uint256 dateTimeExpiration);
     event AccountValidation         (address addr, uint RBBId, uint CNPJ, address responsible);
     event AccountInvalidation       (address addr, uint RBBId, uint CNPJ, address responsible);
     event AccountPaused             (address addr, uint RBBId, uint CNPJ, address responsible);
@@ -225,7 +225,6 @@ contract RBBRegistry is Ownable() {
                                 responsible);
     }
 
-
    /**
     * Invalidates the initial registry of a legal entity or the change of its registry
     * The invalidation can be called at any time in the lifecycle of the address (not only when it is WAITING_VALIDATION)
@@ -245,42 +244,6 @@ contract RBBRegistry is Ownable() {
                                     legalEntitiesInfo[addr].RBBId, 
                                     legalEntitiesInfo[addr].CNPJ, 
                                     responsible );
-    }
-
-
-   /**
-    * The Owner can assign roles REGULAR, ADMIN and SUPERADMIN to anyone
-    * @param addr Ethereum address to be assigned the new role
-    * @param roleNew the new role itself
-    */
-    function setRole(address addr, BlockchainAccountRole roleNew) public onlyOwner {
-
-        BlockchainAccountRole roleBefore = legalEntitiesInfo[addr].role;
-        legalEntitiesInfo[addr].role     = roleNew;        
-
-        emit AccountRoleChange(   addr, 
-                                  legalEntitiesInfo[addr].RBBId, 
-                                  legalEntitiesInfo[addr].CNPJ, 
-                                  msg.sender,
-                                  roleBefore, 
-                                  legalEntitiesInfo[addr].role  );
-    }
-
-    /**
-    * The Owner can assign new account's expiration time
-    * @param addr Ethereum address to be assigned
-    * @param dateTimeExpirationNew the new expiration time 
-    */
-    function setExpiration(address addr, uint256 dateTimeExpirationNew) public onlyOwner {
-        uint256 dateTimeExpirationBefore = legalEntitiesInfo[addr].dateTimeExpiration;
-        legalEntitiesInfo[addr].dateTimeExpiration = dateTimeExpirationNew;
-
-        emit AccountExpirationChange(   addr, 
-                                        legalEntitiesInfo[addr].RBBId, 
-                                        legalEntitiesInfo[addr].CNPJ, 
-                                        msg.sender,
-                                        dateTimeExpirationBefore, 
-                                        legalEntitiesInfo[addr].dateTimeExpiration  );        
     }
 
     function isResponsibleForRegistryValidation(address addr) public view returns (bool) {
@@ -334,7 +297,7 @@ contract RBBRegistry is Ownable() {
 
     function getRegistry (address addr) public view returns (uint, uint, string memory, uint, uint, bool, uint256) {
         Registry memory reg = legalEntitiesInfo[addr];
-        string memory strProofHash = RBBLib.bytes32ToStr(reg.idProofHash);
+        string memory strProofHash = RBBLib.bytes32ToStr(reg.hashProof);
 
         return (  reg.RBBId,
                   reg.CNPJ, 
@@ -358,6 +321,45 @@ contract RBBRegistry is Ownable() {
         return ((int) (legalEntitiesInfo[addr].role));
     }
 
+   /**
+    * The Owner can assign roles REGULAR, ADMIN and SUPERADMIN to anyone
+    * @param addr Ethereum address to be assigned the new role
+    * @param roleNew the new role itself
+    */
+    function setRole(address addr, BlockchainAccountRole roleNew) public onlyOwner {
+
+        BlockchainAccountRole roleBefore = legalEntitiesInfo[addr].role;
+        legalEntitiesInfo[addr].role     = roleNew;        
+
+        emit AccountRoleChange(   addr, 
+                                  legalEntitiesInfo[addr].RBBId, 
+                                  legalEntitiesInfo[addr].CNPJ, 
+                                  msg.sender,
+                                  roleBefore, 
+                                  legalEntitiesInfo[addr].role  );
+    }
+
+    /**
+    * The Owner can assign new account's expiration time
+    * @param addr Ethereum address to be assigned
+    * @param dateTimeExpirationNew the new expiration time 
+    */
+    function setExpiration(address addr, uint256 dateTimeExpirationNew) public onlyOwner {
+        uint256 dateTimeExpirationBefore = legalEntitiesInfo[addr].dateTimeExpiration;
+        legalEntitiesInfo[addr].dateTimeExpiration = dateTimeExpirationNew;
+
+        emit AccountExpirationChange(   addr, 
+                                        legalEntitiesInfo[addr].RBBId, 
+                                        legalEntitiesInfo[addr].CNPJ, 
+                                        msg.sender,
+                                        dateTimeExpirationBefore, 
+                                        legalEntitiesInfo[addr].dateTimeExpiration  );        
+    }
+
+    function getNextRBBId() private returns (uint) {
+        return ++currentRBBId;
+    } 
+
     function registryMock(uint CNPJ) public {
         
         address addr = msg.sender;
@@ -375,11 +377,7 @@ contract RBBRegistry is Ownable() {
         legalEntityId_To_Addr[CNPJ].push(addr);
 
         emit AccountRegistration(addr, RBBId, CNPJ, proofHash, dateTimeExpiration);
-    }
-
-    function getNextRBBId() private returns (uint) {
-        return ++currentRBBId;
-    }   
+    }  
  
 
 }
