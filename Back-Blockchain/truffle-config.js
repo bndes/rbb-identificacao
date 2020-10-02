@@ -1,7 +1,16 @@
-module.exports = {
-  // See <http://truffleframework.com/docs/advanced/configuration>
-  // to customize your Truffle configuration!
+const HDWalletProvider = require("@truffle/hdwallet-provider");
+const privateKey = "0xsenha";
+const privateKeyProvider = new HDWalletProvider(privateKey, "http://IP:9545"); //WRITER
 
+
+module.exports = {
+
+  compilers: {
+    solc: {
+      version: "0.6"
+    }    
+  },
+  
   networks: {
     development: {
       host: "localhost",
@@ -16,19 +25,35 @@ module.exports = {
       gas: 6952388  // Gas limit used for deploys
     },
     ropsten:  {
-      host: "localhost",  //geth --testnet --fast --rpc --rpcapi eth,net,web3,personal
+      host: "localhost",
       port:  8545,
       from: "0x5a2a2ba72133d6667a9abcc1bc882125904cb88a", // owner BNDESToken na Ropsten
       network_id: 3,
       gas:   4612388
     },
     meubesu:  {
-      host: "localhost",  //geth --testnet --fast --rpc --rpcapi eth,net,web3,personal
+      host: "localhost",
       port:  8545,
       from: "0xfe3b557e8fb62b89f4916b721be55ceb828dbd73", // owner BNDESToken na Besu
       network_id: 0x7e2,
       gas:   4612388
-    }    
+    },
+    bid:  {
+      host: "IP",  
+      port:  9545,
+      provider: privateKeyProvider,
+      network_id: 99999999,
+      gasPrice: 0
+    },     
+    bndes:  {
+      host: "IP",  
+      port:  9545,
+      provider: privateKeyProvider,
+      network_id: 99999999,
+      gasPrice: 0
+    }     
+
+    
   }
 
 };
