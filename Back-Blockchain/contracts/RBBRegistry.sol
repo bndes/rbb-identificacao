@@ -32,6 +32,8 @@ contract RBBRegistry is Ownable() {
         uint256 dateTimeExpiration; //vai ser outro momento de expiração diferente do ECNPJ
     }
 
+    uint256 public defaultDateTimeExpiration = 365 days; 
+
     /**
         Links Ethereum addresses to Registry
      */
@@ -48,12 +50,13 @@ contract RBBRegistry is Ownable() {
     event AccountPaused             (address addr, uint RBBId, uint CNPJ, address responsible);
     event AccountUnpaused           (address addr, uint RBBId, uint CNPJ, address responsible);
     event AccountRoleChange         (address addr, uint RBBId, uint CNPJ, address responsible, BlockchainAccountRole roleBefore, BlockchainAccountRole roleNew);
-    event AccountExpirationChange   (address addr, uint RBBId, uint CNPJ, address responsible, uint256 dateTimeExpirationBefore, uint256 dateTimeExpirationNew);        
+    event RegistryExpirationChange  (address addr, uint256 dateTimeExpirationBefore, uint256 dateTimeExpirationNew);
 
     /* The responsible for the System-Admin is the Owner. It could be or not be the same address (SUPADMIN=owner) */
-    constructor (uint CNPJSUPADMIN, string memory proofHashSUPADMIN, uint256 dateTimeExpiration) public {                
+    constructor (uint CNPJSUPADMIN, string memory proofHashSUPADMIN) public {                
         address addrSUPADMIN = msg.sender;
         bytes32 proofHash = RBBLib.stringBytes32(proofHashSUPADMIN);
+        uint256 dateTimeExpiration = now + defaultDateTimeExpiration;
         uint RBBId = getNextRBBId();
         legalEntitiesInfo[addrSUPADMIN] = Registry( RBBId, 
                                                     CNPJSUPADMIN, 
@@ -73,10 +76,11 @@ contract RBBRegistry is Ownable() {
     * @param CNPJProofHash The legal entities have to send BNDES a PDF where it assumes as responsible for an Ethereum account.
     *                   This PDF is signed with eCNPJ and send to BNDES.
     */
-    function registryLegalEntity(uint CNPJ, string memory CNPJProofHash, uint256 dateTimeExpiration) public {
+    function registryLegalEntity(uint CNPJ, bytes32 CNPJProofHash) public {
         
         address addr = msg.sender;
-        bytes32 proofHash = RBBLib.stringBytes32(CNPJProofHash);
+        bytes32 proofHash = CNPJProofHash;
+        uint256 dateTimeExpiration = now + defaultDateTimeExpiration;
         uint RBBId = getNextRBBId();
 
         require (isAvailableAccount(addr), "Endereço não pode ter sido cadastrado anteriormente");
@@ -115,13 +119,13 @@ contract RBBRegistry is Ownable() {
     }
 
    /**
-    * Validates the initial registry of your own organization
+    * Validates the initial registry of your own LegalEntity
     * @param userAddr Ethereum address that needs to be validated
     */
     function validateRegistrySameOrg(address userAddr) public onlyWhenNotPaused onlyWhenNotExpired {
 
         address responsible = msg.sender;
-       
+
         require ( responsible != userAddr, "O responsável pela validação não pode validar sua própria conta");
 
         require ( legalEntitiesInfo[responsible].role == BlockchainAccountRole.ADMIN , 
@@ -129,6 +133,10 @@ contract RBBRegistry is Ownable() {
 
         require ( isTheSameID(responsible, userAddr) , 
                    "O responsável pela validação deve ser da mesma organização (mesmo CNPJ)" );
+
+        require ( legalEntitiesInfo[userAddr].role == BlockchainAccountRole.REGULAR , 
+                   "O usuário a ser validado deve ter o papel REGULAR" );
+
 
         require( legalEntitiesInfo[userAddr].state == BlockchainAccountState.WAITING_VALIDATION,
                    "A conta a validar precisa estar no estado Aguardando Validação");
@@ -142,7 +150,7 @@ contract RBBRegistry is Ownable() {
     }
 
 /**
-    * Validates the initial registry of others organization
+    * Validates the initial registry of others LegalEntities
     * @param userAddr Ethereum address that needs to be validated
     */
     function validateRegistry(address userAddr) public onlyWhenNotExpired {
@@ -153,7 +161,7 @@ contract RBBRegistry is Ownable() {
             , "O responsável pela validação deve ser SUPADMIN" );
 
         require ( legalEntitiesInfo[userAddr].role == BlockchainAccountRole.ADMIN  
-            , "A conta a validar deve ser ADMIN" );
+            , "A conta a validar deve ter o papel de ADMIN" );
 
         require(legalEntitiesInfo[userAddr].state == BlockchainAccountState.WAITING_VALIDATION,
             "A conta precisa estar no estado Aguardando Validação");
@@ -177,6 +185,7 @@ contract RBBRegistry is Ownable() {
         require ( legalEntitiesInfo[addr].role != BlockchainAccountRole.SUPADMIN , "A conta SUPADMIN não pode ser pausada");
         require( isTheSameID(responsible, addr) || legalEntitiesInfo[responsible].role == BlockchainAccountRole.SUPADMIN, "Somente pode pausar uma conta quem for da mesma organização ou System Administrator" );
         require( isValidatedAccount(addr) , "Somente uma conta válida pode ser pausada");
+        require( legalEntitiesInfo[responsible].state == BlockchainAccountState.VALIDATED, "O responsável deve possuir uma conta Válida" );
 
         legalEntitiesInfo[addr].paused = true;
         
@@ -191,7 +200,11 @@ contract RBBRegistry is Ownable() {
         address responsible = msg.sender;
         address[] memory addresses  = legalEntityId_To_Addr[CNPJ];
 
-        require( isTheSameID(responsible, addresses[0]) || legalEntitiesInfo[responsible].role == BlockchainAccountRole.SUPADMIN, "Somente pode pausar uma conta quem for da mesma organização ou System Administrator" );
+        require( legalEntitiesInfo[responsible].state == BlockchainAccountState.VALIDATED, "O responsável deve possuir uma conta Válida" );
+        require( ( legalEntitiesInfo[responsible].role == BlockchainAccountRole.ADMIN 
+                    || legalEntitiesInfo[responsible].role == BlockchainAccountRole.SUPADMIN ), "O responsável deve possuir uma conta ADMIN ou SUPADMIN" );
+        require( isTheSameID(responsible, addresses[0]) 
+                    || legalEntitiesInfo[responsible].role == BlockchainAccountRole.SUPADMIN , "Somente pode pausar uma conta quem for da mesma organização ou SUPADMIN" );
 
         for (uint i=0; i < addresses.length ; i++) {
             address candidate = addresses[i];
@@ -234,7 +247,7 @@ contract RBBRegistry is Ownable() {
 
         address responsible = msg.sender;
 
-        require( isResponsibleForRegistryValidation(responsible), "Somente responsável pela validação pode invalidar contas");
+        require( legalEntitiesInfo[responsible].role == BlockchainAccountRole.ADMIN, "Apenas conta ADMIN pode invalidar contas. ");
         require( legalEntitiesInfo[addr].role != BlockchainAccountRole.SUPADMIN , "A conta SUPADMIN não pode ser invalidada");
         require( legalEntitiesInfo[addr].state != BlockchainAccountState.INVALIDATED, "A conta foi invalidada previamente." );
 
@@ -283,6 +296,17 @@ contract RBBRegistry is Ownable() {
         return isValidatedAccount(addr) && !isPaused(addr);
     }
 
+    function isRegistryOperational(uint CNPJ) public view returns (bool) {
+        address[] memory addresses  = legalEntityId_To_Addr[CNPJ];
+
+        for (uint i=0; i < addresses.length ; i++) {
+            if (isOperational( addresses[i] ) 
+                && legalEntitiesInfo[addresses[i]].role == BlockchainAccountRole.ADMIN  ) {
+                    return true;
+            }
+        }
+    }
+
     function getId (address addr) public view returns (uint) {
         return getRBBId(addr);
     }
@@ -295,13 +319,12 @@ contract RBBRegistry is Ownable() {
         return legalEntitiesInfo[addr].CNPJ;
     }    
 
-    function getRegistry (address addr) public view returns (uint, uint, string memory, uint, uint, bool, uint256) {
+    function getRegistry (address addr) public view returns (uint, uint, bytes32, uint, uint, bool, uint256) {
         Registry memory reg = legalEntitiesInfo[addr];
-        string memory strProofHash = RBBLib.bytes32ToStr(reg.hashProof);
 
         return (  reg.RBBId,
                   reg.CNPJ, 
-                  strProofHash, 
+                  reg.hashProof, 
                   (uint) (reg.state),
                   (uint) (reg.role),
                   reg.paused,
@@ -322,14 +345,14 @@ contract RBBRegistry is Ownable() {
     }
 
    /**
-    * The Owner can assign roles REGULAR, ADMIN and SUPERADMIN to anyone
+    * The Owner can assign role SUPADMIN to anyone in the same LegalEntity
     * @param addr Ethereum address to be assigned the new role
-    * @param roleNew the new role itself
     */
-    function setRole(address addr, BlockchainAccountRole roleNew) public onlyOwner {
+    function setRoleSupAdmin(address addr) public onlyOwner {
+        require ( isTheSameID( owner(), addr ), "Owner só poderá atribuir o papel de SUPADMIN para contas do mesmo CNPJ" );
 
         BlockchainAccountRole roleBefore = legalEntitiesInfo[addr].role;
-        legalEntitiesInfo[addr].role     = roleNew;        
+        legalEntitiesInfo[addr].role     = BlockchainAccountRole.SUPADMIN;                
 
         emit AccountRoleChange(   addr, 
                                   legalEntitiesInfo[addr].RBBId, 
@@ -340,20 +363,21 @@ contract RBBRegistry is Ownable() {
     }
 
     /**
-    * The Owner can assign new account's expiration time
-    * @param addr Ethereum address to be assigned
-    * @param dateTimeExpirationNew the new expiration time 
+    * The Owner can assign new default expiration time for future registries
+    * @param dateTimeExpirationNew the new default expiration time 
     */
-    function setExpiration(address addr, uint256 dateTimeExpirationNew) public onlyOwner {
-        uint256 dateTimeExpirationBefore = legalEntitiesInfo[addr].dateTimeExpiration;
-        legalEntitiesInfo[addr].dateTimeExpiration = dateTimeExpirationNew;
+    function setDefaultDateTimeExpiration(uint256 dateTimeExpirationNew) public {
 
-        emit AccountExpirationChange(   addr, 
-                                        legalEntitiesInfo[addr].RBBId, 
-                                        legalEntitiesInfo[addr].CNPJ, 
-                                        msg.sender,
-                                        dateTimeExpirationBefore, 
-                                        legalEntitiesInfo[addr].dateTimeExpiration  );        
+        require( legalEntitiesInfo[msg.sender].role == BlockchainAccountRole.SUPADMIN, "Apenas o SUPADMIN pode definir novo tempo de expiração de novos registros");
+
+        require(dateTimeExpirationNew >= 0, "O tempo a expirar um registro deve ser maior ou igual a zero");
+
+        uint256 dateTimeExpirationOld = defaultDateTimeExpiration;
+        defaultDateTimeExpiration = dateTimeExpirationNew;
+        
+        emit RegistryExpirationChange(   msg.sender, 
+                                         dateTimeExpirationOld, 
+                                         defaultDateTimeExpiration );        
     }
 
     function getNextRBBId() private returns (uint) {
@@ -371,7 +395,7 @@ contract RBBRegistry is Ownable() {
                                             proofHash, 
                                             BlockchainAccountState.VALIDATED, 
                                             BlockchainAccountRole.ADMIN, 
-                                            false, 
+                                            false,
                                             dateTimeExpiration );
 
         legalEntityId_To_Addr[CNPJ].push(addr);

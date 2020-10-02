@@ -225,7 +225,7 @@
                               "name": "abi",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 1658,
+                              "referencedDeclaration": 1763,
                               "src": "149:3:1",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_magic_abi",
@@ -272,7 +272,7 @@
                         "name": "keccak256",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 1665,
+                        "referencedDeclaration": 1770,
                         "src": "139:9:1",
                         "typeDescriptions": {
                           "typeIdentifier": "t_function_keccak256_pure$_t_bytes_memory_ptr_$returns$_t_bytes32_$",
@@ -328,7 +328,7 @@
                               "name": "abi",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 1658,
+                              "referencedDeclaration": 1763,
                               "src": "183:3:1",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_magic_abi",
@@ -375,7 +375,7 @@
                         "name": "keccak256",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 1665,
+                        "referencedDeclaration": 1770,
                         "src": "173:9:1",
                         "typeDescriptions": {
                           "typeIdentifier": "t_function_keccak256_pure$_t_bytes_memory_ptr_$returns$_t_bytes32_$",
@@ -3052,7 +3052,7 @@
                                           "name": "abi",
                                           "nodeType": "Identifier",
                                           "overloadedDeclarations": [],
-                                          "referencedDeclaration": 1658,
+                                          "referencedDeclaration": 1763,
                                           "src": "1675:3:1",
                                           "typeDescriptions": {
                                             "typeIdentifier": "t_magic_abi",
@@ -4195,7 +4195,7 @@
                               "name": "abi",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 1658,
+                              "referencedDeclaration": 1763,
                               "src": "149:3:1",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_magic_abi",
@@ -4242,7 +4242,7 @@
                         "name": "keccak256",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 1665,
+                        "referencedDeclaration": 1770,
                         "src": "139:9:1",
                         "typeDescriptions": {
                           "typeIdentifier": "t_function_keccak256_pure$_t_bytes_memory_ptr_$returns$_t_bytes32_$",
@@ -4298,7 +4298,7 @@
                               "name": "abi",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 1658,
+                              "referencedDeclaration": 1763,
                               "src": "183:3:1",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_magic_abi",
@@ -4345,7 +4345,7 @@
                         "name": "keccak256",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 1665,
+                        "referencedDeclaration": 1770,
                         "src": "173:9:1",
                         "typeDescriptions": {
                           "typeIdentifier": "t_function_keccak256_pure$_t_bytes_memory_ptr_$returns$_t_bytes32_$",
@@ -7022,7 +7022,7 @@
                                           "name": "abi",
                                           "nodeType": "Identifier",
                                           "overloadedDeclarations": [],
-                                          "referencedDeclaration": 1658,
+                                          "referencedDeclaration": 1763,
                                           "src": "1675:3:1",
                                           "typeDescriptions": {
                                             "typeIdentifier": "t_magic_abi",
@@ -8056,12 +8056,12 @@
     "5777": {
       "events": {},
       "links": {},
-      "address": "0x63a5d39240b379920aefCef7fD49Ad89bEA87b36",
-      "transactionHash": "0x1d2d1219efa958bba94f971ffc7200c5353525a2437e735482ab029101f3f9fe"
+      "address": "0x6f51cfF1eB60AcC3EeFCa349A7Dc191BEbE612DB",
+      "transactionHash": "0xb945be53f06d784165bf4246f5817dec259deb165d45e1ac4697b2d26eb22438"
     }
   },
   "schemaVersion": "3.0.16",
-  "updatedAt": "2020-10-01T17:55:21.885Z",
+  "updatedAt": "2020-10-02T18:23:11.260Z",
   "devdoc": {
     "methods": {}
   },
