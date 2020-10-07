@@ -53,10 +53,10 @@ contract RBBRegistry is Ownable() {
     event RegistryExpirationChange  (address addr, uint256 dateTimeExpirationBefore, uint256 dateTimeExpirationNew);
 
     /* The responsible for the System-Admin is the Owner. It could be or not be the same address (SUPADMIN=owner) */
-    constructor (uint CNPJSUPADMIN, string memory proofHashSUPADMIN) public {                
+    constructor (uint CNPJSUPADMIN, string memory proofHashSUPADMIN, uint daysToExpire) public {                
         address addrSUPADMIN = msg.sender;
         bytes32 proofHash = RBBLib.stringBytes32(proofHashSUPADMIN);
-        uint256 dateTimeExpiration = now + defaultDateTimeExpiration;
+        uint256 dateTimeExpiration = now + daysToExpire * 1 days; 
         uint RBBId = getNextRBBId();
         legalEntitiesInfo[addrSUPADMIN] = Registry( RBBId, 
                                                     CNPJSUPADMIN, 
@@ -369,8 +369,6 @@ contract RBBRegistry is Ownable() {
     function setDefaultDateTimeExpiration(uint256 dateTimeExpirationNew) public {
 
         require( legalEntitiesInfo[msg.sender].role == BlockchainAccountRole.SUPADMIN, "Apenas o SUPADMIN pode definir novo tempo de expiração de novos registros");
-
-        require(dateTimeExpirationNew >= 0, "O tempo a expirar um registro deve ser maior ou igual a zero");
 
         uint256 dateTimeExpirationOld = defaultDateTimeExpiration;
         defaultDateTimeExpiration = dateTimeExpirationNew;

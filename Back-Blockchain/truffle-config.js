@@ -1,6 +1,6 @@
-const HDWalletProvider = require("@truffle/hdwallet-provider");
-const privateKey = "0xsenha";
-const privateKeyProvider = new HDWalletProvider(privateKey, "http://IP:9545"); //WRITER
+//const HDWalletProvider = require("@truffle/hdwallet-provider");
+//const privateKey = "0xsenha";
+//const privateKeyProvider = new HDWalletProvider(privateKey, "http://IP:9545"); //WRITER
 
 
 module.exports = {
@@ -37,7 +37,9 @@ module.exports = {
       from: "0xfe3b557e8fb62b89f4916b721be55ceb828dbd73", // owner BNDESToken na Besu
       network_id: 0x7e2,
       gas:   4612388
-    },
+    }
+    /*
+    ,
     bid:  {
       host: "IP",  
       port:  9545,
@@ -52,7 +54,7 @@ module.exports = {
       network_id: 99999999,
       gasPrice: 0
     }     
-
+*/
     
   }
 
