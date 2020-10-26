@@ -23,7 +23,7 @@ contract RBBRegistry is Ownable() {
         This registry is about a company representative information
      */    
     struct Registry {
-        uint RBBId; //Unique ID for RBB 
+        uint RBBId; //uma proxy para o CNPJ
         uint CNPJ; //Brazilian identification of legal entity
         bytes32 hashProof; //hash of declaration
         BlockchainAccountState state;
@@ -43,6 +43,11 @@ contract RBBRegistry is Ownable() {
         Links CNPJ to Ethereum addresses.
      */
     mapping(uint => address[]) legalEntityId_To_Addr;
+    
+    /**
+     * Links CNPJ to its RBBID
+     */
+    mapping (uint => uint) mapaID;
 
     event AccountRegistration       (address addr, uint RBBId, uint CNPJ, bytes32 hashProof, uint256 dateTimeExpiration);
     event AccountValidation         (address addr, uint RBBId, uint CNPJ, address responsible);
@@ -57,7 +62,7 @@ contract RBBRegistry is Ownable() {
         address addrSUPADMIN = msg.sender;
         bytes32 proofHash = RBBLib.stringBytes32(proofHashSUPADMIN);
         uint256 dateTimeExpiration = now + daysToExpire * 1 days; 
-        uint RBBId = getNextRBBId();
+        uint RBBId = calculaProximoRBBID(CNPJSUPADMIN);
         legalEntitiesInfo[addrSUPADMIN] = Registry( RBBId, 
                                                     CNPJSUPADMIN, 
                                                     proofHash, 
@@ -81,7 +86,7 @@ contract RBBRegistry is Ownable() {
         address addr = msg.sender;
         bytes32 proofHash = CNPJProofHash;
         uint256 dateTimeExpiration = now + defaultDateTimeExpiration;
-        uint RBBId = getNextRBBId();
+        uint RBBId = calculaProximoRBBID(CNPJ);
 
         require (isAvailableAccount(addr), "Endereço não pode ter sido cadastrado anteriormente");
 
@@ -104,7 +109,6 @@ contract RBBRegistry is Ownable() {
         }
 
         legalEntityId_To_Addr[CNPJ].push(addr);
-
         emit AccountRegistration(addr, RBBId, CNPJ, proofHash, dateTimeExpiration);
     }
 
@@ -309,6 +313,7 @@ contract RBBRegistry is Ownable() {
 
     function getId (address addr) public view returns (uint) {
         return getRBBId(addr);
+        //TODO: checar se esta operacional e caso nao esteja lanca excecao (revert de require)
     }
 
     function getRBBId (address addr) public view returns (uint) {
@@ -378,8 +383,12 @@ contract RBBRegistry is Ownable() {
                                          defaultDateTimeExpiration );        
     }
 
-    function getNextRBBId() private returns (uint) {
-        return ++currentRBBId;
+    function calculaProximoRBBID(uint CNPJ) private returns (uint) {
+
+        if ( mapaID[CNPJ] == 0 ) //se nao existir rbbid para este CNPJ
+            mapaID[CNPJ] = ++currentRBBId;
+
+        return mapaID[CNPJ];
     } 
 
     function registryMock(uint CNPJ) public {
@@ -387,7 +396,7 @@ contract RBBRegistry is Ownable() {
         address addr = msg.sender;
         bytes32 proofHash = 0;
         uint256 dateTimeExpiration = 4294967296; //2106 = 2^32 (Max 2^256 -1)
-        uint RBBId = getNextRBBId();
+        uint RBBId = calculaProximoRBBID(CNPJ);
         legalEntitiesInfo[addr] = Registry( RBBId, 
                                             CNPJ, 
                                             proofHash, 
