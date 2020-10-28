@@ -313,10 +313,10 @@ contract RBBRegistry is Ownable() {
 
     function getId (address addr) public view returns (uint) {
         require ( isOperational(addr) , "A organizacao nao esta operacional" );
-        return getRBBId(addr);
+        return getRBBIdRaw(addr);
     }
 
-    function getRBBId (address addr) private view returns (uint) {
+    function getRBBIdRaw (address addr) private view returns (uint) {
         return legalEntitiesInfo[addr].RBBId;
     }
 
