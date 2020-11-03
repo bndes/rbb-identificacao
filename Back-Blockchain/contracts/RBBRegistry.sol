@@ -231,6 +231,8 @@ contract RBBRegistry is Ownable() {
 
         require ( responsible != addr , "Uma pessoa não é capaz de retirar o pause de sua própria conta");
         require( isSortOfAdmin(responsible) , "Somente uma conta responsável validadora pode despausar outras contas" );        
+        require( isTheSameID(responsible, addr) 
+                    || legalEntitiesInfo[responsible].role == BlockchainAccountRole.SUPADMIN , "Somente pode retirar pausa de uma conta quem for da mesma organização ou SUPADMIN" );
         require( legalEntitiesInfo[addr].paused  , "Somente uma conta pausada pode ser despausada" ); 
 
         legalEntitiesInfo[addr].paused = false;
