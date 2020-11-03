@@ -157,7 +157,7 @@ contract RBBRegistry is Ownable() {
     * Validates the initial registry of others LegalEntities
     * @param userAddr Ethereum address that needs to be validated
     */
-    function validateRegistry(address userAddr) public onlyWhenNotExpired {
+    function validateRegistry(address userAddr) public onlyWhenNotPaused onlyWhenNotExpired {
 
         address responsible = msg.sender;
         
