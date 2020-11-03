@@ -1,9 +1,9 @@
-const config    = require('./config.json');
-const keccak256 = require('keccak256'); 
-
+const config     = require('./config.json');
+const keccak256  = require('keccak256'); 
+const mock_vra = require('./mock_vra.json');
 
 module.exports = {  uploadFileAndMakeTransaction,  
-                    uploadFileAndMakeTransaction
+                    validateDocumentSignature
                 };
 
 
@@ -26,9 +26,19 @@ async function uploadFileAndMakeTransaction(_req, _res) {
 
 }
 
-function validateDocumentSignature() {
-    let URL = "http://web.dsv.bndes.net/vra/rest/validar-assinatura?verificacaoSimplificada=true";
-    //TODO: implement this method
+function validateDocumentSignature(mock) {
+    if ( mock ) {
+        console.log("Grau de Conformidade:" + mock_vra.grauConformidade);
+        if ( mock_vra.grauConformidade == "Alta" ) {
+            console.log("Declaracao valida");
+        } else {
+            console.log("Declaracao invalida");
+        }
+    } else {
+        let URL = "http://web.dsv.bndes.net/vra/rest/validar-assinatura?verificacaoSimplificada=true";
+        //TODO: implement this method
+    }
+    
 }
 
 function signDocument() {
