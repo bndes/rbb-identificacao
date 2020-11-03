@@ -1,24 +1,11 @@
 const config    = require('./config.json');
 const keccak256 = require('keccak256'); 
-const mongoose  = require('mongoose');           // mongoose for mongodb
-const Promise   = require('bluebird');
+
 
 module.exports = {  uploadFileAndMakeTransaction,  
                     uploadFileAndMakeTransaction
                 };
 
-var Registry;
-
-function validateHash(_cnpj, _accessTokenHash) {
-    let registries = mongoose.model( 'Registry', config.infra.name_bd );
-
-    // find all registries where cnpj = _cpnj, selecting the 'cnpj' and 'access_token' fields
-    registries.find({ 'cnpj': _cnpj }, 'cnpj access_token', function (err, reg) {
-      //if (err) return handleError(err);
-      console.log(err);
-    })
-    
-}
 
 async function uploadFileAndMakeTransaction(_req, _res) {
     const cnpj          = _req.params.cnpj;
