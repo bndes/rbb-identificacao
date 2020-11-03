@@ -60,7 +60,7 @@ app.use(bodyParser.json({ type: 'application/vnd.api+json' })); // parse applica
 app.use(methodOverride());
 app.use(cors());
 
-serverFunctions.databaseInit();
+//serverFunctions.databaseInit();
 
 app.use(function (req, res, next) {
 	res.header("Access-Control-Allow-Origin", "*");

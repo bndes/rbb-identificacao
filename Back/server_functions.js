@@ -3,8 +3,8 @@ const keccak256 = require('keccak256');
 const mongoose  = require('mongoose');           // mongoose for mongodb
 const Promise   = require('bluebird');
 
-module.exports = { uploadFileAndMakeTransaction, 
-                   databaseInit        
+module.exports = {  uploadFileAndMakeTransaction,  
+                    uploadFileAndMakeTransaction
                 };
 
 var Registry;
@@ -37,45 +37,6 @@ async function uploadFileAndMakeTransaction(_req, _res) {
     _res.json( { "hashedAccessToken" : hashedAccessToken, "signature valid" : valid } );
     _res.end();
 
-}
-
-async function storeIDAccessToken(_cnpj, _cpf, _accesstoken, _idtoken, _jwk) {
-
-    const registry          = new Registry();
-    registry.cnpj           = _cnpj;
-    registry.cpf            = _cpf;
-    registry.access_token   = _accesstoken;
-    registry.id_token       = _idtoken;
-    registry.jwk            = _jwk;
-    registry.registrytime   = Date.now();
-
-    registry.save()
-    let hashedAccessToken = computeHash(_accesstoken);
-    return hashedAccessToken;
-
-}
-
-function computeHash(input) {
-	let hashedResult = keccak256(input).toString('hex');	
-	return hashedResult;					
-}
-
-function databaseInit() {
-    console.log("::databaseInit::");
-
-    // Database Configuration
-    var conn = mongoose.connect(config.infra.addr_bd + config.infra.name_bd );
-    Promise.promisifyAll(mongoose); // key part - promisification
-
-    //  Database Model 
-    Registry = mongoose.model('Registry', {
-        cnpj: Number,
-        cpf: Number,
-        access_token: String,
-        id_token: String,
-        jwk: String,
-        registrytime: Date
-    });
 }
 
 function validateDocumentSignature() {
