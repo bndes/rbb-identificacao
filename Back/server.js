@@ -12,6 +12,8 @@ const keccak256 		= require('keccak256');
 const https 			= require ('https');
 const multer 			= require('multer');
 
+const request 			= require('request');
+
 var serverFunctions     = require('./server_functions.js');
 
 const DIR_UPLOAD = config.infra.caminhoArquivos + config.infra.caminhoUpload;
@@ -61,7 +63,6 @@ app.use(methodOverride());
 app.use(cors());
 
 //serverFunctions.databaseInit();
-serverFunctions.validateDocumentSignature(true); //FIXME: retirar, apenas para testes
 
 app.use(function (req, res, next) {
 	res.header("Access-Control-Allow-Origin", "*");
@@ -328,7 +329,7 @@ function trataUpload(req, res, next) {
 				let tipo     = req.body.tipo;
 
 				console.log("tipo=");
-				console.log(tipo);				
+				console.log(tipo);	
 
 				const tmp_path = req.file.path;
 				const hashedResult = await calculaHash(tmp_path);			
@@ -353,17 +354,27 @@ function trataUpload(req, res, next) {
 								
 				// A better way to copy the uploaded file. 
 				const src  = fs.createReadStream(tmp_path);
-				const dest = fs.createWriteStream(target_path);
-				src.pipe(dest);
-				src.on('end', function ()
-				{
-					console.log("Upload Completed from "+ tmp_path + ", original name " + req.file.originalname + ", copied to " + target_path); 
-				});
-				src.on('error', function (err)
-				{
-					console.log("Upload ERROR! from "+ tmp_path + ", original name " + req.file.originalname + ", copied to " + target_path); 
-				});	
-				res.json(hashedResult);
+				const cnpjEsperado = cnpj;
+				let retornoValidacaoCert = serverFunctions.validateDocumentSignature(src, cnpjEsperado, true);
+				if ( retornoValidacaoCert == 0 ) {
+					const dest = fs.createWriteStream(target_path);
+					src.pipe(dest);
+					src.on('end', function ()
+					{
+						console.log("Upload Completed from "+ tmp_path + ", original name " + req.file.originalname + ", copied to " + target_path); 
+					});
+					src.on('error', function (err)
+					{
+						console.log("Upload ERROR! from "+ tmp_path + ", original name " + req.file.originalname + ", copied to " + target_path); 
+					});	
+					res.json(hashedResult);
+				} else {
+					let msg = " Certificado não está OK! Erro: " + retornoValidacaoCert;
+					console.log(msg); 
+					res.json(msg);
+				}
+
+				
 			}
 		}
 	);
