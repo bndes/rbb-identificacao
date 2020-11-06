@@ -60,7 +60,9 @@
         <div class="row">
           <div class="form-group col-md-10 col-sm-10 ">
               <label>Upload da declaração de propriedade e responsabilidade sobre conta blockchain, assinada com o e-CNPJ.</label>
-              <label> 1. Clique <a target="_blank" href="{{fileHandleService.getCaminhoModeloDeclaracaoContaDigital()}}">aqui</a> baixar o Modelo de Declaração  (documento Word)</label>
+              <div class='darkblue'>
+              {{declaracao}}
+              </div>
           </div>
         </div>
         <div class="row">
@@ -97,6 +99,9 @@
     
 
     <div class="form-group" >
+      
+    
+
       <button type="button" class="btn btn-success btn-cabecalho" placement="bottom" ngbTooltip="Enviar" (click)="associarContaCliente()">
         <i class="fa fa-floppy-o" aria-hidden="true"></i> Enviar
       </button>

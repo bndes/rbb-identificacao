@@ -27,6 +27,7 @@ export class AssociaContaClienteComponent implements OnInit, DeclarationComponen
   selectedAccount: any;
 
    maskCnpj: any;
+   declaracao: string;
 
 
   constructor(private pessoaJuridicaService: PessoaJuridicaService, protected bnAlertsService: BnAlertsService,
@@ -65,6 +66,21 @@ export class AssociaContaClienteComponent implements OnInit, DeclarationComponen
       console.log (" Buscando o CNPJ do cliente (14 digitos fornecidos)...  " + cnpj)
       this.recuperaClientePorCNPJ(cnpj);
     }
+
+    this.pessoaJuridicaService.pedeDeclaracao(cnpj).subscribe(
+      empresa => { 
+        console.log("associa...pedeDeclaracao(cnpj)");
+        console.log(empresa);
+        
+        this.declaracao = JSON.stringify(empresa); 
+
+        
+      },
+      error => {
+        console.log("associa...pedeDeclaracao(cnpj)");
+        console.log(error);
+      }
+    );
     
     this.preparaUpload(this.cliente.cnpj, this.subcreditoSelecionado, this.selectedAccount, this);
   }

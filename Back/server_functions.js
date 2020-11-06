@@ -6,7 +6,8 @@ const fs            = require('fs');
 const mock_vra      = require('./mock_vra.json');
 
 module.exports = {  uploadFileAndMakeTransaction,  
-                    validateDocumentSignature
+                    validateDocumentSignature,
+                    preencheDeclaracao
                 };
 
 async function uploadFileAndMakeTransaction(_req, _res) {
@@ -26,6 +27,12 @@ async function uploadFileAndMakeTransaction(_req, _res) {
     _res.json( { "hashedAccessToken" : hashedAccessToken, "signature valid" : valid } );
     _res.end();
 
+}
+
+function preencheDeclaracao(cnpj, modelo) {
+    console.log("preenche declaracao");
+    let declaracao = 'arquivos/modelo_declaracao/MODELO_CADASTRO.txt';//modelo; //TODO!
+    return declaracao;
 }
 
 function validateDocumentSignature(fileReadStream, cnpjEsperado, mock) {

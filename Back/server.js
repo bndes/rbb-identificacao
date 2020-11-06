@@ -198,8 +198,9 @@ app.post('/api/constantesFrontPJ', function (req, res) {
 
 
 app.post('/api/pj-por-cnpj', buscaPJPorCnpj);
-
+console.log('/api/pj-por-cnpj::mockPJ=' + mockPJ);
 	function buscaPJPorCnpj (req, res, next) {
+		console.log('buscaPJPorCnpj::mockPJ=' + mockPJ);
 		let cnpjRecebido = req.body.cnpj;
 
 		let isNum = /^\d+$/.test(cnpjRecebido);
@@ -254,7 +255,7 @@ app.post('/api/pj-por-cnpj', buscaPJPorCnpj);
 						}
 						console.log("pj=");
 						console.log(pj);
-						res.status(200).json(pj);				
+						res.status(200).json(pj);			
 					}
 
 				});
@@ -304,6 +305,18 @@ app.post('/api/pj-por-cnpj', buscaPJPorCnpj);
 
 
 	}	
+
+app.get('/api/preenchedoc/:cnpj', preencheDoc);
+
+function preencheDoc(req, res, next) {
+
+	let cnpj = req.params.cnpj;
+	console.log("preencheDoc")
+	console.log("cnpj: " + cnpj )
+	let retornoDeclaracao = serverFunctions.preencheDeclaracao(cnpj, CAMINHO_MODELO_DECLARACAO_CONTA_DIGITAL);
+	res.download(retornoDeclaracao);
+	
+}
 
 
 //upload.single('arquivo')
