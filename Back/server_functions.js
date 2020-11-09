@@ -4,10 +4,12 @@ const axios         = require('axios').default;
 const FormData      = require('form-data')
 const fs            = require('fs');
 const mock_vra      = require('./mock_vra.json');
+const https      	= require ('https');
 
 module.exports = {  uploadFileAndMakeTransaction,  
                     validateDocumentSignature,
-                    preencheDeclaracao
+                    preencheDeclaracao,
+                    buscaDadosCNPJ
                 };
 
 async function uploadFileAndMakeTransaction(_req, _res) {
@@ -29,11 +31,147 @@ async function uploadFileAndMakeTransaction(_req, _res) {
 
 }
 
-function preencheDeclaracao(cnpj, modelo) {
+async function preencheDeclaracao(cnpj, address, pj, modelo, mockPJ) {
     console.log("preenche declaracao");
-    let declaracao = 'arquivos/modelo_declaracao/MODELO_CADASTRO.txt';//modelo; //TODO!
-    return declaracao;
+    console.log("preencheDeclaracao::cnpj = ");
+    console.log(cnpj);
+    
+    const arquivoModelo = require ('./arquivos/modelo_declaracao/MODELO_CADASTRO.json'); //TODO: colocar no config
+
+    var stringified = JSON.stringify(arquivoModelo);
+    stringified = stringified.replace('##CNPJ##', cnpj );
+    stringified = stringified.replace('##ADDRESS##', address );
+    stringified = stringified.replace('##RAZAOSOCIAL##', "lalala" );
+    
+    console.log('pj.dadosCadastrais')
+    console.log(pj.dadosCadastrais)    
+
+    console.log(stringified);
+    const caminho = './arquivos/tmp/stringified.json';
+    fs.writeFileSync(caminho, stringified);
+
+    return caminho;
 }
+
+async function buscaDadosCNPJ (cnpj, mockPJ) {
+    //console.log('buscaDadosCNPJ::mockPJ=' + mockPJ);
+    let cnpjRecebido = cnpj;
+let retorno;
+    let isNum = /^\d+$/.test(cnpjRecebido);
+
+    if (!isNum) {	
+        //console.log("!isNum");
+        retorno = {};
+        return retorno;
+    }
+
+
+    if (mockPJ) {
+        //console.log("mock PJ ON!");
+
+        if ( cnpjRecebido == undefined || cnpjRecebido == '00000undefined' || cnpjRecebido == '00000000000000')	{
+            //console.log("cnpj com problema");
+            retorno = {};
+            return;
+        }
+        
+        https.get('https://www.receitaws.com.br/v1/cnpj/' + cnpjRecebido, (resp)  => {
+            let data = '';
+
+            resp.on('data', (chunk) => {
+                data += chunk;
+            });
+
+            resp.on('end', async () => {
+                if (data == "Too many requests, please try again later.") {
+
+                    //console.log(data);
+                    let pj = {
+                        cnpj: "00000000000000",
+                        dadosCadastrais: {
+                            razaoSocial: "Serviço da Receita Indisponível"
+                        }
+                    };
+                    retorno = pj;
+                    return pj;
+                }
+                else {
+                    console.log("else");
+
+                    try {
+                        jsonData = JSON.parse(data);
+                    } catch (e) {
+                        console.log("catch");
+                        retorno = pj;
+                        return pj;
+                    }
+                    //console.log(jsonData);
+
+                    let pj = {
+                        cnpj: cnpjRecebido,
+                        dadosCadastrais: {
+                            razaoSocial: jsonData.nome
+                        }
+                    };
+                    console.log("pj=");
+                    console.log(pj);
+                    retorno = pj;
+                    return pj;
+                }
+
+            });
+        }).on("error", (err) => {
+            console.log("Erro ao buscar mock da API: " + err.message);
+        });
+
+    }
+    else {
+
+        new sql.ConnectionPool(configAcessoBDPJ).connect().then(pool => {
+            return pool.request()
+                                 .input('cnpj', sql.VarChar(14), cnpjRecebido)
+                                 .query(config.negocio.query_cnpj)
+            
+            }).then(result => {
+                let rows = result.recordset
+
+                if (!rows[0]) {
+                    retorno = {};
+                    return retorno;
+                }
+
+                let pj = 	
+                {
+                    cnpj: rows[0]["CNPJ_EMPRESA"],
+                    dadosCadastrais: {
+                        razaoSocial: rows[0]["NOME_EMPRESARIAL"]
+                    }
+                }
+
+                console.log("pj do QSA");				
+                console.log(pj);
+
+                sql.close();
+                retorno = pj;
+                return pj;
+                
+
+
+            }).catch(err => {
+                console.log(err);
+                retorno = { message: "${err}"};
+                sql.close();
+                return retorno;
+            });
+
+
+    }
+
+     {
+        console.log('retorno');
+        console.log(retorno);
+    }
+}	
 
 function validateDocumentSignature(fileReadStream, cnpjEsperado, mock) {
     console.log("validateDocumentSignature");

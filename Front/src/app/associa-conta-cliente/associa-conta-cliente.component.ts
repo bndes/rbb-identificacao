@@ -67,12 +67,12 @@ export class AssociaContaClienteComponent implements OnInit, DeclarationComponen
       this.recuperaClientePorCNPJ(cnpj);
     }
 
-    this.pessoaJuridicaService.pedeDeclaracao(cnpj).subscribe(
+    this.pessoaJuridicaService.pedeDeclaracao(cnpj, this.selectedAccount).subscribe(
       empresa => { 
         console.log("associa...pedeDeclaracao(cnpj)");
         console.log(empresa);
         
-        this.declaracao = JSON.stringify(empresa); 
+        this.declaracao =  JSON.stringify(empresa); 
 
         
       },
