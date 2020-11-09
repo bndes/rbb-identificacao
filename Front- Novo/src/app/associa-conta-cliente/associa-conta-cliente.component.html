@@ -1,0 +1,29 @@
+<div style="position: absolute; background-color: #268744; width: 100%; height: 151%; top: 13.2%; "></div>
+<body>
+<div class="container">    
+    <div class="rightbox">
+        <h1 style="font-size: 120%;" >Associar Conta Blockchain ao e-CNPJ</h1>
+        <div class="br-input">
+            <label>CNPJ do Cliente:</label>
+            <input name="cnpjWithMask" />
+        </div>
+            
+        <div class="br-input">
+            <label>Razão Social:</label>
+            <input name="razaoSocial"  readonly  disabled/>
+        </div>
+        
+        <div class="br-input">
+            <label>Selecione a conta blockchain desejada no Metamask. A conta deve aparecer no estado "Disponível".</label>
+            <input name="contaBlockchain" class="form-control form-control-sm" type="text" [ngModel]="selectedAccount" readonly
+            disabled size="45">
+        </div>
+    </div>
+    <button style="height: 8%; width: 30%;  margin-top: 3%; margin-left: 60%; margin-bottom: 15%; font-size: 21px;" class="br-button primary" type="button">Associar
+    </button>
+</div>
+<div class="leftbox">
+    <h1>Associação de Clientes</h1>
+</div>
+
+</body>
