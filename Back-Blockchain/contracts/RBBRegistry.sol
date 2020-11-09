@@ -42,12 +42,12 @@ contract RBBRegistry is Ownable() {
     /**
         Links RBBID to Ethereum addresses.
      */
-    mapping(uint => address[]) RBBId_addresses;
+    mapping(uint => address[]) public RBBId_addresses;
     
     /**
      * Links CNPJ to its RBBID
      */
-    mapping (uint => uint) CNPJ_RBBId;
+    mapping (uint => uint) public CNPJ_RBBId;
 
     event AccountRegistration       (address addr, uint RBBId, uint CNPJ, bytes32 hashProof, uint256 dateTimeExpiration);
     event AccountValidation         (address addr, uint RBBId, uint CNPJ, address responsible);
