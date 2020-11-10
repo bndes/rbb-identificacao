@@ -1,7 +1,7 @@
 import { Component, OnInit, NgZone, ChangeDetectorRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { BnAlertsService } from 'bndes-ux4';
-
+import { jsPDF } from "jspdf";
 
 import { Cliente, Subcredito } from './Cliente';
 import { PessoaJuridicaService } from '../pessoa-juridica.service';
@@ -27,8 +27,8 @@ export class AssociaContaClienteComponent implements OnInit, DeclarationComponen
   selectedAccount: any;
 
    maskCnpj: any;
-   declaracao: string;
-
+   declaracao_titulo: string;
+   declaracao_corpo: string;
 
   constructor(private pessoaJuridicaService: PessoaJuridicaService, protected bnAlertsService: BnAlertsService,
     private web3Service: Web3Service, private router: Router, private zone: NgZone, private ref: ChangeDetectorRef,
@@ -72,7 +72,8 @@ export class AssociaContaClienteComponent implements OnInit, DeclarationComponen
         console.log("associa...pedeDeclaracao(cnpj)");
         console.log(empresa);
         
-        this.declaracao =  JSON.stringify(empresa); 
+        this.declaracao_titulo =  JSON.stringify(empresa.declaracao_titulo);
+        this.declaracao_corpo =  JSON.stringify(empresa.declaracao_corpo); 
 
         
       },
@@ -299,5 +300,17 @@ export class AssociaContaClienteComponent implements OnInit, DeclarationComponen
 
 
   }
+
+  createPdf(): void {
+    let pdf = new jsPDF('p', 'pt', 'a4');
+    let options = {
+       pagesplit: true
+    };
+    console.log(pdf);
+    pdf.text(this.declaracao_titulo,100,100);
+    pdf.text(this.declaracao_corpo,100,300);
+    pdf.save("declaracao_rbb_para_assinar.pdf");
+    
+ }
 
 }

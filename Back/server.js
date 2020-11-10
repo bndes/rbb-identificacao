@@ -316,13 +316,14 @@ async function preencheDoc(req, res, next) {
 	
 	
 	//buscaPJPorCnpj(cnpj); //TODO : adaptar a funcao de busca para retornar os dados e preencher na funcao abaixo.
-	let pj 					= await serverFunctions.buscaDadosCNPJ(cnpj, mockPJ);
-	console.log("resultado pj: " + pj )
+	await serverFunctions.buscaDadosCNPJ(cnpj, address, CAMINHO_MODELO_DECLARACAO_CONTA_DIGITAL, mockPJ, res);
+	//console.log("resultado pj: " + pj )
+		
+	//let retornoDeclaracao 	= await serverFunctions.preencheDeclaracao(cnpj, address, pj, CAMINHO_MODELO_DECLARACAO_CONTA_DIGITAL, mockPJ);
+	//console.log('retornoDeclaracao');
+	//console.log(retornoDeclaracao);
+	//res.download(retornoDeclaracao);
 	
-	let retornoDeclaracao 	= await serverFunctions.preencheDeclaracao(cnpj, address, pj, CAMINHO_MODELO_DECLARACAO_CONTA_DIGITAL, mockPJ);
-	console.log('retornoDeclaracao');
-	console.log(retornoDeclaracao);
-	res.download(retornoDeclaracao);
 	
 }
 

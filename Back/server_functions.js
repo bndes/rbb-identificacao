@@ -5,6 +5,7 @@ const FormData      = require('form-data')
 const fs            = require('fs');
 const mock_vra      = require('./mock_vra.json');
 const https      	= require ('https');
+const { json } = require('express');
 
 module.exports = {  uploadFileAndMakeTransaction,  
                     validateDocumentSignature,
@@ -31,29 +32,34 @@ async function uploadFileAndMakeTransaction(_req, _res) {
 
 }
 
-async function preencheDeclaracao(cnpj, address, pj, modelo, mockPJ) {
-    console.log("preenche declaracao");
-    console.log("preencheDeclaracao::cnpj = ");
-    console.log(cnpj);
-    
+async function preencheDeclaracao(cnpj, address, pj, modelo, mockPJ,res) {
+  
     const arquivoModelo = require ('./arquivos/modelo_declaracao/MODELO_CADASTRO.json'); //TODO: colocar no config
 
     var stringified = JSON.stringify(arquivoModelo);
     stringified = stringified.replace('##CNPJ##', cnpj );
     stringified = stringified.replace('##ADDRESS##', address );
-    stringified = stringified.replace('##RAZAOSOCIAL##', "lalala" );
+    stringified = stringified.replace('##RAZAOSOCIAL##', pj.dadosCadastrais.razaoSocial );
+    stringified = stringified.replace('##LOGRADOURO##', pj.dadosCadastrais.logradouro );
+    stringified = stringified.replace('##NUMERO##', pj.dadosCadastrais.numero );
+    stringified = stringified.replace('##BAIRRO##', pj.dadosCadastrais.bairro );
+    stringified = stringified.replace('##MUNICIPIO##', pj.dadosCadastrais.municipio );
+    stringified = stringified.replace('##UF##', pj.dadosCadastrais.uf );
+    stringified = stringified.replace('##PAIS##', "BRASIL" );
+    stringified = stringified.replace('##CNPJ##', cnpj );
+    stringified = stringified.replace('##ADDRESS##', address );
+    stringified = stringified.replace('##RAZAOSOCIAL##', pj.dadosCadastrais.razaoSocial );
     
-    console.log('pj.dadosCadastrais')
-    console.log(pj.dadosCadastrais)    
+    console.log(pj)    
 
     console.log(stringified);
     const caminho = './arquivos/tmp/stringified.json';
     fs.writeFileSync(caminho, stringified);
 
-    return caminho;
+    res.download(caminho);
 }
 
-async function buscaDadosCNPJ (cnpj, mockPJ) {
+async function buscaDadosCNPJ (cnpj, address, CAMINHO_MODELO_DECLARACAO_CONTA_DIGITAL, mockPJ, res) {
     //console.log('buscaDadosCNPJ::mockPJ=' + mockPJ);
     let cnpjRecebido = cnpj;
 let retorno;
@@ -72,7 +78,7 @@ let retorno;
         if ( cnpjRecebido == undefined || cnpjRecebido == '00000undefined' || cnpjRecebido == '00000000000000')	{
             //console.log("cnpj com problema");
             retorno = {};
-            return;
+            return await processaRetornoBuscaDadosCNPJ(cnpj, address, retorno, CAMINHO_MODELO_DECLARACAO_CONTA_DIGITAL, mockPJ,res);
         }
         
         https.get('https://www.receitaws.com.br/v1/cnpj/' + cnpjRecebido, (resp)  => {
@@ -93,30 +99,36 @@ let retorno;
                         }
                     };
                     retorno = pj;
-                    return pj;
+                    return await processaRetornoBuscaDadosCNPJ(cnpj, address, retorno, CAMINHO_MODELO_DECLARACAO_CONTA_DIGITAL, mockPJ,res);
                 }
                 else {
                     console.log("else");
 
                     try {
-                        jsonData = JSON.parse(data);
+                        jsonData = await JSON.parse(data);
                     } catch (e) {
                         console.log("catch");
-                        retorno = pj;
-                        return pj;
+                        return await processaRetornoBuscaDadosCNPJ(cnpj, address, pj, CAMINHO_MODELO_DECLARACAO_CONTA_DIGITAL, mockPJ, res);
+                        
                     }
                     //console.log(jsonData);
 
                     let pj = {
                         cnpj: cnpjRecebido,
                         dadosCadastrais: {
-                            razaoSocial: jsonData.nome
+                            razaoSocial: jsonData.nome,
+                            logradouro: jsonData.logradouro,
+                            numero:     jsonData.numero,
+                            bairro:     jsonData.bairro,
+                            cep:        jsonData.cep,
+                            municipio:  jsonData.municipio,
+                            uf:         jsonData.uf
                         }
                     };
                     console.log("pj=");
                     console.log(pj);
-                    retorno = pj;
-                    return pj;
+                    return await processaRetornoBuscaDadosCNPJ(cnpj, address, pj, CAMINHO_MODELO_DECLARACAO_CONTA_DIGITAL, mockPJ, res);
+                    
                 }
 
             });
@@ -132,12 +144,13 @@ let retorno;
                                  .input('cnpj', sql.VarChar(14), cnpjRecebido)
                                  .query(config.negocio.query_cnpj)
             
-            }).then(result => {
+            }).then( async result => {
                 let rows = result.recordset
 
                 if (!rows[0]) {
                     retorno = {};
-                    return retorno;
+                    return await processaRetornoBuscaDadosCNPJ(cnpj, address, retorno, CAMINHO_MODELO_DECLARACAO_CONTA_DIGITAL, mockPJ,res);
+                    
                 }
 
                 let pj = 	
@@ -153,25 +166,26 @@ let retorno;
 
                 sql.close();
                 retorno = pj;
-                return pj;
+                return await processaRetornoBuscaDadosCNPJ(cnpj, address, retorno, CAMINHO_MODELO_DECLARACAO_CONTA_DIGITAL, mockPJ,res);
+                
                 
 
 
-            }).catch(err => {
+            }).catch(async err => {
                 console.log(err);
                 retorno = { message: "${err}"};
                 sql.close();
-                return retorno;
+                return await processaRetornoBuscaDadosCNPJ(cnpj, address, retorno, CAMINHO_MODELO_DECLARACAO_CONTA_DIGITAL, mockPJ,res);
+                
             });
 
 
     }
-
-     {
-        console.log('retorno');
-        console.log(retorno);
-    }
 }	
+
+async function processaRetornoBuscaDadosCNPJ(cnpj, address, pj, CAMINHO_MODELO_DECLARACAO_CONTA_DIGITAL, mockPJ,res) {
+    return preencheDeclaracao(cnpj, address, pj, CAMINHO_MODELO_DECLARACAO_CONTA_DIGITAL, mockPJ,res);
+}
 
 function validateDocumentSignature(fileReadStream, cnpjEsperado, mock) {
     console.log("validateDocumentSignature");
