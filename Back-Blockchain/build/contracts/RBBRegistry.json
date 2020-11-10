@@ -35814,10 +35814,10 @@
         }
       },
       "links": {
-        "RBBLib": "0x551495E89BE11c98A665641F773b4e30C547f8c6"
+        "RBBLib": "0x4821924283e2094aCf93874C55f575252dFf865B"
       },
-      "address": "0xA54B9dA174C84DeD0179D165C089DE0dCd02391d",
-      "transactionHash": "0x79fe436edd546a46b60ddd9487bab75d9bbe4583cde4365b547ab00065d97278"
+      "address": "0xeFDE680898e90cf837ef7D372021df4AAAecaE87",
+      "transactionHash": "0x5261020c990e8981c3e8747f4c21847468a3ce2853bc13eba1fa422e0e88c77e"
     },
     "648629": {
       "events": {
@@ -36078,7 +36078,7 @@
     }
   },
   "schemaVersion": "3.2.5",
-  "updatedAt": "2020-11-10T17:54:18.844Z",
+  "updatedAt": "2020-11-10T20:48:11.312Z",
   "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",
