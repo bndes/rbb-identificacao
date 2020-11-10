@@ -350,6 +350,10 @@ contract RBBRegistry is Ownable() {
         return ((int) (legalEntitiesInfo[addr].role));
     }
 
+    function getIdFromCNPJ(uint cnpj) public view returns (uint) {
+        return CNPJ_RBBId[cnpj];
+    }
+    
    /**
     * The Owner can assign role SUPADMIN to anyone in the same LegalEntity
     * @param addr Ethereum address to be assigned the new role
