@@ -95,7 +95,7 @@ export class DashboardIdEmpresaComponent implements OnInit {
         this.registraEventosValidacao();
         this.registraEventosInvalidacao();
 
-        this.registraEventosAdminUpgrade(); 
+        this.registraEventosRoleChange(); 
         //TODO: this.registraEventosPausa();
         //TODO: this.registraEventosDespausa();
     }
@@ -144,13 +144,13 @@ export class DashboardIdEmpresaComponent implements OnInit {
     }
 
 
-    registraEventosAdminUpgrade() {
+    registraEventosRoleChange() {
 
         console.log("*** Executou o metodo de registrar eventos upgrade para Admin");
 
         let self = this;
 
-        self.web3Service.registraEventosAdminUpgrade(function (error, event) {
+        self.web3Service.registraEventosRoleChange(function (error, event) {
 
             let transacaoPJ: DashboardPessoaJuridica
             let eventoTroca = event
@@ -384,12 +384,13 @@ export class DashboardIdEmpresaComponent implements OnInit {
 
     async validarCadastro(contaBlockchainValidar) {
         console.log(contaBlockchainValidar);
+        
         if (contaBlockchainValidar === undefined) {
           let s = "A conta blockchain é um Campo Obrigatório";
           this.bnAlertsService.criarAlerta("error", "Erro", s, 2);
           return;
         }    
-    //let x = await this.identificaUsuario();
+    let x = await this.identificaUsuario();
     console.log("this.usuario.address = "+ this.usuario.address)
         let bRV = await this.web3Service.isResponsibleForRegistryValidationSync(this.usuario.address);
         if (!bRV) 
