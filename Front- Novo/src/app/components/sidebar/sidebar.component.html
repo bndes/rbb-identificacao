@@ -1,0 +1,32 @@
+<div  style="position: absolute; left: 0; z-index: 999;" class="col-sm-6 col-lg-4 col-xl-3">
+    <div class="br-menu">
+        <nav class="folders">
+          <div class="folder">
+            <ul>
+              <li>
+                <ul>
+                    <li><a class="item">
+                        <div class="content" class="nav-link" [routerLink]="['associa/cliente']" routerLinkActive="active" 
+                        [routerLinkActiveOptions]="{exact: true}">Associação de Clientes</div></a></li>
+                    <li><a class="item">
+                        <div class="content" class="nav-link" [routerLink]="['associa/admin']" routerLinkActive="active" 
+                        [routerLinkActiveOptions]="{exact: true}">Associação de Administradores</div></a></li>
+                    <li><a class="item">
+                        <div class="content" class="nav-link" [routerLink]="['associa/contas']" routerLinkActive="active" 
+                        [routerLinkActiveOptions]="{exact: true}">Contas Associadas</div></a></li>
+                    <li><a class="item">
+                        <div class="content" class="nav-link" [routerLink]="['validar']" routerLinkActive="active" 
+                        [routerLinkActiveOptions]="{exact: true}">Validar/Invalidar contas</div></a></li>
+                    <li><a class="item">
+                        <div class="content" class="nav-link" [routerLink]="['pause/cliente']" routerLinkActive="active" 
+                        [routerLinkActiveOptions]="{exact: true}">Pausar contas da empresa</div></a></li>
+                    <li><a class="item">
+                        <div class="content" class="nav-link" [routerLink]="['pause/admin']" routerLinkActive="active" 
+                        [routerLinkActiveOptions]="{exact: true}">Pausar/Despausar contas de um CNPJ</div></a></li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </nav>
+    </div>
+</div>
