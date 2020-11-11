@@ -154,15 +154,9 @@ app.get('/api/abi', function (req, res) {
 
 app.get('/api/hash/:filename', async function (req, res) {
 	const filename = req.params.filename;		
-	const hashedResult = await calculaHash(config.infra.caminhoUpload + filename);
+	const hashedResult = await SERVER_FUNCTIONS.calculaHash(config.infra.caminhoUpload + filename);
 	return res.json(hashedResult);
 })
-
-async function calculaHash(filename) {
-	const input = fs.readFileSync(filename);	
-	let hashedResult = keccak256(input).toString('hex');	
-	return hashedResult;					
-}
 
 //recupera constantes front
 app.post('/api/constantesFront', function (req, res) {
@@ -354,7 +348,7 @@ function trataUpload(req, res, next) {
 				console.log(tipo);	
 
 				const tmp_path = req.file.path;
-				const hashedResult = await calculaHash(tmp_path);			
+				const hashedResult = await SERVER_FUNCTIONS.calculaHash(tmp_path);			
 				
 				let target_path = "";
 

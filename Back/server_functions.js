@@ -5,12 +5,13 @@ const FormData      = require('form-data')
 const fs            = require('fs');
 const mock_vra      = require('./mock_vra.json');
 const https      	= require ('https');
-const { json } = require('express');
+const { json }      = require('express');
 
 module.exports = {  validateDocumentSignature,
                     preencheDeclaracao,
                     buscaDadosCNPJ,
-                    buscaTipoArquivo
+                    buscaTipoArquivo,
+                    calculaHash
                 };
 
 const DIR_CAMINHO_DECLARACAO = config.infra.caminhoArquivos + config.infra.caminhoDeclaracao;
@@ -287,7 +288,11 @@ function montaNomeArquivoComprovanteLiquidacao(cnpj, contrato, hashFile) {
 	return ("COMP_LIQ" + "_" + cnpj + '_' + contrato + '_' + hashFile +  '.PDF');
 }
 
-
+async function calculaHash(filename) {
+	const input = fs.readFileSync(filename);	
+	let hashedResult = keccak256(input).toString('hex');	
+	return hashedResult;					
+}
 
 function signDocument() {
     //TODO: verify whether this functionality is available through a REST API

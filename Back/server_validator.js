@@ -6,17 +6,19 @@ var request   = require('request');
 
 var config    = require('./config.json');
 
-const app = express();
-const port = 3000; //FIXME
+// const app = express();
+// const port = 3000; //FIXME
 
-const privateKey = "0x4f3edf983ac636a65a842ce7c78d9aa706d3b113bce9c46f30d7d21715b23b1d"; //FIXME
-//publickey => 0x90F8bf6A479f320ead074411a4B0e7944Ea8c9C1
-const wallet     = new ethers.Wallet(privateKey);
+const SERVER_FUNCTIONS     = require('./server_functions.js');
+
+const privateKey = "0x2ffcab1497f58a887c21129756627c9a4fcc2c09b8d6279f20a28e872607b2bc"; //FIXME
+//publickey => 0x840629315b87406fFB85b56A2EF4A3db57A94AC7
 const valueInETH = "1.00"; //FIXME
 const gasLimit   = "53000"; //FIXME
 //const provider   = ethers.getDefaultProvider('rinkeby');    
 //const provider   = new ethers.providers.JsonRpcProvider();// Default: http://localhost:8545 //FIXME
 const provider   = new ethers.providers.JsonRpcProvider('http://localhost:9545');
+const wallet     = new ethers.Wallet(privateKey, provider);
 
 let contractAddress = "0xeFDE680898e90cf837ef7D372021df4AAAecaE87";
 let RBBRegistry;
@@ -78,13 +80,32 @@ async function listenEvent() {
     console.log("");
     console.log("Listening to event AccountRegistration ...");
     console.log("");
-    RBBRegistry.on("AccountRegistration", (addr, RBBId, CNPJ, hashProof, dateTimeExpiration) => {
+    RBBRegistry.on("AccountRegistration", async (addr, RBBId, CNPJ, hashProof, dateTimeExpiration) => {
     
         console.log(addr);    
         console.log(RBBId);    
         console.log(CNPJ);    
         console.log(hashProof);
         console.log(dateTimeExpiration);
+
+        let RBBRegistryWithSigner = RBBRegistry.connect(wallet);
+
+        try {
+            let contrato = 0;
+            let tipo = 'declaracao';
+            let filePathAndNameToFront = await SERVER_FUNCTIONS.buscaTipoArquivo(CNPJ, contrato, addr, tipo, hashProof);
+            console.log(filePathAndNameToFront);
+            let tx = await RBBRegistryWithSigner.validateRegistry(addr);
+            console.log(tx.hash);
+            await tx.wait();
+            console.log("O cadastro foi validado.");
+        } catch(err) {
+            console.log("Nao conseguiu encontrar o arquivo da declaracao.");
+            let tx = await RBBRegistryWithSigner.invalidateRegistry(addr);
+            console.log(tx.hash);
+            await tx.wait();
+            console.log("O cadastro foi invalidado.");
+        }
 
     });
 }
