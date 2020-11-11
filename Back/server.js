@@ -407,47 +407,23 @@ function trataUpload(req, res, next) {
 app.post('/api/fileinfo', buscaFileInfo);
 
 async function buscaFileInfo(req, res) {
-
-	let filePathAndNameToFront;
-	let hashedResult;
-	let hashFile;
-	let targetPathToCalculateHash;
-
+	
 	try {
 
-		let cnpj     = req.body.cnpj;
-		let contrato = req.body.contrato;
-		let blockchainAccount = req.body.blockchainAccount;
-		let tipo     = req.body.tipo;
-		console.log("tipo=" + tipo);
+		let cnpj     		  = req.body.cnpj;
+		let contrato 		  = req.body.contrato;
+		let blockchainAccount = req.body.blockchainAccount.toLowerCase();
+		let tipo     		  = req.body.tipo;
+		let hashFile 		  = req.body.hashFile;		
 
-		console.log("antes: " + blockchainAccount);
-		blockchainAccount = blockchainAccount.toLowerCase();
-		console.log("depois: " + blockchainAccount);
+		let filePathAndNameToFront = await buscaTipoArquivo(cnpj, contrato, blockchainAccount, tipo, hashFile);
 
-		hashFile = req.body.hashFile;		
-
-		if (tipo=="declaracao") {
-			let fileName = montaNomeArquivoDeclaracao(cnpj, contrato, blockchainAccount, hashFile);
-			filePathAndNameToFront = config.infra.caminhoDeclaracao + fileName;
-			targetPathToCalculateHash = DIR_CAMINHO_DECLARACAO + fileName;	
-		}		
-		else if (tipo=="comp_doacao") {
-			let fileName = montaNomeArquivoComprovanteDoacao(cnpj, hashFile);			
-			filePathAndNameToFront = config.infra.caminhoComprovanteDoacao + fileName;
-			targetPathToCalculateHash = DIR_CAMINHO_COMPROVANTE_DOACAO + fileName;	
-		}
-		else if (tipo=="comp_liq") {
-			let fileName = montaNomeArquivoComprovanteLiquidacao(cnpj, contrato, hashFile);						
-			filePathAndNameToFront = config.infra.caminhoComprovanteLiquidacao + fileName;
-			targetPathToCalculateHash = DIR_CAMINHO_COMPROVANTE_LIQUIDACAO + fileName;	
-		}
-		else {
-			throw "erro tipo desconhecido para buscar arquivo";
-		}
-
-		//verifica integridade do arquivo
-		hashedResult = await calculaHash(targetPathToCalculateHash);
+		let respJson = {
+			pathAndName: filePathAndNameToFront
+		};
+	
+		console.log(respJson);
+		res.json(respJson);
 
 	}
 	catch (err) {
@@ -457,22 +433,43 @@ async function buscaFileInfo(req, res) {
 		return;
 	}
 
-	if (hashedResult!=hashFile) {
-		console.log("Erro conferir o hash do arquivo.");
-		res.sendStatus(506);
-		return;
+}
+
+async function buscaTipoArquivo(cnpj, contrato, blockchainAccount, tipo, hashFile) {
+	let targetPathToCalculateHash;
+	
+	if (tipo=="declaracao") {
+		let fileName = montaNomeArquivoDeclaracao(cnpj, contrato, blockchainAccount, hashFile);
+		filePathAndNameToFront = config.infra.caminhoDeclaracao + fileName;
+		targetPathToCalculateHash = DIR_CAMINHO_DECLARACAO + fileName;	
+	}		
+	else if (tipo=="comp_doacao") {
+		let fileName = montaNomeArquivoComprovanteDoacao(cnpj, hashFile);			
+		filePathAndNameToFront = config.infra.caminhoComprovanteDoacao + fileName;
+		targetPathToCalculateHash = DIR_CAMINHO_COMPROVANTE_DOACAO + fileName;	
+	}
+	else if (tipo=="comp_liq") {
+		let fileName = montaNomeArquivoComprovanteLiquidacao(cnpj, contrato, hashFile);						
+		filePathAndNameToFront = config.infra.caminhoComprovanteLiquidacao + fileName;
+		targetPathToCalculateHash = DIR_CAMINHO_COMPROVANTE_LIQUIDACAO + fileName;	
+	}
+	else {
+		throw "erro tipo desconhecido para buscar arquivo";
+	}
+	//verifica integridade do arquivo
+	let hashedResult = await calculaHash(targetPathToCalculateHash);
+
+	if ( hashedResult != hashFile ) {
+		let msg = "Erro conferir o hash do arquivo.";
+		console.log(msg);
+		throw msg;
+		//res.sendStatus(506);
 	}
 	else {
 		console.log("Hash correto");
 	}
 
-	let respJson = {
-		pathAndName: filePathAndNameToFront
-	};
-
-	console.log(respJson);
-	res.json(respJson);
-
+	return filePathAndNameToFront;
 }
 
 function montaNomeArquivoDeclaracao(cnpj, contrato, blockchainAccount, hashFile) {

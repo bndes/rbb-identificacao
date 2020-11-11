@@ -18,11 +18,16 @@ const gasLimit   = "53000"; //FIXME
 //const provider   = new ethers.providers.JsonRpcProvider();// Default: http://localhost:8545 //FIXME
 const provider   = new ethers.providers.JsonRpcProvider('http://localhost:9545');
 
-//requestETH('0x840629315b87406fFB85b56A2EF4A3db57A94AC7');
-checkIDStatus(1);
+let contractAddress = "0xeFDE680898e90cf837ef7D372021df4AAAecaE87";
+let RBBRegistry;
 
-async function checkIDStatus(id) {
-        
+//requestETH('0x840629315b87406fFB85b56A2EF4A3db57A94AC7');
+initContract();
+//checkIDStatus(1);
+listenEvent();
+
+async function initContract() {
+            
     // The Contract interface
     let abi = [
         "constructor (uint CNPJSUPADMIN, string  proofHashSUPADMIN, uint daysToExpire) public ",                
@@ -63,18 +68,31 @@ async function checkIDStatus(id) {
         "function calculaProximoRBBID(uint CNPJ) private returns (uint) "
     ];
 
-// Connect to the network
-//let provider = ethers.getDefaultProvider();
+    // We connect to the Contract using a Provider, so we will only
+    // have read-only access to the Contract
+    RBBRegistry = new ethers.Contract(contractAddress, abi, provider);
 
-// The address from the above deployment example
-let contractAddress = "0xeFDE680898e90cf837ef7D372021df4AAAecaE87";
+}
 
-// We connect to the Contract using a Provider, so we will only
-// have read-only access to the Contract
-let contract = new ethers.Contract(contractAddress, abi, provider);
+async function listenEvent() {
+    console.log("");
+    console.log("Listening to event AccountRegistration ...");
+    console.log("");
+    RBBRegistry.on("AccountRegistration", (addr, RBBId, CNPJ, hashProof, dateTimeExpiration) => {
+    
+        console.log(addr);    
+        console.log(RBBId);    
+        console.log(CNPJ);    
+        console.log(hashProof);
+        console.log(dateTimeExpiration);
 
-let blockchainAccount = await contract.getBlockchainAccounts (id);
-let blockchainAccountStatus = await contract.getAccountState(blockchainAccount[0]);
+    });
+}
+
+async function checkIDStatus(id) {
+
+let blockchainAccount = await RBBRegistry.getBlockchainAccounts (id);
+let blockchainAccountStatus = await RBBRegistry.getAccountState(blockchainAccount[0]);
 
     console.log( { "id"      : id,
                  "address" : blockchainAccount, 
@@ -82,7 +100,6 @@ let blockchainAccountStatus = await contract.getAccountState(blockchainAccount[0
                } );
     
 }
-
 
 function requestETH( _addressto ) {    
     var gasPricePromise         = provider.getGasPrice();
@@ -142,3 +159,5 @@ function requestETH( _addressto ) {
     );
 
 }
+
+
