@@ -79,8 +79,13 @@ export class DashboardIdEmpresaComponent implements OnInit {
       }    
 
     async identificaUsuario() {
-        this.usuario = await this.web3Service.getPJInfoSync(this.selectedAccount);
-        console.log(this.usuario);
+        if (this.selectedAccount != undefined && this.selectedAccount != null) {
+            this.usuario = await this.web3Service.getPJInfoSync(this.selectedAccount);
+        } else {
+            console.log('this.usuario');
+            console.log(this.usuario);
+        }
+        
     }
 
     registrarExibicaoEventos() {

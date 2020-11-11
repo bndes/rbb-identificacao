@@ -242,7 +242,8 @@ export class Web3Service {
     getPJInfo(addr: string, fSuccess: any, fError: any): number {
         let self = this;
         console.log("getPJInfo com addr=" + addr);
-        console.log("RBBRegistrySmartContract=" + this.RBBRegistrySmartContract);
+        console.log("RBBRegistrySmartContract=");
+        console.log(this.RBBRegistrySmartContract);
         return this.RBBRegistrySmartContract.getRegistry(addr,
             (error, result) => {
                 if (error) fError(error);
@@ -430,6 +431,7 @@ export class Web3Service {
         let pjInfo: any;
 
         console.log(result);
+        
         pjInfo  = {};
         pjInfo.rbbid = result[0].c[0];
         pjInfo.cnpj = result[1].c[0];
