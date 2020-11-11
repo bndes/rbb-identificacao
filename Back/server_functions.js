@@ -7,31 +7,16 @@ const mock_vra      = require('./mock_vra.json');
 const https      	= require ('https');
 const { json } = require('express');
 
-module.exports = {  uploadFileAndMakeTransaction,  
-                    validateDocumentSignature,
+module.exports = {  validateDocumentSignature,
                     preencheDeclaracao,
-                    buscaDadosCNPJ
+                    buscaDadosCNPJ,
+                    buscaTipoArquivo
                 };
 
-async function uploadFileAndMakeTransaction(_req, _res) {
-    const cnpj          = _req.params.cnpj;
-    const cpf           = _req.params.cpf;
-    const accesstoken   = _req.params.accesstoken;
-    const idtoken       = _req.params.idtoken;
-    
-    console.debug('/uploadFileAndMakeTransaction::cnpj = '        + cnpj);
-    console.debug('/uploadFileAndMakeTransaction::cpf  = '        + cpf);
-    console.debug('/uploadFileAndMakeTransaction::accesstoken = ' + accesstoken);
-    console.debug('/uploadFileAndMakeTransaction::idtoken = '     + idtoken);
-      
-    
-    let valid = await checkSignatureWithJWK(accesstoken, jwk);
-    hashedAccessToken = await storeIDAccessToken(cnpj, cpf, accesstoken, idtoken, jwk);
-    _res.json( { "hashedAccessToken" : hashedAccessToken, "signature valid" : valid } );
-    _res.end();
-
-}
-
+const DIR_CAMINHO_DECLARACAO = config.infra.caminhoArquivos + config.infra.caminhoDeclaracao;
+const DIR_CAMINHO_COMPROVANTE_DOACAO = config.infra.caminhoArquivos + config.infra.caminhoComprovanteDoacao;
+const DIR_CAMINHO_COMPROVANTE_LIQUIDACAO = config.infra.caminhoArquivos + config.infra.caminhoComprovanteLiquidacao;
+                
 async function preencheDeclaracao(cnpj, address, pj, modelo, mockPJ,res) {
   
     const arquivoModelo = require ('./arquivos/modelo_declaracao/MODELO_CADASTRO.json'); //TODO: colocar no config
@@ -252,6 +237,56 @@ function declaracaoEstaValida(grauConformidade, certificadoVigente, cnpjCertific
     }
     return 0; //OK
 }
+
+async function buscaTipoArquivo(cnpj, contrato, blockchainAccount, tipo, hashFile) {
+	let targetPathToCalculateHash;
+	
+	if (tipo=="declaracao") {
+		let fileName = montaNomeArquivoDeclaracao(cnpj, contrato, blockchainAccount, hashFile);
+		filePathAndNameToFront = config.infra.caminhoDeclaracao + fileName;
+		targetPathToCalculateHash = DIR_CAMINHO_DECLARACAO + fileName;	
+	}		
+	else if (tipo=="comp_doacao") {
+		let fileName = montaNomeArquivoComprovanteDoacao(cnpj, hashFile);			
+		filePathAndNameToFront = config.infra.caminhoComprovanteDoacao + fileName;
+		targetPathToCalculateHash = DIR_CAMINHO_COMPROVANTE_DOACAO + fileName;	
+	}
+	else if (tipo=="comp_liq") {
+		let fileName = montaNomeArquivoComprovanteLiquidacao(cnpj, contrato, hashFile);						
+		filePathAndNameToFront = config.infra.caminhoComprovanteLiquidacao + fileName;
+		targetPathToCalculateHash = DIR_CAMINHO_COMPROVANTE_LIQUIDACAO + fileName;	
+	}
+	else {
+		throw "erro tipo desconhecido para buscar arquivo";
+	}
+	//verifica integridade do arquivo
+	let hashedResult = await calculaHash(targetPathToCalculateHash);
+
+	if ( hashedResult != hashFile ) {
+		let msg = "Erro conferir o hash do arquivo.";
+		console.log(msg);
+		throw msg;
+		//res.sendStatus(506);
+	}
+	else {
+		console.log("Hash correto");
+	}
+
+	return filePathAndNameToFront;
+}
+
+function montaNomeArquivoDeclaracao(cnpj, contrato, blockchainAccount, hashFile) {
+	return ("DECL" + "_" + cnpj + '_' + contrato + '_' + blockchainAccount + '_' + hashFile +  '.PDF');
+}
+
+function montaNomeArquivoComprovanteDoacao(cnpj, hashFile) {
+	return ("COMP_DOACAO" + "_" + cnpj + '_' + hashFile +  '.PDF');
+}
+
+function montaNomeArquivoComprovanteLiquidacao(cnpj, contrato, hashFile) {
+	return ("COMP_LIQ" + "_" + cnpj + '_' + contrato + '_' + hashFile +  '.PDF');
+}
+
 
 
 function signDocument() {

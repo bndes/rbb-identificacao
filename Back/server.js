@@ -14,7 +14,7 @@ const multer 			= require('multer');
 
 const request 			= require('request');
 
-var serverFunctions     = require('./server_functions.js');
+const SERVER_FUNCTIONS     = require('./server_functions.js');
 
 const DIR_UPLOAD = config.infra.caminhoArquivos + config.infra.caminhoUpload;
 const DIR_CAMINHO_DECLARACAO = config.infra.caminhoArquivos + config.infra.caminhoDeclaracao;
@@ -62,7 +62,7 @@ app.use(bodyParser.json({ type: 'application/vnd.api+json' })); // parse applica
 app.use(methodOverride());
 app.use(cors());
 
-//serverFunctions.databaseInit();
+//SERVER_FUNCTIONS.databaseInit();
 
 app.use(function (req, res, next) {
 	res.header("Access-Control-Allow-Origin", "*");
@@ -316,10 +316,10 @@ async function preencheDoc(req, res, next) {
 	
 	
 	//buscaPJPorCnpj(cnpj); //TODO : adaptar a funcao de busca para retornar os dados e preencher na funcao abaixo.
-	await serverFunctions.buscaDadosCNPJ(cnpj, address, CAMINHO_MODELO_DECLARACAO_CONTA_DIGITAL, mockPJ, res);
+	await SERVER_FUNCTIONS.buscaDadosCNPJ(cnpj, address, CAMINHO_MODELO_DECLARACAO_CONTA_DIGITAL, mockPJ, res);
 	//console.log("resultado pj: " + pj )
 		
-	//let retornoDeclaracao 	= await serverFunctions.preencheDeclaracao(cnpj, address, pj, CAMINHO_MODELO_DECLARACAO_CONTA_DIGITAL, mockPJ);
+	//let retornoDeclaracao 	= await SERVER_FUNCTIONS.preencheDeclaracao(cnpj, address, pj, CAMINHO_MODELO_DECLARACAO_CONTA_DIGITAL, mockPJ);
 	//console.log('retornoDeclaracao');
 	//console.log(retornoDeclaracao);
 	//res.download(retornoDeclaracao);
@@ -377,7 +377,7 @@ function trataUpload(req, res, next) {
 				// A better way to copy the uploaded file. 
 				const src  = fs.createReadStream(tmp_path);
 				const cnpjEsperado = cnpj;
-				let retornoValidacaoCert = serverFunctions.validateDocumentSignature(src, cnpjEsperado, true);
+				let retornoValidacaoCert = SERVER_FUNCTIONS.validateDocumentSignature(src, cnpjEsperado, true);
 				if ( retornoValidacaoCert == 0 ) {
 					const dest = fs.createWriteStream(target_path);
 					src.pipe(dest);
@@ -416,7 +416,7 @@ async function buscaFileInfo(req, res) {
 		let tipo     		  = req.body.tipo;
 		let hashFile 		  = req.body.hashFile;		
 
-		let filePathAndNameToFront = await buscaTipoArquivo(cnpj, contrato, blockchainAccount, tipo, hashFile);
+		let filePathAndNameToFront = await SERVER_FUNCTIONS.buscaTipoArquivo(cnpj, contrato, blockchainAccount, tipo, hashFile);
 
 		let respJson = {
 			pathAndName: filePathAndNameToFront
@@ -433,55 +433,6 @@ async function buscaFileInfo(req, res) {
 		return;
 	}
 
-}
-
-async function buscaTipoArquivo(cnpj, contrato, blockchainAccount, tipo, hashFile) {
-	let targetPathToCalculateHash;
-	
-	if (tipo=="declaracao") {
-		let fileName = montaNomeArquivoDeclaracao(cnpj, contrato, blockchainAccount, hashFile);
-		filePathAndNameToFront = config.infra.caminhoDeclaracao + fileName;
-		targetPathToCalculateHash = DIR_CAMINHO_DECLARACAO + fileName;	
-	}		
-	else if (tipo=="comp_doacao") {
-		let fileName = montaNomeArquivoComprovanteDoacao(cnpj, hashFile);			
-		filePathAndNameToFront = config.infra.caminhoComprovanteDoacao + fileName;
-		targetPathToCalculateHash = DIR_CAMINHO_COMPROVANTE_DOACAO + fileName;	
-	}
-	else if (tipo=="comp_liq") {
-		let fileName = montaNomeArquivoComprovanteLiquidacao(cnpj, contrato, hashFile);						
-		filePathAndNameToFront = config.infra.caminhoComprovanteLiquidacao + fileName;
-		targetPathToCalculateHash = DIR_CAMINHO_COMPROVANTE_LIQUIDACAO + fileName;	
-	}
-	else {
-		throw "erro tipo desconhecido para buscar arquivo";
-	}
-	//verifica integridade do arquivo
-	let hashedResult = await calculaHash(targetPathToCalculateHash);
-
-	if ( hashedResult != hashFile ) {
-		let msg = "Erro conferir o hash do arquivo.";
-		console.log(msg);
-		throw msg;
-		//res.sendStatus(506);
-	}
-	else {
-		console.log("Hash correto");
-	}
-
-	return filePathAndNameToFront;
-}
-
-function montaNomeArquivoDeclaracao(cnpj, contrato, blockchainAccount, hashFile) {
-	return ("DECL" + "_" + cnpj + '_' + contrato + '_' + blockchainAccount + '_' + hashFile +  '.PDF');
-}
-
-function montaNomeArquivoComprovanteDoacao(cnpj, hashFile) {
-	return ("COMP_DOACAO" + "_" + cnpj + '_' + hashFile +  '.PDF');
-}
-
-function montaNomeArquivoComprovanteLiquidacao(cnpj, contrato, hashFile) {
-	return ("COMP_LIQ" + "_" + cnpj + '_' + contrato + '_' + hashFile +  '.PDF');
 }
 
 // listen (start app with node server.js) ======================================
