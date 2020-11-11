@@ -7,9 +7,10 @@ import { ListacontasComponent } from './listacontas/listacontas.component';
 import { ValidarContaAdminComponent } from './validar-conta-admin/validar-conta-admin.component';
 import { PauseClienteComponent } from './pause-cliente/pause-cliente.component';
 import { PauseAdminComponent } from './pause-admin/pause-admin.component';
+import { HomeComponent } from './home/home.component';
 
 const routes: Routes = [
-  { path: 'home', component: TemplateComponent,
+  { path: '', component: TemplateComponent,
     children: [
       {
         path: 'associa/admin', component: AssociaContaAdminComponent
@@ -28,6 +29,9 @@ const routes: Routes = [
       },
       {
         path: 'pause/admin', component: PauseAdminComponent
+      },
+      {
+        path: '', component: HomeComponent
       }
     ]
   },
