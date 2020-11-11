@@ -62,10 +62,10 @@ export class PessoaJuridicaService {
   }
   
   //CHAMA BACKEND PARA FAZER A DECLARACAO PREENCHIDA
-  pedeDeclaracao( cnpj: string ): Observable<any> {
+  pedeDeclaracao( cnpj: string, address: string ): Observable<any> {
     console.log("pessoaJuridicaService.pedeDeclaracao(cnpj)");
 
-    let empresaObservable = this.http.get<Object>(this.serverUrl +'preenchedoc/' + cnpj ,   {'responseType': 'json'} )     
+    let empresaObservable = this.http.get<Object>(this.serverUrl +'preenchedoc/' + cnpj + '/' + address ,   {'responseType': 'json'} )     
                                       .catch(this.handleError);
                                       
     return empresaObservable;
@@ -95,7 +95,7 @@ export class PessoaJuridicaService {
 
   formatClientOperationAPI (pessoaJuridica) {
 
-    console.log('empresa retornada do GET:' +  JSON.stringify(pessoaJuridica));    
+    //console.log('empresa retornada do GET:' +  JSON.stringify(pessoaJuridica));    
 
     if (pessoaJuridica && pessoaJuridica.operacoes && pessoaJuridica.operacoes.length>0) {
 

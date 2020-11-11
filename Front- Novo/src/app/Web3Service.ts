@@ -243,7 +243,7 @@ export class Web3Service {
         let self = this;
         console.log("getPJInfo com addr=" + addr);
         console.log("RBBRegistrySmartContract=" + this.RBBRegistrySmartContract);
-        return this.RBBRegistrySmartContract.getLegalEntityInfo(addr,
+        return this.RBBRegistrySmartContract.getRegistry(addr,
             (error, result) => {
                 if (error) fError(error);
                 else {

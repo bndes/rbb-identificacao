@@ -4,10 +4,13 @@ const axios         = require('axios').default;
 const FormData      = require('form-data')
 const fs            = require('fs');
 const mock_vra      = require('./mock_vra.json');
+const https      	= require ('https');
+const { json } = require('express');
 
 module.exports = {  uploadFileAndMakeTransaction,  
                     validateDocumentSignature,
-                    preencheDeclaracao
+                    preencheDeclaracao,
+                    buscaDadosCNPJ
                 };
 
 async function uploadFileAndMakeTransaction(_req, _res) {
@@ -29,10 +32,159 @@ async function uploadFileAndMakeTransaction(_req, _res) {
 
 }
 
-function preencheDeclaracao(cnpj, modelo) {
-    console.log("preenche declaracao");
-    let declaracao = 'arquivos/modelo_declaracao/MODELO_CADASTRO.txt';//modelo; //TODO!
-    return declaracao;
+async function preencheDeclaracao(cnpj, address, pj, modelo, mockPJ,res) {
+  
+    const arquivoModelo = require ('./arquivos/modelo_declaracao/MODELO_CADASTRO.json'); //TODO: colocar no config
+
+    var stringified = JSON.stringify(arquivoModelo);
+    stringified = stringified.replace('##CNPJ##', cnpj );
+    stringified = stringified.replace('##ADDRESS##', address );
+    stringified = stringified.replace('##RAZAOSOCIAL##', pj.dadosCadastrais.razaoSocial );
+    stringified = stringified.replace('##LOGRADOURO##', pj.dadosCadastrais.logradouro );
+    stringified = stringified.replace('##NUMERO##', pj.dadosCadastrais.numero );
+    stringified = stringified.replace('##BAIRRO##', pj.dadosCadastrais.bairro );
+    stringified = stringified.replace('##MUNICIPIO##', pj.dadosCadastrais.municipio );
+    stringified = stringified.replace('##UF##', pj.dadosCadastrais.uf );
+    stringified = stringified.replace('##PAIS##', "BRASIL" );
+    stringified = stringified.replace('##CNPJ##', cnpj );
+    stringified = stringified.replace('##ADDRESS##', address );
+    stringified = stringified.replace('##RAZAOSOCIAL##', pj.dadosCadastrais.razaoSocial );
+    
+    console.log(pj)    
+
+    console.log(stringified);
+    const caminho = './arquivos/tmp/stringified.json';
+    fs.writeFileSync(caminho, stringified);
+
+    res.download(caminho);
+}
+
+async function buscaDadosCNPJ (cnpj, address, CAMINHO_MODELO_DECLARACAO_CONTA_DIGITAL, mockPJ, res) {
+    //console.log('buscaDadosCNPJ::mockPJ=' + mockPJ);
+    let cnpjRecebido = cnpj;
+let retorno;
+    let isNum = /^\d+$/.test(cnpjRecebido);
+
+    if (!isNum) {	
+        //console.log("!isNum");
+        retorno = {};
+        return retorno;
+    }
+
+
+    if (mockPJ) {
+        //console.log("mock PJ ON!");
+
+        if ( cnpjRecebido == undefined || cnpjRecebido == '00000undefined' || cnpjRecebido == '00000000000000')	{
+            //console.log("cnpj com problema");
+            retorno = {};
+            return await processaRetornoBuscaDadosCNPJ(cnpj, address, retorno, CAMINHO_MODELO_DECLARACAO_CONTA_DIGITAL, mockPJ,res);
+        }
+        
+        https.get('https://www.receitaws.com.br/v1/cnpj/' + cnpjRecebido, (resp)  => {
+            let data = '';
+
+            resp.on('data', (chunk) => {
+                data += chunk;
+            });
+
+            resp.on('end', async () => {
+                if (data == "Too many requests, please try again later.") {
+
+                    //console.log(data);
+                    let pj = {
+                        cnpj: "00000000000000",
+                        dadosCadastrais: {
+                            razaoSocial: "Serviço da Receita Indisponível"
+                        }
+                    };
+                    retorno = pj;
+                    return await processaRetornoBuscaDadosCNPJ(cnpj, address, retorno, CAMINHO_MODELO_DECLARACAO_CONTA_DIGITAL, mockPJ,res);
+                }
+                else {
+                    console.log("else");
+
+                    try {
+                        jsonData = await JSON.parse(data);
+                    } catch (e) {
+                        console.log("catch");
+                        return await processaRetornoBuscaDadosCNPJ(cnpj, address, pj, CAMINHO_MODELO_DECLARACAO_CONTA_DIGITAL, mockPJ, res);
+                        
+                    }
+                    //console.log(jsonData);
+
+                    let pj = {
+                        cnpj: cnpjRecebido,
+                        dadosCadastrais: {
+                            razaoSocial: jsonData.nome,
+                            logradouro: jsonData.logradouro,
+                            numero:     jsonData.numero,
+                            bairro:     jsonData.bairro,
+                            cep:        jsonData.cep,
+                            municipio:  jsonData.municipio,
+                            uf:         jsonData.uf
+                        }
+                    };
+                    console.log("pj=");
+                    console.log(pj);
+                    return await processaRetornoBuscaDadosCNPJ(cnpj, address, pj, CAMINHO_MODELO_DECLARACAO_CONTA_DIGITAL, mockPJ, res);
+                    
+                }
+
+            });
+        }).on("error", (err) => {
+            console.log("Erro ao buscar mock da API: " + err.message);
+        });
+
+    }
+    else {
+
+        new sql.ConnectionPool(configAcessoBDPJ).connect().then(pool => {
+            return pool.request()
+                                 .input('cnpj', sql.VarChar(14), cnpjRecebido)
+                                 .query(config.negocio.query_cnpj)
+            
+            }).then( async result => {
+                let rows = result.recordset
+
+                if (!rows[0]) {
+                    retorno = {};
+                    return await processaRetornoBuscaDadosCNPJ(cnpj, address, retorno, CAMINHO_MODELO_DECLARACAO_CONTA_DIGITAL, mockPJ,res);
+                    
+                }
+
+                let pj = 	
+                {
+                    cnpj: rows[0]["CNPJ_EMPRESA"],
+                    dadosCadastrais: {
+                        razaoSocial: rows[0]["NOME_EMPRESARIAL"]
+                    }
+                }
+
+                console.log("pj do QSA");				
+                console.log(pj);
+
+                sql.close();
+                retorno = pj;
+                return await processaRetornoBuscaDadosCNPJ(cnpj, address, retorno, CAMINHO_MODELO_DECLARACAO_CONTA_DIGITAL, mockPJ,res);
+                
+                
+
+
+            }).catch(async err => {
+                console.log(err);
+                retorno = { message: "${err}"};
+                sql.close();
+                return await processaRetornoBuscaDadosCNPJ(cnpj, address, retorno, CAMINHO_MODELO_DECLARACAO_CONTA_DIGITAL, mockPJ,res);
+                
+            });
+
+
+    }
+}	
+
+async function processaRetornoBuscaDadosCNPJ(cnpj, address, pj, CAMINHO_MODELO_DECLARACAO_CONTA_DIGITAL, mockPJ,res) {
+    return preencheDeclaracao(cnpj, address, pj, CAMINHO_MODELO_DECLARACAO_CONTA_DIGITAL, mockPJ,res);
 }
 
 function validateDocumentSignature(fileReadStream, cnpjEsperado, mock) {

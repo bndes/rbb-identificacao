@@ -59,30 +59,22 @@
         </div>
         <div class="row">
           <div class="form-group col-md-10 col-sm-10 ">
-              <label>Upload da declaração de propriedade e responsabilidade sobre conta blockchain, assinada com o e-CNPJ.</label>
-              <div class='darkblue'>
-              {{declaracao}}
-              </div>
+              <label>1. Download da declaração de propriedade e responsabilidade sobre conta blockchain</label>
+              <br>
+              <button type="button" placement="bottom" ngbTooltip="Baixar declaracao" (click)="createPdf()">
+                <i class="fa fa-floppy-o" aria-hidden="true"></i> Baixar declaração
+              </button>
+              
           </div>
         </div>
         <div class="row">
           <div class="form-group col-md-10 col-sm-10">
-            <label>2. Preencha a declaração no Word com os dados da sua instituição e salve o documento como PDF</label>
+            <label>2. Assine a declaração com seu E-CNPJ. Em caso de dúvida, vejo nosso roteiro <a target="_blank" href="{{fileHandleService.getCaminhoRoteiroAssinaturaDigital()}}">aqui</a>.</label>
           </div>
         </div>  
         <div class="row">
           <div class="form-group col-md-10 col-sm-10">
-            <label>3. Clique <a target="_blank" href="{{fileHandleService.getCaminhoRoteiroAssinaturaDigital()}}">aqui</a> para baixar o Roteiro para Assinatura Digital</label>
-          </div>
-        </div>       
-        <div class="row">
-          <div class="form-group col-md-10 col-sm-10">
-            <label>4. Siga as instruções para assinar o PDF da declaração com seu e-CNPJ, e gerar um novo PDF assinado digitalmente</label>
-          </div>
-        </div>       
-        <div class="row">
-          <div class="form-group col-md-10 col-sm-10">
-            <label>5. Faça upload do PDF da Declaração assinado digitalmente</label>
+            <label>3. Faça upload do PDF da Declaração assinado digitalmente</label>
           </div>
         </div>                                         
         <div class="row">                 
@@ -96,7 +88,8 @@
 
     </div>
 
-    
+    <div class="conteudo form-group" *ngIf="cliente.dadosCadastrais" >
+         
 
     <div class="form-group" >
       
@@ -113,6 +106,7 @@
 
   </div>
   
-
 </div>
+
+
 <app-metamsg *ngIf="!selectedAccount"></app-metamsg>

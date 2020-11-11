@@ -306,15 +306,24 @@ console.log('/api/pj-por-cnpj::mockPJ=' + mockPJ);
 
 	}	
 
-app.get('/api/preenchedoc/:cnpj', preencheDoc);
+app.get('/api/preenchedoc/:cnpj/:address', preencheDoc);
 
-function preencheDoc(req, res, next) {
-
-	let cnpj = req.params.cnpj;
+async function preencheDoc(req, res, next) {
 	console.log("preencheDoc")
-	console.log("cnpj: " + cnpj )
-	let retornoDeclaracao = serverFunctions.preencheDeclaracao(cnpj, CAMINHO_MODELO_DECLARACAO_CONTA_DIGITAL);
-	res.download(retornoDeclaracao);
+
+	let cnpj = req.params.cnpj.toString().replace(" ","");
+	let address = req.params.address.toString().replace(" ","");
+	
+	
+	//buscaPJPorCnpj(cnpj); //TODO : adaptar a funcao de busca para retornar os dados e preencher na funcao abaixo.
+	await serverFunctions.buscaDadosCNPJ(cnpj, address, CAMINHO_MODELO_DECLARACAO_CONTA_DIGITAL, mockPJ, res);
+	//console.log("resultado pj: " + pj )
+		
+	//let retornoDeclaracao 	= await serverFunctions.preencheDeclaracao(cnpj, address, pj, CAMINHO_MODELO_DECLARACAO_CONTA_DIGITAL, mockPJ);
+	//console.log('retornoDeclaracao');
+	//console.log(retornoDeclaracao);
+	//res.download(retornoDeclaracao);
+	
 	
 }
 
