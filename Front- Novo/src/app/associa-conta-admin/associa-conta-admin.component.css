@@ -1,6 +1,13 @@
 
 @import url('https://fonts.googleapis.com/css?family=Nunito:400,900|Montserrat|Roboto');
 
+body{
+  background-color: #268744;
+  width: 100%;
+  top: 0%;
+}
+
+
 .container {
   background: #FFFFFF;
   margin-left: 20%;

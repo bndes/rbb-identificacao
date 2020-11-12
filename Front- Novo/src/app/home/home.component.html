@@ -1,1 +1,30 @@
-<p>home works!</p>
+
+<body>
+<div class="container">    
+    <div class="rightbox">
+        <br>
+        <h2>Bem vindo a Rede Brasileira de Blockchain!</h2>
+        <button class="content" class="nav-link" [routerLink]="['associa/cliente']" routerLinkActive="active" 
+        [routerLinkActiveOptions]="{exact: true}" style="height: 20%; width: 70%; margin-top: 2%; margin-left: 5%;  font-size: 18px;" class="br-button primary" type="button">Associação de Conta Regular
+        </button>
+        <br>
+        <button class="content" class="nav-link" [routerLink]="['associa/admin']" routerLinkActive="active" 
+        [routerLinkActiveOptions]="{exact: true}" style="height: 20%; width: 70%;  margin-top: 3%; margin-left: 5%;  font-size: 18px;" class="br-button primary" type="button">Associação de Conta Administrador <br>(Requer E-CNPJ)
+        </button>
+        <br>
+        <button class="content" class="nav-link" [routerLink]="['associa/contas']" routerLinkActive="active" 
+        [routerLinkActiveOptions]="{exact: true}" style="height: 20%; width: 70%;  margin-top: 2%; margin-left: 5%;  font-size: 18px;" class="br-button primary" type="button">Listar Contas Associadas
+        </button>
+        <br>
+        <button class="content" class="nav-link" [routerLink]="['validar']" routerLinkActive="active" 
+        [routerLinkActiveOptions]="{exact: true}" style="height: 20%; width: 70%;  margin-top: 3%; margin-left: 5%;  font-size: 18px;" class="br-button primary" type="button">Gerenciar Contas
+        </button>
+        <br>
+    </div>
+    
+</div>
+<div class="leftbox">
+    <h1>RBB - Identificação</h1>
+</div>
+
+</body>
