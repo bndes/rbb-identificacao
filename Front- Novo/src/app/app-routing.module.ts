@@ -8,35 +8,36 @@ import { ValidarContaAdminComponent } from './validar-conta-admin/validar-conta-
 import { PauseClienteComponent } from './pause-cliente/pause-cliente.component';
 import { PauseAdminComponent } from './pause-admin/pause-admin.component';
 import { HomeComponent } from './home/home.component';
+import { CallComponent } from './call/call.component';
 
 const routes: Routes = [
   { path: '', component: TemplateComponent,
     children: [
       {
-        path: 'associa/admin', component: AssociaContaAdminComponent
+        path: 'home/associa/admin', component: AssociaContaAdminComponent
       },
       {
-        path: 'associa/cliente', component: AssociaContaClienteComponent
+        path: 'home/associa/regular', component: AssociaContaClienteComponent
       },
       {
-        path: 'associa/contas', component: ListacontasComponent
+        path: 'home/associa/contas', component: ListacontasComponent
       },
       {
-        path: 'validar', component: ValidarContaAdminComponent
+        path: 'home/validar', component: ValidarContaAdminComponent
       },
       {
-        path: 'pause/cliente', component: PauseClienteComponent
+        path: 'home/pause/cliente', component: PauseClienteComponent
       },
       {
-        path: 'pause/admin', component: PauseAdminComponent
+        path: 'home/pause/admin', component: PauseAdminComponent
       },
       {
-        path: '', component: HomeComponent
+        path: 'home', component: HomeComponent
+      },
+      {
+        path: '', component: CallComponent
       }
     ]
-  },
-  {
-    path: '', component: TemplateComponent
   }
   ];
 
