@@ -1,6 +1,12 @@
 
 @import url('https://fonts.googleapis.com/css?family=Nunito:400,900|Montserrat|Roboto');
 
+body{
+  background-color: #268744;
+  width: 100%;
+  top: 0%;
+}
+
 .container {
   background: #FFFFFF;
   margin-left: 20%;
@@ -20,8 +26,8 @@
 }
 
 .leftbox {
-  float: left;
-  top: 28%;
+  
+  top: 25%;
   left: 18%;
   position: absolute;
   width: 40%;
@@ -141,7 +147,7 @@ p {
     position: absolute;
     width: 10%;
     height: 38%;
-    background:#4c73f5;
+    background:#1351b4;
     box-shadow: 5px 5px 12px rgba(#070707, .5);
     
 }

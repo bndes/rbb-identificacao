@@ -16,6 +16,8 @@ import { ListacontasComponent } from './listacontas/listacontas.component';
 import { ValidarContaAdminComponent } from './validar-conta-admin/validar-conta-admin.component';
 import { PauseClienteComponent } from './pause-cliente/pause-cliente.component';
 import { PauseAdminComponent } from './pause-admin/pause-admin.component';
+import { HomeComponent } from './home/home.component';
+import { CallComponent } from './call/call.component';
 
 
 
@@ -33,6 +35,8 @@ import { PauseAdminComponent } from './pause-admin/pause-admin.component';
     ValidarContaAdminComponent,
     PauseClienteComponent,
     PauseAdminComponent,
+    HomeComponent,
+    CallComponent,
    
   ],
   imports: [
