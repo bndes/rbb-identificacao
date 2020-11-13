@@ -248,11 +248,31 @@ contract RBBRegistry is Ownable() {
     * The invalidation can be called at any time in the lifecycle of the address (not only when it is WAITING_VALIDATION)
     * @param addr Ethereum address that needs to be validated
     */
-    function invalidateRegistry(address addr) public onlyWhenNotPaused onlyWhenNotExpired {
+    function invalidateRegistrySameOrg(address addr) public onlyWhenNotPaused onlyWhenNotExpired {
 
         address responsible = msg.sender;
 
         require( legalEntitiesInfo[responsible].role == BlockchainAccountRole.ADMIN, "Apenas conta ADMIN pode invalidar contas. ");
+        require( isTheSameID(responsible, addr) , "Apenas contas da mesma organizacao podem ser validadas. ");
+        require( legalEntitiesInfo[addr].role != BlockchainAccountRole.SUPADMIN , "A conta SUPADMIN não pode ser invalidada");
+        require( legalEntitiesInfo[addr].state != BlockchainAccountState.INVALIDATED, "A conta foi invalidada previamente." );
+
+        legalEntitiesInfo[addr].state = BlockchainAccountState.INVALIDATED;
+        
+        emit AccountInvalidation(   addr, 
+                                    legalEntitiesInfo[addr].RBBId, 
+                                    legalEntitiesInfo[addr].CNPJ, 
+                                    responsible );
+    }
+
+    /*
+    * @param addr Ethereum address that needs to be validated
+    */
+    function invalidateRegistry(address addr) public onlyWhenNotPaused onlyWhenNotExpired {
+
+        address responsible = msg.sender;
+
+        require( legalEntitiesInfo[responsible].role == BlockchainAccountRole.SUPADMIN, "Apenas SUPADMIN pode invalidar a conta. ");
         require( legalEntitiesInfo[addr].role != BlockchainAccountRole.SUPADMIN , "A conta SUPADMIN não pode ser invalidada");
         require( legalEntitiesInfo[addr].state != BlockchainAccountState.INVALIDATED, "A conta foi invalidada previamente." );
 

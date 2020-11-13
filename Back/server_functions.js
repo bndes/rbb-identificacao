@@ -11,7 +11,10 @@ module.exports = {  validateDocumentSignature,
                     preencheDeclaracao,
                     buscaDadosCNPJ,
                     buscaTipoArquivo,
-                    calculaHash
+                    calculaHash,
+                    montaNomeArquivoDeclaracao,
+                    montaNomeArquivoComprovanteDoacao,
+                    montaNomeArquivoComprovanteLiquidacao
                 };
 
 const DIR_CAMINHO_DECLARACAO = config.infra.caminhoArquivos + config.infra.caminhoDeclaracao;
@@ -240,7 +243,8 @@ function declaracaoEstaValida(grauConformidade, certificadoVigente, cnpjCertific
 }
 
 async function buscaTipoArquivo(cnpj, contrato, blockchainAccount, tipo, hashFile) {
-	let targetPathToCalculateHash;
+    console.log("buscaTipoArquivo");
+    let targetPathToCalculateHash;
 	
 	if (tipo=="declaracao") {
 		let fileName = montaNomeArquivoDeclaracao(cnpj, contrato, blockchainAccount, hashFile);
@@ -259,7 +263,9 @@ async function buscaTipoArquivo(cnpj, contrato, blockchainAccount, tipo, hashFil
 	}
 	else {
 		throw "erro tipo desconhecido para buscar arquivo";
-	}
+    }
+    console.log("targetPathToCalculateHash");
+    console.log(targetPathToCalculateHash);
 	//verifica integridade do arquivo
 	let hashedResult = await calculaHash(targetPathToCalculateHash);
 

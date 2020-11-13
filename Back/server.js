@@ -353,15 +353,15 @@ function trataUpload(req, res, next) {
 				let target_path = "";
 
 				if (tipo=="declaracao") {					
-					let fileName = montaNomeArquivoDeclaracao(cnpj, contrato, conta, hashedResult);
+					let fileName = SERVER_FUNCTIONS.montaNomeArquivoDeclaracao(cnpj, contrato, conta, hashedResult);
 					target_path = DIR_CAMINHO_DECLARACAO + fileName;
 				}
 				else if (tipo=="comp_doacao") {
-					let fileName = montaNomeArquivoComprovanteDoacao(cnpj, hashedResult);
+					let fileName = SERVER_FUNCTIONS.montaNomeArquivoComprovanteDoacao(cnpj, hashedResult);
 					target_path = DIR_CAMINHO_COMPROVANTE_DOACAO + fileName;
 				}
 				else if (tipo=="comp_liq") {
-					let fileName = montaNomeArquivoComprovanteLiquidacao(cnpj, contrato, hashedResult);
+					let fileName = SERVER_FUNCTIONS.montaNomeArquivoComprovanteLiquidacao(cnpj, contrato, hashedResult);
 					target_path = DIR_CAMINHO_COMPROVANTE_LIQUIDACAO + fileName;
 				}		
 				else {

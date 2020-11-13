@@ -20,7 +20,8 @@ const gasLimit   = "53000"; //FIXME
 const provider   = new ethers.providers.JsonRpcProvider('http://localhost:9545');
 const wallet     = new ethers.Wallet(privateKey, provider);
 
-let contractAddress = "0xeFDE680898e90cf837ef7D372021df4AAAecaE87";
+let contractAddress = config.infra.endereco_BNDESRegistry;
+
 let RBBRegistry;
 
 //requestETH('0x840629315b87406fFB85b56A2EF4A3db57A94AC7');
@@ -76,6 +77,11 @@ async function initContract() {
 
 }
 
+function completarCnpjComZero(cnpj){
+    return ("00000000000000" + cnpj).slice(-14)
+ }
+
+
 async function listenEvent() {
     console.log("");
     console.log("Listening to event AccountRegistration ...");
@@ -87,6 +93,14 @@ async function listenEvent() {
         console.log(CNPJ);    
         console.log(hashProof);
         console.log(dateTimeExpiration);
+
+        CNPJ = completarCnpjComZero(CNPJ);
+
+
+//FIXME //TODO //BUG
+hashProof = "4ada3ccb8aa32b2472004976b5e1508990c6cc20c5bfde55adddbfae197e3ec0"          
+
+
 
         let RBBRegistryWithSigner = RBBRegistry.connect(wallet);
 
@@ -100,11 +114,13 @@ async function listenEvent() {
             await tx.wait();
             console.log("O cadastro foi validado.");
         } catch(err) {
+            
             console.log("Nao conseguiu encontrar o arquivo da declaracao.");
             let tx = await RBBRegistryWithSigner.invalidateRegistry(addr);
             console.log(tx.hash);
             await tx.wait();
             console.log("O cadastro foi invalidado.");
+            
         }
 
     });
