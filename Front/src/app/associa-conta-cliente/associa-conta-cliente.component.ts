@@ -307,8 +307,13 @@ export class AssociaContaClienteComponent implements OnInit, DeclarationComponen
        pagesplit: true
     };
     console.log(pdf);
-    pdf.text(this.declaracao_titulo,100,100);
-    pdf.text(this.declaracao_corpo,100,300);
+    
+    const splitTitulo = pdf.splitTextToSize(this.declaracao_titulo, 540);
+    pdf.text(splitTitulo,30,100);
+
+    const splitCorpo = pdf.splitTextToSize(this.declaracao_corpo, 540);
+    pdf.text(splitCorpo,30,200);
+    
     pdf.save("declaracao_rbb_para_assinar.pdf");
     
  }
