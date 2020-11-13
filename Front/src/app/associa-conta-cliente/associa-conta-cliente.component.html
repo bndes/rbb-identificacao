@@ -13,7 +13,7 @@
         </div>
 
         <div class="form-group col-md-4 col-sm-4">
-          <label>CNPJ do Cliente:</label>
+          <label>Informe o CNPJ:</label>
           <input name="cnpjWithMask" [(ngModel)]="cliente.cnpjWithMask"  class="form-control form-control-sm" (input)="changeCnpj()" 
           [textMask]="{mask: maskCnpj}" required [disabled]="this.flagUploadConcluido" />
         </div>
@@ -54,30 +54,41 @@
 
         <div class="row">
           <div class="form-group col-md-12 col-sm-12">
-            <p>Upload de Declaração</p>
+            <p>Procedimento de Declaração</p>
           </div>
         </div>
         <div class="row">
           <div class="form-group col-md-10 col-sm-10 ">
-              <label>1. Download da declaração de propriedade e responsabilidade sobre conta blockchain</label>
-              <br>
-              <button type="button" placement="bottom" ngbTooltip="Baixar declaracao" (click)="createPdf()">
-                <i class="fa fa-floppy-o" aria-hidden="true"></i> Baixar declaração
-              </button>
-              
+              <label>1. Antes de começar, certifique-se que você tem o <b>Adobe Reader</b> instalado em sua máquina. Caso não tenha, clique <a target="_blank" href="https://get2.adobe.com/br/reader/">aqui</a> para instalar</label>
+              <br>              
           </div>
         </div>
         <div class="row">
           <div class="form-group col-md-10 col-sm-10">
-            <label>2. Assine a declaração com seu E-CNPJ. Em caso de dúvida, vejo nosso roteiro <a target="_blank" href="{{fileHandleService.getCaminhoRoteiroAssinaturaDigital()}}">aqui</a>.</label>
+            <label>2. Clique <a target="_blank" href="{{fileHandleService.getCaminhoRoteiroAssinaturaDigital()}}">aqui</a> para ler o <b>Roteiro de Instruções</b> para essa etapa. </label>
           </div>
         </div>  
         <div class="row">
           <div class="form-group col-md-10 col-sm-10">
-            <label>3. Faça upload do PDF da Declaração assinado digitalmente</label>
+            <label>3. Clique no botão abaixo para <b>salvar localmente</b> a Declaração de Propriedade e Responsabilidade sobre Conta Blockchain, e abrir com o Adobe Reader.</label>            
+            <button type="button" placement="bottom" ngbTooltip="Baixar declaracao" (click)="createPdf()">
+              <i class="fa fa-floppy-o" aria-hidden="true"></i> Baixar declaração
+            </button>
           </div>
-        </div>                                         
+        </div>     
+        
+        <div class="row">
+          <div class="form-group col-md-10 col-sm-10">
+            <label>4. Seguindo as instruções do Roteiro, <b>assine a declaração digitalmente com seu e-CNPJ</b> conectado ao computador. </label>
+          </div>
+        </div>  
+
+        
+
         <div class="row">                 
+          <div class="form-group col-md-10 col-sm-10">
+            <label>5. Clique no botão abaixo para <b>fazer upload do PDF</b> da Declaração assinado digitalmente. </label>
+          </div>
           <div class="form-group col-md-10 col-sm-10">
               <input ng2FileSelect id="arquivo" type="file" accept=".pdf" [uploader]="this.fileHandleService.uploader" (change)="this.fileHandleService.chamaUpload()" /> 
               <div class="msg-hash-declaracao" *ngIf="hashdeclaracao">
@@ -92,14 +103,17 @@
          
 
     <div class="form-group" >
-      
-    
+      <div class="row">
+        <div class="form-group col-md-12 col-sm-12">
+          <p>Gravação na Blockchain</p>
+        </div>
+      </div>      
 
       <button type="button" class="btn btn-success btn-cabecalho" placement="bottom" ngbTooltip="Enviar" (click)="associarContaCliente()">
         <i class="fa fa-floppy-o" aria-hidden="true"></i> Enviar
       </button>
 
-      <button type="button" class="btn btn-success btn-cabecalho" placement="bottom" ngbTooltip="Cancelar" (click)="cancelar()">
+      <button type="button" class="btn btn-outline-success btn-cabecalho" placement="bottom" ngbTooltip="Cancelar" (click)="cancelar()">
         Cancelar
       </button>
     </div>
