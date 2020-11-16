@@ -282,7 +282,7 @@ export class AssociaContaAdminComponent implements OnInit {
                                                 "A associação foi confirmada na blockchain.", 
                                                 self.zone) 
                                                 */
-            self.router.navigate(['registro/dash-empresas']);
+            self.router.navigate(['home/associa/contas']);
             
             }        
           ,(error) => {
