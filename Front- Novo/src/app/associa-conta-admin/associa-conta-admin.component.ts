@@ -6,7 +6,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 //import { BnAlertsService } from 'bndes-ux4';
 import { jsPDF } from "jspdf";
 
-import { Cliente, Subcredito } from './Cliente';
+import { Cliente, Subcredito } from '../shared/Cliente';
 import { PessoaJuridicaService } from '../pessoa-juridica.service';
 import { Web3Service } from './../Web3Service';
 //import { Utils } from '../shared/utils';
