@@ -47,9 +47,11 @@ export class PessoaJuridicaService {
     let self = this;
 
     if (!this.mockMongoClient) {
-        return this.http.get<Object>(this.operationAPIURL + str_cnpj )
+        let empresaObservable = this.http.get<Object>(this.operationAPIURL + str_cnpj )
         .do(pessoaJuridica => self.formatClientOperationAPI(pessoaJuridica))        
         .catch(this.handleError);
+
+        return empresaObservable;
 
     }
     else {
@@ -58,7 +60,16 @@ export class PessoaJuridicaService {
       .catch(this.handleError);
     }
   }
+  
+  //CHAMA BACKEND PARA FAZER A DECLARACAO PREENCHIDA
+  pedeDeclaracao( cnpj: string, address: string ): Observable<any> {
+    console.log("pessoaJuridicaService.pedeDeclaracao(cnpj)");
 
+    let empresaObservable = this.http.get<Object>(this.serverUrl +'preenchedoc/' + cnpj + '/' + address ,   {'responseType': 'json'} )     
+                                      .catch(this.handleError);
+                                      
+    return empresaObservable;
+  }
 
   recuperaEmpresaPorCnpj(cnpj: string, ): Observable<any> {
     let str_cnpj = new String(cnpj)
@@ -84,7 +95,7 @@ export class PessoaJuridicaService {
 
   formatClientOperationAPI (pessoaJuridica) {
 
-    console.log('empresa retornada do GET:' +  JSON.stringify(pessoaJuridica));    
+    //console.log('empresa retornada do GET:' +  JSON.stringify(pessoaJuridica));    
 
     if (pessoaJuridica && pessoaJuridica.operacoes && pessoaJuridica.operacoes.length>0) {
 

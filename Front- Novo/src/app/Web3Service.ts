@@ -162,8 +162,8 @@ export class Web3Service {
         this.eventoCadastro = this.RBBRegistrySmartContract.AccountInvalidation({}, { fromBlock: 0, toBlock: 'latest' });
         this.eventoCadastro.watch(callback);
     }    
-    registraEventosAdminUpgrade(callback) {
-        this.eventoCadastro = this.RBBRegistrySmartContract.AccountAdminUpgrade({}, { fromBlock: 0, toBlock: 'latest' });
+    registraEventosRoleChange(callback) {
+        this.eventoCadastro = this.RBBRegistrySmartContract.AccountRoleChange({}, { fromBlock: 0, toBlock: 'latest' });
         this.eventoCadastro.watch(callback);
     }
     registraEventosPausa(callback) {        
@@ -216,14 +216,15 @@ export class Web3Service {
         fSuccess: any, fError: any) {
 
         let contaBlockchain = await this.getCurrentAccountSync();    
-
+        
         console.log("Web3Service - Cadastra")
         console.log("CNPJ: " + cnpj +  
-            ", hashdeclaracao: " + hashdeclaracao
+            ", hashdeclaracao: " + hashdeclaracao 
             )
 
         this.RBBRegistrySmartContract.registryLegalEntity(cnpj, 
-            hashdeclaracao, 
+            //this.web3Instance.fromAscii(hashdeclaracao), 
+            0x4ada3ccb8aa32b2472004976b5e1508990c6cc20c5bfde55adddbfae197e3ec0, //FIXME
             { from: contaBlockchain, gas: 500000 },
             (error, result) => {
                 if (error) fError(error);
@@ -242,12 +243,14 @@ export class Web3Service {
     getPJInfo(addr: string, fSuccess: any, fError: any): number {
         let self = this;
         console.log("getPJInfo com addr=" + addr);
-        console.log("RBBRegistrySmartContract=" + this.RBBRegistrySmartContract);
+        console.log("RBBRegistrySmartContract=");
+        console.log(this.RBBRegistrySmartContract);
         return this.RBBRegistrySmartContract.getRegistry(addr,
             (error, result) => {
                 if (error) fError(error);
                 else {
                     let pjInfo = self.montaPJInfo(result);
+                    pjInfo.address = addr; //apendice com endereco
                     fSuccess(pjInfo);
                 }
             });
@@ -282,7 +285,7 @@ export class Web3Service {
 
     isResponsibleForRegistryValidation(address: string, fSuccess: any, fError: any): boolean {
 
-        return this.RBBRegistrySmartContract.isResponsibleForRegistryValidation(address,
+        return this.RBBRegistrySmartContract.isSortOfAdmin(address,
             (error, result) => {
                 if (error) fError(error);
                 else fSuccess(result);
@@ -382,7 +385,7 @@ export class Web3Service {
         
         let contaBlockchain = await this.getCurrentAccountSync();    
 
-        this.RBBRegistrySmartContract.validateRegistryLegalEntity(address, 
+        this.RBBRegistrySmartContract.validateRegistrySameOrg(address, 
             { from: contaBlockchain, gas: 500000 },
             (error, result) => {
                 if(error) { fError(error); return false; }
@@ -394,7 +397,7 @@ export class Web3Service {
 
         let contaBlockchain = await this.getCurrentAccountSync();    
 
-        this.RBBRegistrySmartContract.invalidateRegistryLegalEntity(address, 
+        this.RBBRegistrySmartContract.invalidateRegistry(address, 
             { from: contaBlockchain, gas: 500000 },
             (error, result) => {
                 if(error) { fError(error); return false; }
@@ -429,13 +432,16 @@ export class Web3Service {
         let pjInfo: any;
 
         console.log(result);
+        
         pjInfo  = {};
-        pjInfo.cnpj = result[0].c[0];
-        pjInfo.hashDeclaracao = result[1];
-        pjInfo.status = result[2].c[0];
-        pjInfo.role = result[3].c[0];
-        pjInfo.paused = result[4];
-        pjInfo.address = result[5];
+        pjInfo.rbbid = result[0].c[0];
+        pjInfo.cnpj = result[1].c[0];
+        pjInfo.hashDeclaracao = result[2];
+        pjInfo.status = result[3].c[0];
+        pjInfo.role = result[4].c[0];
+        pjInfo.paused = result[5];
+        pjInfo.dateTimeExpiration = result[6];
+        //pjInfo.address = result[5];
 
         pjInfo.statusAsString = this.getEstadoContaAsStringByCodigo(pjInfo.status);
         pjInfo.roleAsString   = this.getPapelContaAsString(pjInfo.role);

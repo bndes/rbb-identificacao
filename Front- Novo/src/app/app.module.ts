@@ -20,6 +20,14 @@ import { HomeComponent } from './home/home.component';
 import { CallComponent } from './call/call.component';
 
 
+/* Services */
+import { Web3Service } from './Web3Service';
+import { PessoaJuridicaService } from './pessoa-juridica.service';
+import { FileHandleService } from './file-handle.service';
+import { ConstantesService } from './ConstantesService';
+import { GoogleMapsService } from './shared/google-maps.service';
+
+import { FileUploadModule } from 'ng2-file-upload';
 
 
 @NgModule({
@@ -46,10 +54,11 @@ import { CallComponent } from './call/call.component';
     BrowserAnimationsModule,
     FormsModule,
     ReactiveFormsModule,
-    MaterialModule
+    MaterialModule,
+    FileUploadModule
     
   ],
-  providers: [],
+  providers: [PessoaJuridicaService, Web3Service, ConstantesService, GoogleMapsService, FileHandleService ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
