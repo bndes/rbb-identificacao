@@ -14,7 +14,6 @@ import { DeclarationComponentInterface } from '../shared/declaration-component.i
 import { FileHandleService } from '../file-handle.service';
 
 
-
 @Component({
   selector: 'app-associa-conta-admin',
   templateUrl: './associa-conta-admin.component.html',

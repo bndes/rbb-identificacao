@@ -237,26 +237,9 @@ export class AssociaContaClienteComponent implements OnInit {
 
 
   async associarContaCliente() {
-
+console.log('associarContaCliente:: inicio')
     let self = this;
-
-    if (this.subcreditoSelecionado === undefined) {
-      let s = "O Contrato é um Campo Obrigatório";
-      //this.bnAlertsService.criarAlerta("error", "Erro", s, 2)
-      return
-    }
-
-    if (this.hashdeclaracao==undefined || this.hashdeclaracao==null) {
-      let s = "O envio da declaração é obrigatório";
-      //this.bnAlertsService.criarAlerta("error", "Erro", s, 2)
-      return
-    } 
-    else if (!Utils.isValidHash(this.hashdeclaracao)) {
-      let s = "O Hash da declaração está preenchido com valor inválido";
-      //this.bnAlertsService.criarAlerta("error", "Erro", s, 2)
-      return;
-    }
-      
+     
     this.web3Service.isContaDisponivel(this.selectedAccount, 
     
       (result) => {
@@ -269,8 +252,8 @@ export class AssociaContaClienteComponent implements OnInit {
 
         else {
 
-
-          this.web3Service.cadastra(parseInt(self.cliente.cnpj), self.hashdeclaracao,
+          this.hashdeclaracao = "0";
+          this.web3Service.cadastra(parseInt(self.cliente.cnpj), this.hashdeclaracao,
 
             (txHash) => {
   
