@@ -74,6 +74,7 @@ async function initContract() {
     // We connect to the Contract using a Provider, so we will only
     // have read-only access to the Contract
     RBBRegistry = new ethers.Contract(contractAddress, abi, provider);
+    console.log("Contract RBBRegistry at " + contractAddress);
 
 }
 
