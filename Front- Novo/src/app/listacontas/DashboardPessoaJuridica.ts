@@ -1,4 +1,5 @@
 export class DashboardPessoaJuridica {
+  RBBId : string;
   razaoSocial: string;
   cnpj: string;
   contaBlockchain: string;
@@ -8,5 +9,6 @@ export class DashboardPessoaJuridica {
   hashDeclaracao: string;
   dataHora: Date;
   perfil: string;
+  pausada: boolean;
   filePathAndName: string;
 }

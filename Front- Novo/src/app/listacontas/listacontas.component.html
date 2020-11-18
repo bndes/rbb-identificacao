@@ -22,7 +22,7 @@
        
         <ng-container matColumnDef="rbbid">
           <th mat-header-cell *matHeaderCellDef mat-sort-header> RBB ID </th>
-          <td mat-cell *matCellDef="let row"> {{row.cnpj}} </td>
+          <td mat-cell *matCellDef="let row"> {{row.RBBId}} </td>
         </ng-container>
     
         <ng-container matColumnDef="cnpj">
@@ -56,6 +56,11 @@
             'valid' : row.status == 'VALIDO',
             'invalid' : row.status == 'INVALIDO' 
          }" > {{row.status}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="pausada">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Desbloqueada </th>
+          <td mat-cell *matCellDef="let row"> {{!row.pausada}} </td>
         </ng-container>
 
         <ng-container matColumnDef="explorer">

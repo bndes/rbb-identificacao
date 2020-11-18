@@ -66,7 +66,7 @@ const TIMESTAMP: string[] = [
 })
 export class ListacontasComponent implements OnInit {
 
-  displayedColumns: string[] = ['rbbid', 'cnpj', 'name', 'address' , 'perfil', 'timestamp', 'situacao', 'explorer'];
+  displayedColumns: string[] = ['rbbid', 'cnpj', 'name', 'address' , 'perfil', 'timestamp', 'situacao', 'pausada', 'explorer'];
   dataSource: MatTableDataSource<DashboardPessoaJuridica>;
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
@@ -150,14 +150,15 @@ export class ListacontasComponent implements OnInit {
   
         this.selectedAccount = newSelectedAccount;
         console.log("selectedAccount=" + this.selectedAccount);
-        this.identificaUsuario();
+        this.usuario = this.recuperaRegistroBlockchain(this.selectedAccount);
       }
   
     }    
 
-  async identificaUsuario() {
-      if (this.selectedAccount != undefined && this.selectedAccount != null) {
-          this.usuario = await this.web3Service.getPJInfoSync(this.selectedAccount);
+  async recuperaRegistroBlockchain(enderecoBlockchain) : Promise<any> {
+      if (enderecoBlockchain != undefined && enderecoBlockchain != null) {
+          let usuario = await this.web3Service.getPJInfoSync(enderecoBlockchain);
+          return usuario;
       } else {
           console.log('this.usuario');
           console.log(this.usuario);
@@ -188,7 +189,7 @@ export class ListacontasComponent implements OnInit {
       console.log("*** Executou o metodo de registrar eventos CADASTRO");
 
       let self = this;        
-      this.web3Service.registraEventosCadastro(function (error, event) {
+      this.web3Service.registraEventosCadastro(async function (error, event) {
 
           if (!error) {
 
@@ -199,16 +200,18 @@ export class ListacontasComponent implements OnInit {
               console.log(eventoCadastro);
 
               transacaoPJ = {
-                  cnpj: eventoCadastro.args.id,
+                  RBBId: eventoCadastro.args.RBBId,
+                  cnpj : eventoCadastro.args.CNPJ,
                   razaoSocial: "",
                   contaBlockchain: eventoCadastro.args.addr,
                   hashID: eventoCadastro.transactionHash,
                   uniqueIdentifier: eventoCadastro.transactionHash,
-                  dataHora: null,
+                  dataHora: eventoCadastro.dateTimeExpiration,
                   hashDeclaracao: eventoCadastro.args.idProofHash,
                   status: "Conta Cadastrada",
                   filePathAndName: "",
-                  perfil: ""
+                  perfil: "",
+                  pausada: ""
               }
 
               
@@ -216,6 +219,10 @@ export class ListacontasComponent implements OnInit {
               self.recuperaInfoDerivadaPorCnpj(self, transacaoPJ);
               self.recuperaDataHora(self, event, transacaoPJ);
               self.recuperaFilePathAndName(self,transacaoPJ);
+
+              let registro = await self.recuperaRegistroBlockchain(transacaoPJ.contaBlockchain);
+              transacaoPJ.perfil = registro.roleAsString;
+              transacaoPJ.pausada = registro.paused;
 
 
           } else {
@@ -243,7 +250,7 @@ export class ListacontasComponent implements OnInit {
           if (!error) {
 
               let transacaoPJContaInativada = {
-                  cnpj: eventoTroca.args.cnpj,
+                  cnpj: eventoTroca.args.CNPJ,
                   razaoSocial: "",
                   contaBlockchain: eventoTroca.args.oldAddr,
                   hashID: eventoTroca.transactionHash,
@@ -252,7 +259,8 @@ export class ListacontasComponent implements OnInit {
                   hashDeclaracao: eventoTroca.args.idProofHash,
                   status: "Conta Inativada por Troca",
                   filePathAndName: "",                    
-                  perfil: ""
+                  perfil: "",
+                  pausada: ""
               };
 
               self.includeIfNotExists(transacaoPJContaInativada);
@@ -262,7 +270,8 @@ export class ListacontasComponent implements OnInit {
 
 
               transacaoPJ = {
-                  cnpj: eventoTroca.args.cnpj,
+                  cnpj: eventoTroca.args.CNPJ,
+                  RBBId: eventoTroca.args.RBBId,
                   razaoSocial: "",
                   contaBlockchain: eventoTroca.args.newAddr,
                   hashID: eventoTroca.transactionHash,
@@ -271,7 +280,8 @@ export class ListacontasComponent implements OnInit {
                   hashDeclaracao: eventoTroca.args.idProofHash,
                   status: "Conta Associada por Troca",
                   filePathAndName: "",                    
-                  perfil: ""
+                  perfil: "",
+                  pausada: ""
               };
 
               //TODO: nao precisa chamar novamente
@@ -300,7 +310,8 @@ export class ListacontasComponent implements OnInit {
 
                     
               transacaoPJ = {
-                  cnpj: event.args.cnpj,
+                  RBBId :event.args.RBBId,
+                  cnpj: event.args.CNPJ,
                   razaoSocial: "",
                   contaBlockchain: event.args.addr,
                   hashID: event.transactionHash,
@@ -309,7 +320,8 @@ export class ListacontasComponent implements OnInit {
                   hashDeclaracao: "",
                   status: "Conta Validada",
                   filePathAndName: "",                    
-                  perfil: ""
+                  perfil: "",
+                  pausada: ""
               }
               self.includeIfNotExists(transacaoPJ);
               self.recuperaInfoDerivadaPorCnpj(self, transacaoPJ);
@@ -341,7 +353,8 @@ export class ListacontasComponent implements OnInit {
               console.log(event);
                     
               transacaoPJ = {
-                  cnpj: event.args.cnpj,
+                  RBBId :event.args.RBBId,
+                  cnpj: event.args.CNPJ,
                   razaoSocial: "",
                   contaBlockchain: event.args.addr,
                   hashID: event.transactionHash,
@@ -350,7 +363,8 @@ export class ListacontasComponent implements OnInit {
                   hashDeclaracao: "",
                   status: "Conta Invalidada por Validador",
                   filePathAndName: "",                    
-                  perfil: ""
+                  perfil: "",
+                  pausada: ""
               }
               self.includeIfNotExists(transacaoPJ);
               self.recuperaInfoDerivadaPorCnpj(self, transacaoPJ);                
@@ -385,7 +399,7 @@ export class ListacontasComponent implements OnInit {
       return itemB - itemA;
   }
 
-  recuperaInfoDerivadaPorCnpj(self, transacaoPJ) {
+  async recuperaInfoDerivadaPorCnpj(self, transacaoPJ) {
       self.pessoaJuridicaService.recuperaEmpresaPorCnpj(transacaoPJ.cnpj).subscribe(
           data => {
               transacaoPJ.razaoSocial = "Erro: Não encontrado";
@@ -405,12 +419,6 @@ export class ListacontasComponent implements OnInit {
               transacaoPJ.razaoSocial = "";
               transacaoPJ.contaBlockchain = "";
           });
-
-          
-          transacaoPJ.perfil="DEFINIRAQUI";            
-  
-          
-
 
   }
 
@@ -472,9 +480,9 @@ export class ListacontasComponent implements OnInit {
         console.log("error", "Erro", s, 2);
         return;
       }    
-  let x = await this.identificaUsuario();
-  console.log("this.usuario.address = "+ this.usuario.address)
-      let bRV = await this.web3Service.isResponsibleForRegistryValidationSync(this.usuario.address);
+  // let x = await this.recuperaRegistroBlockchain(this.selectedAccount);
+  // console.log("this.usuario.address = "+ this.usuario.address)
+      let bRV = await this.web3Service.isResponsibleForRegistryValidationSync(this.selectedAccount);
       if (!bRV) 
       {
           let s = "Conta selecionada no Metamask não pode executar uma validação.";

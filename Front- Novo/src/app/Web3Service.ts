@@ -434,8 +434,8 @@ export class Web3Service {
         console.log(result);
         
         pjInfo  = {};
-        pjInfo.rbbid = result[0].c[0];
-        pjInfo.cnpj = result[1].c[0];
+        pjInfo.rbbid = result[0];
+        pjInfo.cnpj = result[1];
         pjInfo.hashDeclaracao = result[2];
         pjInfo.status = result[3].c[0];
         pjInfo.role = result[4].c[0];
@@ -489,19 +489,16 @@ export class Web3Service {
 
     getPapelContaAsString (result): string {
         if (result==0) {
-            return "Indefinido";
+            return "Regular";
         }
         else if (result==1) {
-            return "Normal";
+            return "Admin";
         }                
         else if (result==2) {
-            return "Admin";
-        }    
-        else if (result==3) {
-            return "Sistema";
-        }                                                        
+            return "Supadmin";
+        }                                                  
         else {
-            return "N/A";
+            return "Indefinido";
         }        
     }
 
