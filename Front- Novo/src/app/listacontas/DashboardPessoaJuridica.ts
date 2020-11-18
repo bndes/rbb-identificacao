@@ -9,6 +9,6 @@ export class DashboardPessoaJuridica {
   hashDeclaracao: string;
   dataHora: Date;
   perfil: string;
-  pausada: boolean;
+  pausada: string;
   filePathAndName: string;
 }
