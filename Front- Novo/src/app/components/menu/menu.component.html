@@ -12,6 +12,15 @@
             <li class="title">Acesso Rápido</li>
             <li><a class="content" class="nav-link" [routerLink]="['home']" routerLinkActive="active" 
               [routerLinkActiveOptions]="{exact: true}" style="font-size: 20px;"> Identificação</a></li>
+              <div *ngIf="this.selectedAccount != undefined && this.selectedAccount != 0 ">
+                Conta Blockchain: {{this.selectedAccount}}
+                <div *ngIf="this.usuario != undefined && this.usuario.cnpj != 0 ">
+                  CNPJ:     {{this.usuario.cnpj}} | 
+                  Situação: {{this.usuario.statusAsString}} |
+                  Papel:    {{this.usuario.roleAsString}}
+                </div>
+              </div>
+          
           </ul>
         </div> 
       </div> 
