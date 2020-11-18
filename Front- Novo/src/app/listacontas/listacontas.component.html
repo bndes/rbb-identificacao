@@ -63,6 +63,22 @@
           <td mat-cell *matCellDef="let row"> {{!row.pausada}} </td>
         </ng-container>
 
+        <ng-container matColumnDef="validacao">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Validação </th>
+          <td  style="text-align: center;" mat-cell *matCellDef="let row" > 
+            
+              <button (click)='validarCadastro(row.contaBlockchain)' class="br-button search-trigger is-circle is-terciary" type="button">
+                <i style="font-size: 30px; padding-top: 8.4px;" class="fas fa-address-book"></i>
+              </button> 
+
+              <button (click)='invalidarCadastro(row.contaBlockchain)' class="br-button search-trigger is-circle is-terciary" type="button">
+                <i style="font-size: 30px; padding-top: 8.4px;" class="fas fa-address-book"></i>
+              </button>
+              
+            
+          </td>
+        </ng-container>      
+
         <ng-container matColumnDef="explorer">
           <th mat-header-cell *matHeaderCellDef mat-sort-header> Link </th>
           <td  style="text-align: center;" mat-cell *matCellDef="let row" > 

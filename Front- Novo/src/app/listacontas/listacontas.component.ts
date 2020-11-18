@@ -66,7 +66,7 @@ const TIMESTAMP: string[] = [
 })
 export class ListacontasComponent implements OnInit {
 
-  displayedColumns: string[] = ['rbbid', 'cnpj', 'name', 'address' , 'perfil', 'timestamp', 'situacao', 'pausada', 'explorer'];
+  displayedColumns: string[] = ['rbbid', 'cnpj', 'name', 'address' , 'perfil', 'timestamp', 'situacao', 'validacao', 'pausada', 'explorer'];
   dataSource: MatTableDataSource<DashboardPessoaJuridica>;
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
