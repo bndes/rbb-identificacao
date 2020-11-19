@@ -19,6 +19,9 @@
                   Situação: {{this.usuario.statusAsString}} |
                   Papel:    {{this.usuario.roleAsString}}
                 </div>
+                <div *ngIf="this.usuario == undefined || this.usuario.cnpj == 0 ">
+                  (não-identificada)
+                </div>                
               </div>
           
           </ul>
