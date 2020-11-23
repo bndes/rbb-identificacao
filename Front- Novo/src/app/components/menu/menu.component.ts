@@ -39,6 +39,7 @@ export class MenuComponent implements OnInit {
     } else {
         console.log('this.usuario');
         console.log(this.usuario);
+        return undefined;
     }
     
 }  
