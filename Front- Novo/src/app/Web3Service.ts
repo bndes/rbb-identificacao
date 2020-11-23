@@ -434,6 +434,10 @@ export class Web3Service {
         console.log(result);
         
         pjInfo  = {};
+
+        if ( result == undefined )
+            return pjInfo; 
+
         pjInfo.rbbid = result[0];
         pjInfo.cnpj = result[1];
         pjInfo.hashDeclaracao = result[2];

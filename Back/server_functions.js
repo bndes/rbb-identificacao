@@ -180,10 +180,13 @@ function validateDocumentSignature(fileReadStream, cnpjEsperado, mock) {
     console.log("validateDocumentSignature");
 
     if ( mock ) {
+        /*
         let grauConformidade         = mock_vra.grauConformidade;
         let certificadoVigente       = mock_vra.informacaoAssinaturas[0].estaVigente;
         let cnpjCertificado          = mock_vra.informacaoAssinaturas[0].informacoesCertificadoIcpBrasil.informacoesCertificado.cnpj;
         return declaracaoEstaValida(grauConformidade, certificadoVigente, cnpjCertificado, cnpjEsperado );
+        */
+        return 0; 
     } else {
         //fileReadStream = fs.createReadStream('teste.pdf');//cnpjEsperado="31986741000117"
         return processaDeclaracao(fileReadStream, cnpjEsperado);
