@@ -3,6 +3,8 @@ export class DashboardPessoaJuridica {
   razaoSocial: string;
   cnpj: string;
   contaBlockchain: string;
+  evento: string;
+  aguardando: string;
   status: string;
   hashID: string;
   uniqueIdentifier: string;

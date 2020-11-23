@@ -241,17 +241,20 @@ export class AssociaContaAdminComponent implements OnInit {
 
     if (this.subcreditoSelecionado === undefined) {
       let s = "O Contrato é um Campo Obrigatório";
+      console.log(s);
       //this.bnAlertsService.criarAlerta("error", "Erro", s, 2)
       return
     }
 
     if (this.hashdeclaracao==undefined || this.hashdeclaracao==null) {
       let s = "O envio da declaração é obrigatório";
+      console.log(s);
       //this.bnAlertsService.criarAlerta("error", "Erro", s, 2)
       return
     } 
     else if (!Utils.isValidHash(this.hashdeclaracao)) {
       let s = "O Hash da declaração está preenchido com valor inválido";
+      console.log(s);
       //this.bnAlertsService.criarAlerta("error", "Erro", s, 2)
       return;
     }
@@ -263,6 +266,7 @@ export class AssociaContaAdminComponent implements OnInit {
         if (!result) {
           
           let msg = "A conta "+ this.selectedAccount +" não está disponível para associação"; 
+          console.log(msg);
           //Utils.criarAlertaErro( self.bnAlertsService, "Conta não disponível para associação", msg);  
         }
 

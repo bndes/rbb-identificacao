@@ -66,7 +66,7 @@ const TIMESTAMP: string[] = [
 })
 export class ListacontasComponent implements OnInit {
 
-  displayedColumns: string[] = ['rbbid', 'cnpj', 'name', 'address' , 'perfil', 'timestamp', 'situacao', 'validacao', 'pausada', 'explorer'];
+  displayedColumns: string[] = ['rbbid', 'cnpj', 'name', 'address' , 'perfil', 'timestamp', 'evento', 'status', 'validacao', 'pausada', 'explorer', 'aguardando'];
   dataSource: MatTableDataSource<DashboardPessoaJuridica>;
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
@@ -208,7 +208,9 @@ export class ListacontasComponent implements OnInit {
                   uniqueIdentifier: eventoCadastro.transactionHash,
                   dataHora: eventoCadastro.dateTimeExpiration,
                   hashDeclaracao: eventoCadastro.args.idProofHash,
-                  status: "Conta Cadastrada",
+                  evento: "Realização do Cadastro",
+                  status: "",
+                  aguardando: "false",
                   filePathAndName: "",
                   perfil: "",
                   pausada: ""
@@ -222,6 +224,8 @@ export class ListacontasComponent implements OnInit {
 
               let registro = await self.recuperaRegistroBlockchain(transacaoPJ.contaBlockchain);
               transacaoPJ.perfil = registro.roleAsString;
+              transacaoPJ.status = registro.statusAsString;
+              transacaoPJ.aguardando = (String)( registro.status == 1 ); 
               transacaoPJ.pausada = registro.paused;
 
 
@@ -239,7 +243,7 @@ export class ListacontasComponent implements OnInit {
 
       let self = this;
 
-      self.web3Service.registraEventosRoleChange(function (error, event) {
+      self.web3Service.registraEventosRoleChange(async function (error, event) {
 
           let transacaoPJ: DashboardPessoaJuridica
           let eventoTroca = event
@@ -257,7 +261,7 @@ export class ListacontasComponent implements OnInit {
                   uniqueIdentifier: eventoTroca.transactionHash + "Old",
                   dataHora: null,
                   hashDeclaracao: eventoTroca.args.idProofHash,
-                  status: "Conta Inativada por Troca",
+                  status: "Troca de Papel",
                   filePathAndName: "",                    
                   perfil: "",
                   pausada: ""
@@ -267,6 +271,12 @@ export class ListacontasComponent implements OnInit {
               self.recuperaInfoDerivadaPorCnpj(self, transacaoPJContaInativada);
               self.recuperaDataHora(self, event, transacaoPJContaInativada);
               self.recuperaFilePathAndName(self,transacaoPJContaInativada);
+
+              let registro = await self.recuperaRegistroBlockchain(transacaoPJ.contaBlockchain);
+              transacaoPJ.perfil = registro.roleAsString;
+              transacaoPJ.status = registro.statusAsString;
+              transacaoPJ.aguardando = (String)( registro.status == 1 ); 
+              transacaoPJ.pausada = registro.paused;
 
 
               transacaoPJ = {
@@ -278,7 +288,9 @@ export class ListacontasComponent implements OnInit {
                   uniqueIdentifier: eventoTroca.transactionHash + "New",                    
                   dataHora: null,
                   hashDeclaracao: eventoTroca.args.idProofHash,
-                  status: "Conta Associada por Troca",
+                  evento: "Conta Associada por Troca",
+                  status: "",
+                  aguardando: "false",
                   filePathAndName: "",                    
                   perfil: "",
                   pausada: ""
@@ -289,6 +301,12 @@ export class ListacontasComponent implements OnInit {
               self.recuperaInfoDerivadaPorCnpj(self, transacaoPJ);
               self.recuperaDataHora(self, event, transacaoPJ);
               self.recuperaFilePathAndName(self,transacaoPJ);                
+
+              registro = await self.recuperaRegistroBlockchain(transacaoPJ.contaBlockchain);
+              transacaoPJ.perfil = registro.roleAsString;
+              transacaoPJ.status = registro.statusAsString;
+              transacaoPJ.aguardando = (String)( registro.status == 1 ); 
+              transacaoPJ.pausada = registro.paused;
           }    
 
       });        
@@ -299,7 +317,7 @@ export class ListacontasComponent implements OnInit {
       console.log("*** Executou o metodo de registrar eventos VALIDACAO");        
 
       let self = this;        
-      this.web3Service.registraEventosValidacao(function (error, event) {
+      this.web3Service.registraEventosValidacao(async function (error, event) {
 
           if (!error) {
 
@@ -318,7 +336,9 @@ export class ListacontasComponent implements OnInit {
                   uniqueIdentifier: event.transactionHash,
                   dataHora: null,
                   hashDeclaracao: "",
-                  status: "Conta Validada",
+                  evento: "Validação de Conta",
+                  status: "",
+                  aguardando: "false",
                   filePathAndName: "",                    
                   perfil: "",
                   pausada: ""
@@ -328,6 +348,12 @@ export class ListacontasComponent implements OnInit {
               self.recuperaDataHora(self, event, transacaoPJ);
 //nao tem hash para recuperar arquivo
 //                self.recuperaFilePathAndName(self,transacaoPJ);                
+              
+              let registro = await self.recuperaRegistroBlockchain(transacaoPJ.contaBlockchain);
+              transacaoPJ.perfil = registro.roleAsString;
+              transacaoPJ.status = registro.statusAsString;
+              transacaoPJ.aguardando = (String)( registro.status == 1 ); 
+              transacaoPJ.pausada = registro.paused;
 
           } else {
               console.log("Erro no registro de eventos de validacao");
@@ -343,7 +369,7 @@ export class ListacontasComponent implements OnInit {
       console.log("*** Executou o metodo de registrar eventos INVALIDACAO");                
 
       let self = this;        
-      this.web3Service.registraEventosInvalidacao(function (error, event) {
+      this.web3Service.registraEventosInvalidacao(async function (error, event) {
 
           if (!error) {
 
@@ -361,7 +387,9 @@ export class ListacontasComponent implements OnInit {
                   uniqueIdentifier: event.transactionHash,                    
                   dataHora: null,
                   hashDeclaracao: "",
-                  status: "Conta Invalidada por Validador",
+                  evento: "Invalidação de Conta",
+                  status: "",
+                  aguardando: "false",
                   filePathAndName: "",                    
                   perfil: "",
                   pausada: ""
@@ -371,6 +399,12 @@ export class ListacontasComponent implements OnInit {
               self.recuperaDataHora(self, event, transacaoPJ);
 //nao tem hash para recuperar arquivo
 //                self.recuperaFilePathAndName(self,transacaoPJ);                
+
+              let registro = await self.recuperaRegistroBlockchain(transacaoPJ.contaBlockchain);
+              transacaoPJ.perfil = registro.roleAsString;
+              transacaoPJ.status = registro.statusAsString;
+              transacaoPJ.aguardando = (String)( registro.status == 1 ); 
+              transacaoPJ.pausada = registro.paused;
 
 
           } else {
