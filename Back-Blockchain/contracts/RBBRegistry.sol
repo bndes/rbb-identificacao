@@ -1,7 +1,6 @@
 pragma solidity ^0.6.0;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "./RBBLib.sol";
 
 contract RBBRegistry is Ownable() {
 
@@ -25,7 +24,7 @@ contract RBBRegistry is Ownable() {
     struct Registry {
         uint RBBId; //uma proxy para o CNPJ
         uint CNPJ; //Brazilian identification of legal entity
-        bytes32 hashProof; //hash of declaration
+        string hashProof; //hash of declaration
         BlockchainAccountState state;
         BlockchainAccountRole role;
         bool paused;
@@ -49,7 +48,7 @@ contract RBBRegistry is Ownable() {
      */
     mapping (uint => uint) public CNPJ_RBBId;
 
-    event AccountRegistration       (address addr, uint RBBId, uint CNPJ, bytes32 hashProof, uint256 dateTimeExpiration);
+    event AccountRegistration       (address addr, uint RBBId, uint CNPJ, string hashProof, uint256 dateTimeExpiration);
     event AccountValidation         (address addr, uint RBBId, uint CNPJ, address responsible);
     event AccountInvalidation       (address addr, uint RBBId, uint CNPJ, address responsible);
     event AccountPaused             (address addr, uint RBBId, uint CNPJ, address responsible);
@@ -60,7 +59,7 @@ contract RBBRegistry is Ownable() {
     /* The responsible for the System-Admin is the Owner. It could be or not be the same address (SUPADMIN=owner) */
     constructor (uint CNPJSUPADMIN, string memory proofHashSUPADMIN, uint daysToExpire) public {                
         address addrSUPADMIN = msg.sender;
-        bytes32 proofHash = RBBLib.stringBytes32(proofHashSUPADMIN);
+        string memory proofHash = proofHashSUPADMIN;
         uint256 dateTimeExpiration = now + daysToExpire * 1 days; 
         uint RBBId = calculaProximoRBBID(CNPJSUPADMIN);
         legalEntitiesInfo[addrSUPADMIN] = Registry( RBBId, 
@@ -71,13 +70,8 @@ contract RBBRegistry is Ownable() {
                                                     false, 
                                                     dateTimeExpiration     );
         RBBId_addresses[RBBId].push(addrSUPADMIN);
-        emit AccountRegistration(addrSUPADMIN, RBBId, CNPJSUPADMIN, proofHash, dateTimeExpiration); 
+        emit AccountRegistration(addrSUPADMIN, RBBId, CNPJSUPADMIN, proofHashSUPADMIN, dateTimeExpiration); 
         
-    }
-
-    function registryLegalEntity(uint CNPJ, string memory CNPJProofHash) public {
-        bytes32 proof = RBBLib.stringBytes32(CNPJProofHash);
-        registryLegalEntity(CNPJ, proof);
     }
 
    /**
@@ -86,16 +80,16 @@ contract RBBRegistry is Ownable() {
     * @param CNPJProofHash The legal entities have to send BNDES a PDF where it assumes as responsible for an Ethereum account.
     *                   This PDF is signed with eCNPJ and send to BNDES.
     */
-    function registryLegalEntity(uint CNPJ, bytes32 CNPJProofHash) public {
+    function registryLegalEntity(uint CNPJ, string memory CNPJProofHash) public {
         
         address addr = msg.sender;
-        bytes32 proofHash = CNPJProofHash;
+        string memory proofHash = CNPJProofHash;
         uint256 dateTimeExpiration = now + defaultDateTimeExpiration;
         uint RBBId = calculaProximoRBBID(CNPJ);
 
         require (isAvailableAccount(addr), "Endereço não pode ter sido cadastrado anteriormente");
 
-        if ( proofHash == 0 ) { 
+        if ( keccak256(bytes(proofHash)) == keccak256(bytes("0")) ) { 
             legalEntitiesInfo[addr] = Registry( RBBId,
                                                 CNPJ, 
                                                 proofHash, 
@@ -114,7 +108,8 @@ contract RBBRegistry is Ownable() {
         }
 
         RBBId_addresses[RBBId].push(addr);
-        emit AccountRegistration(addr, RBBId, CNPJ, proofHash, dateTimeExpiration);
+        string memory proof = proofHash;
+        emit AccountRegistration(addr, RBBId, CNPJ, proof, dateTimeExpiration);
     }
 
     modifier onlyWhenNotPaused() { 
@@ -350,12 +345,12 @@ contract RBBRegistry is Ownable() {
         return legalEntitiesInfo[addr].CNPJ;
     }    
 
-    function getRegistry (address addr) public view returns (uint, uint, bytes32, uint, uint, bool, uint256) {
+    function getRegistry (address addr) public view returns (uint, uint, string memory, uint, uint, bool, uint256) {
         Registry memory reg = legalEntitiesInfo[addr];
-
+        string memory proof = reg.hashProof;
         return (  reg.RBBId,
                   reg.CNPJ, 
-                  reg.hashProof, 
+                  proof, 
                   (uint) (reg.state),
                   (uint) (reg.role),
                   reg.paused,

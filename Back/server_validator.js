@@ -34,7 +34,7 @@ async function initContract() {
     // The Contract interface
     let abi = [
         "constructor (uint CNPJSUPADMIN, string  proofHashSUPADMIN, uint daysToExpire) public ",                
-        "event AccountRegistration       (address addr, uint RBBId, uint CNPJ, bytes32 hashProof, uint256 dateTimeExpiration)",
+        "event AccountRegistration       (address addr, uint RBBId, uint CNPJ, string hashProof, uint256 dateTimeExpiration)",
         "event AccountValidation         (address addr, uint RBBId, uint CNPJ, address responsible)",
         "event AccountInvalidation       (address addr, uint RBBId, uint CNPJ, address responsible)",
         "event AccountPaused             (address addr, uint RBBId, uint CNPJ, address responsible)",
@@ -62,7 +62,7 @@ async function initContract() {
         "function getId (address addr) public view returns (uint) ",
         "function getRBBIdRaw (address addr) public view returns (uint) ",
         "function getCNPJ (address addr) public view returns (uint) ",
-        "function getRegistry (address addr) public view returns (uint, uint, bytes32, uint, uint, bool, uint256) ",
+        "function getRegistry (address addr) public view returns (uint, uint, string , uint, uint, bool, uint256) ",
         "function getBlockchainAccounts(uint RBBId) public view returns (address[] memory) ",
         "function getAccountState(address addr) public view returns (int) ",
         "function getAccountRole(address addr) public view returns (int) ",
