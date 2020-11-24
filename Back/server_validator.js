@@ -92,33 +92,38 @@ async function listenEvent() {
     
         console.log(addr);    
         console.log(RBBId);    
-        console.log(CNPJ);    
+        console.log(CNPJ);     
         console.log(hashProof);
         console.log(dateTimeExpiration);
 
-        CNPJ = completarCnpjComZero(CNPJ);
+        if ( hashProof == "0" ) {
+            console.log("Conta Regular nao eh validada automaticamente. Ficara aguardando validacao manual.")
+        } else {
+            CNPJ = completarCnpjComZero(CNPJ);
 
-
-        let RBBRegistryWithSigner = RBBRegistry.connect(wallet);
-
-        try {
-            let contrato = 0;
-            let tipo = 'declaracao';
-            let filePathAndNameToFront = await SERVER_FUNCTIONS.buscaTipoArquivo(CNPJ, contrato, addr, tipo, hashProof);
-            console.log(filePathAndNameToFront);
-            let tx = await RBBRegistryWithSigner.validateRegistry(addr);
-            console.log(tx.hash);
-            await tx.wait();
-            console.log("O cadastro foi validado.");
-        } catch(err) {
-            
-            console.log("Nao conseguiu encontrar o arquivo da declaracao.");
-            let tx = await RBBRegistryWithSigner.invalidateRegistry(addr);
-            console.log(tx.hash);
-            await tx.wait();
-            console.log("O cadastro foi invalidado.");
-            
+            let RBBRegistryWithSigner = RBBRegistry.connect(wallet);
+    
+            try {
+                let contrato = 0;
+                let tipo = 'declaracao';
+                let filePathAndNameToFront = await SERVER_FUNCTIONS.buscaTipoArquivo(CNPJ, contrato, addr, tipo, hashProof);
+                console.log(filePathAndNameToFront);
+                let tx = await RBBRegistryWithSigner.validateRegistry(addr);
+                console.log(tx.hash);
+                await tx.wait();
+                console.log("O cadastro foi validado.");
+            } catch(err) {
+                
+                console.log("Nao conseguiu encontrar o arquivo da declaracao.");
+                let tx = await RBBRegistryWithSigner.invalidateRegistry(addr);
+                console.log(tx.hash);
+                await tx.wait();
+                console.log("O cadastro foi invalidado.");
+                
+            }
         }
+
+        
 
     });
 }

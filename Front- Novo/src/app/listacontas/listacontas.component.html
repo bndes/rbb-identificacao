@@ -75,10 +75,10 @@
           <td  style="text-align: center;" mat-cell *matCellDef="let row" > 
             <span *ngIf='row.acao' >
               <button (click)='validarCadastro(row.contaBlockchain)' class="br-button search-trigger is-circle is-terciary" type="button">
-                <i style="font-size: 30px; padding-top: 8.4px;" class="fas fa-address-book"></i>
+                <i class="fas fa-check-circle"></i>
               </button> 
               <button (click)='invalidarCadastro(row.contaBlockchain)' class="br-button search-trigger is-circle is-terciary" type="button">
-                <i style="font-size: 30px; padding-top: 8.4px;" class="fas fa-address-book"></i>
+                <i class="fas fa-stop-circle"></i>
               </button>
             </span> 
             <span *ngIf='!row.acao' >
