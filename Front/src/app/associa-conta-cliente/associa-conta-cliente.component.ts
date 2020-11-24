@@ -266,7 +266,7 @@ export class AssociaContaClienteComponent implements OnInit, DeclarationComponen
 
         else {
 
-
+          self.hashdeclaracao = "0"; //conta regular
           this.web3Service.cadastra(parseInt(self.cliente.cnpj), self.hashdeclaracao,
 
             (txHash) => {
