@@ -75,6 +75,11 @@ contract RBBRegistry is Ownable() {
         
     }
 
+    function registryLegalEntity(uint CNPJ, string memory CNPJProofHash) public {
+        bytes32 proof = RBBLib.stringBytes32(CNPJProofHash);
+        registryLegalEntity(CNPJ, proof);
+    }
+
    /**
     * Link blockchain address with CNPJ
     * @param CNPJ Brazilian identifier to legal entities
