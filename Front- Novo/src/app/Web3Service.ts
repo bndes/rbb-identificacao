@@ -224,7 +224,7 @@ export class Web3Service {
 
         this.RBBRegistrySmartContract.registryLegalEntity(cnpj, 
             //this.web3Instance.fromAscii(hashdeclaracao), 
-            0x4ada3ccb8aa32b2472004976b5e1508990c6cc20c5bfde55adddbfae197e3ec0, //FIXME
+            "0x3963343661653939353766343538396434613463353066663465616630316132", //FIXME
             { from: contaBlockchain, gas: 500000 },
             (error, result) => {
                 if (error) fError(error);
