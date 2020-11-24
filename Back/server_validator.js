@@ -42,6 +42,7 @@ async function initContract() {
         "event AccountRoleChange         (address addr, uint RBBId, uint CNPJ, address responsible, uint roleBefore, uint roleNew)",
         "event RegistryExpirationChange  (address addr, uint256 dateTimeExpirationBefore, uint256 dateTimeExpirationNew)",
         "function registryLegalEntity(uint CNPJ, bytes32 CNPJProofHash) public ",
+        "function registryLegalEntity(uint CNPJ, string CNPJProofHash) public",
         "function validateRegistrySameOrg(address userAddr) public onlyWhenNotPaused onlyWhenNotExpired ",
         "function validateRegistry(address userAddr) public onlyWhenNotPaused onlyWhenNotExpired ",
         "function pauseAddress(address addr) public onlyWhenNotPaused ",
