@@ -99,11 +99,6 @@ async function listenEvent() {
         CNPJ = completarCnpjComZero(CNPJ);
 
 
-//FIXME //TODO //BUG
-hashProof = "4ada3ccb8aa32b2472004976b5e1508990c6cc20c5bfde55adddbfae197e3ec0"          
-
-
-
         let RBBRegistryWithSigner = RBBRegistry.connect(wallet);
 
         try {
