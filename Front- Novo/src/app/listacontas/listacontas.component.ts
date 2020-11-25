@@ -66,7 +66,7 @@ const TIMESTAMP: string[] = [
 })
 export class ListacontasComponent implements OnInit {
 
-  displayedColumns: string[] = ['rbbid', 'cnpj', 'name', 'address' , 'perfil', 'timestamp', 'hashDeclaracao', 'evento', 'status', 'validacao', 'pausada', 'explorer'];
+  displayedColumns: string[] = ['rbbid', 'cnpj', 'name', 'address' , 'perfil', 'timestamp', 'hashDeclaracao', 'evento', 'status', 'validacao', 'pausada', 'congelamento', 'explorer'];
   dataSource: MatTableDataSource<DashboardPessoaJuridica>;
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
@@ -584,7 +584,116 @@ export class ListacontasComponent implements OnInit {
       });
     }
 
+
     
+    async pause(contaBlockchain) {
+      console.log(contaBlockchain);
+      
+      if (contaBlockchain === undefined) {
+        let s = "A conta blockchain é um Campo Obrigatório";
+        console.log("error", "Erro", s, 2);
+        return;
+      }    
+  
+      let self = this;
+  
+      let booleano = this.web3Service.pause(contaBlockchain, 
+          
+           (txHash) => {
+             /*
+            Utils.criarAlertasAvisoConfirmacao( txHash, 
+                                                self.web3Service, 
+                                                self.bnAlertsService, 
+                                                "Validação de conta enviada. Aguarde a confirmação.", 
+                                                "O cadastro da conta foi validado e confirmado na blockchain.", 
+                                                self.zone)
+                                                */
+            self.router.navigate(['home/associa/contas']);
+            }        
+          ,(error) => {
+            /*
+            Utils.criarAlertaErro( self.bnAlertsService, 
+                                   "Erro ao validar cadastro na blockchain", 
+                                   error )  
+                                   */
+          }
+        );
+       // Utils.criarAlertaAcaoUsuario( self.bnAlertsService, 
+         //                             "Confirme a operação no metamask e aguarde a confirmação." )         
+    }
+
+    async unpause(contaBlockchain) {
+      console.log(contaBlockchain);
+      
+      if (contaBlockchain === undefined) {
+        let s = "A conta blockchain é um Campo Obrigatório";
+        console.log("error", "Erro", s, 2);
+        return;
+      }    
+  
+      let self = this;
+  
+      let booleano = this.web3Service.unpause(contaBlockchain, 
+          
+           (txHash) => {
+             /*
+            Utils.criarAlertasAvisoConfirmacao( txHash, 
+                                                self.web3Service, 
+                                                self.bnAlertsService, 
+                                                "Validação de conta enviada. Aguarde a confirmação.", 
+                                                "O cadastro da conta foi validado e confirmado na blockchain.", 
+                                                self.zone)
+                                                */
+            self.router.navigate(['home/associa/contas']);
+            }        
+          ,(error) => {
+            /*
+            Utils.criarAlertaErro( self.bnAlertsService, 
+                                   "Erro ao validar cadastro na blockchain", 
+                                   error )  
+                                   */
+          }
+        );
+       // Utils.criarAlertaAcaoUsuario( self.bnAlertsService, 
+         //                             "Confirme a operação no metamask e aguarde a confirmação." )         
+    }
+
+
+    async pauseCNPJ(rbbid) {
+      console.log(rbbid);
+      
+      if (rbbid === undefined) {
+        let s = "A rbbid é um Campo Obrigatório";
+        console.log("error", "Erro", s, 2);
+        return;
+      }    
+  
+      let self = this;
+  
+      let booleano = this.web3Service.pauseLegalEntity(rbbid, 
+          
+           (txHash) => {
+             /*
+            Utils.criarAlertasAvisoConfirmacao( txHash, 
+                                                self.web3Service, 
+                                                self.bnAlertsService, 
+                                                "Validação de conta enviada. Aguarde a confirmação.", 
+                                                "O cadastro da conta foi validado e confirmado na blockchain.", 
+                                                self.zone)
+                                                */
+            self.router.navigate(['home/associa/contas']);
+            }        
+          ,(error) => {
+            /*
+            Utils.criarAlertaErro( self.bnAlertsService, 
+                                   "Erro ao validar cadastro na blockchain", 
+                                   error )  
+                                   */
+          }
+        );
+       // Utils.criarAlertaAcaoUsuario( self.bnAlertsService, 
+         //                             "Confirme a operação no metamask e aguarde a confirmação." )         
+    }
 
 
 }

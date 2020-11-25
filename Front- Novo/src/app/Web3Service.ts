@@ -231,6 +231,48 @@ export class Web3Service {
             });
     }
 
+    async pause(contaBlockchain: string, fSuccess: any, fError: any) {
+        let responsavel = await this.getCurrentAccountSync();    
+        
+        console.log("Web3Service - Pause");
+        console.log("Conta Blockchain: " + contaBlockchain );
+
+        this.RBBRegistrySmartContract.pauseAddress(contaBlockchain,
+            { from: responsavel, gas: 500000 },
+            (error, result) => {
+                if (error) fError(error);
+                else fSuccess(result);
+            });
+    }
+
+    async unpause(contaBlockchain: string, fSuccess: any, fError: any) {
+        let responsavel = await this.getCurrentAccountSync();    
+        
+        console.log("Web3Service - Unpause");
+        console.log("Conta Blockchain: " + contaBlockchain );
+
+        this.RBBRegistrySmartContract.unpauseAddress(contaBlockchain,
+            { from: responsavel, gas: 500000 },
+            (error, result) => {
+                if (error) fError(error);
+                else fSuccess(result);
+            });
+    }
+
+    async pauseLegalEntity(rbbid: number, fSuccess: any, fError: any) {
+        let responsavel = await this.getCurrentAccountSync();    
+        
+        console.log("Web3Service - pauseLegalEntity");
+        console.log("RBBId: " + rbbid );
+
+        this.RBBRegistrySmartContract.pauseLegalEntity(rbbid,
+            { from: responsavel, gas: 500000 },
+            (error, result) => {
+                if (error) fError(error);
+                else fSuccess(result);
+            });
+    }
+
     getId(addr: string, fSuccess: any, fError: any): number {
         return this.RBBRegistrySmartContract.getId(addr,
             (error, result) => {

@@ -83,8 +83,27 @@
             </span> 
             <span *ngIf='!row.acao' >
                 N/A
-            </span>
-            
+            </span>          
+          </td>
+        </ng-container>      
+
+        <ng-container matColumnDef="congelamento">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Pausar/Reativar/Pausa CNPJ </th>
+          <td  style="text-align: center;" mat-cell *matCellDef="let row" > 
+            <span *ngIf='true' >
+              <button (click)='pause(row.contaBlockchain)' class="br-button search-trigger is-circle is-terciary" type="button">
+                <i class="fas fa-pause-circle"></i>
+              </button> 
+              <button (click)='unpause(row.contaBlockchain)' class="br-button search-trigger is-circle is-terciary" type="button">
+                <i class="fas fa-play-circle"></i>
+              </button>
+              <button (click)='pauseCNPJ(row.RBBId)' class="br-button search-trigger is-circle is-terciary" type="button">
+                <i class="fas fa-exclamation-circle"></i>
+              </button> 
+            </span> 
+            <span *ngIf='false' >
+                N/A
+            </span>          
           </td>
         </ng-container>      
 
