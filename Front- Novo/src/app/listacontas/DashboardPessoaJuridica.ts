@@ -4,7 +4,7 @@ export class DashboardPessoaJuridica {
   cnpj: string;
   contaBlockchain: string;
   evento: string;
-  acao: boolean;
+  acao: number;
   status: string;
   hashID: string;
   uniqueIdentifier: string;

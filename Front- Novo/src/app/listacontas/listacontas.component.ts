@@ -66,7 +66,7 @@ const TIMESTAMP: string[] = [
 })
 export class ListacontasComponent implements OnInit {
 
-  displayedColumns: string[] = ['rbbid', 'cnpj', 'name', 'address' , 'perfil', 'timestamp', 'hashDeclaracao', 'evento', 'status', 'validacao', 'pausada', 'congelamento', 'explorer'];
+  displayedColumns: string[] = ['rbbid', 'cnpj', 'name', 'address' , 'perfil', 'timestamp', 'hashDeclaracao', 'evento', 'status', 'validacao', 'congelamento', 'explorer'];
   dataSource: MatTableDataSource<DashboardPessoaJuridica>;
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
@@ -210,7 +210,7 @@ export class ListacontasComponent implements OnInit {
                   hashDeclaracao: eventoCadastro.args.hashProof,
                   evento: "Realização do Cadastro",
                   status: "",
-                  acao: false,
+                  acao: -1,
                   filePathAndName: "",
                   perfil: "",
                   pausada: ""
@@ -225,7 +225,7 @@ export class ListacontasComponent implements OnInit {
               let registro = await self.recuperaRegistroBlockchain(transacaoPJ.contaBlockchain);
               transacaoPJ.perfil = registro.roleAsString;
               transacaoPJ.status = registro.statusAsString;
-              transacaoPJ.acao = ( registro.status == 1 ); 
+              transacaoPJ.acao = registro.status; 
               transacaoPJ.pausada = registro.paused;
 
 
@@ -275,7 +275,7 @@ export class ListacontasComponent implements OnInit {
               let registro = await self.recuperaRegistroBlockchain(transacaoPJ.contaBlockchain);
               transacaoPJ.perfil = registro.roleAsString;
               transacaoPJ.status = registro.statusAsString;
-              transacaoPJ.acao = ( registro.status == 1 ); 
+              transacaoPJ.acao = registro.status; 
               transacaoPJ.pausada = registro.paused;
 
 
@@ -290,7 +290,7 @@ export class ListacontasComponent implements OnInit {
                   hashDeclaracao: eventoTroca.args.hashProof,
                   evento: "Conta Associada por Troca",
                   status: "",
-                  acao: false,
+                  acao: -1,
                   filePathAndName: "",                    
                   perfil: "",
                   pausada: ""
@@ -305,7 +305,7 @@ export class ListacontasComponent implements OnInit {
               registro = await self.recuperaRegistroBlockchain(transacaoPJ.contaBlockchain);
               transacaoPJ.perfil = registro.roleAsString;
               transacaoPJ.status = registro.statusAsString;
-              transacaoPJ.acao = ( registro.status == 1 ); 
+              transacaoPJ.acao = registro.status; 
               transacaoPJ.pausada = registro.paused;
           }    
 
@@ -338,7 +338,7 @@ export class ListacontasComponent implements OnInit {
                   hashDeclaracao: "",
                   evento: "Validação de Conta",
                   status: "",
-                  acao: false,
+                  acao: -1,
                   filePathAndName: "",                    
                   perfil: "",
                   pausada: ""
@@ -352,7 +352,7 @@ export class ListacontasComponent implements OnInit {
               let registro = await self.recuperaRegistroBlockchain(transacaoPJ.contaBlockchain);
               transacaoPJ.perfil = registro.roleAsString;
               transacaoPJ.status = registro.statusAsString;
-              transacaoPJ.acao = ( registro.status == 1 ); 
+              transacaoPJ.acao = registro.status; 
               transacaoPJ.pausada = registro.paused;
 
           } else {
@@ -389,7 +389,7 @@ export class ListacontasComponent implements OnInit {
                   hashDeclaracao: "",
                   evento: "Invalidação de Conta",
                   status: "",
-                  acao: false,
+                  acao: -1,
                   filePathAndName: "",                    
                   perfil: "",
                   pausada: ""
@@ -403,7 +403,7 @@ export class ListacontasComponent implements OnInit {
               let registro = await self.recuperaRegistroBlockchain(transacaoPJ.contaBlockchain);
               transacaoPJ.perfil = registro.roleAsString;
               transacaoPJ.status = registro.statusAsString;
-              transacaoPJ.acao = ( registro.status == 1 ); 
+              transacaoPJ.acao = registro.status; 
               transacaoPJ.pausada = registro.paused;
 
 
