@@ -539,7 +539,7 @@ export class ListacontasComponent implements OnInit {
                                                 "O cadastro da conta foi validado e confirmado na blockchain.", 
                                                 self.zone)
                                                 */
-            self.router.navigate(['registro/dash-empresas']);                                                     
+            self.router.navigate(['home/associa/contas']);
             }        
           ,(error) => {
             /*
@@ -563,7 +563,7 @@ export class ListacontasComponent implements OnInit {
         return;
       }
   
-      let bRV = await this.web3Service.isResponsibleForRegistryValidationSync(this.usuario.address);
+      let bRV = await this.web3Service.isResponsibleForRegistryValidationSync(this.selectedAccount);
       if (!bRV) 
       {
           let s = "Conta selecionada no Metamask não pode executar a ação de invalidar.";
@@ -577,7 +577,7 @@ export class ListacontasComponent implements OnInit {
           //  self.bnAlertsService.criarAlerta("info", "Sucesso", s, 5);
             console.log(s);
   
-            self.router.navigate(['registro/dash-empresas'])
+            self.router.navigate(['home/associa/contas']);
       },
       (error) => {
         console.log("Erro ao invalidar cadastro")

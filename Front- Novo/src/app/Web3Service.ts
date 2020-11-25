@@ -396,7 +396,7 @@ export class Web3Service {
 
         let contaBlockchain = await this.getCurrentAccountSync();    
 
-        this.RBBRegistrySmartContract.invalidateRegistry(address, 
+        this.RBBRegistrySmartContract.invalidateRegistrySameOrg(address, 
             { from: contaBlockchain, gas: 500000 },
             (error, result) => {
                 if(error) { fError(error); return false; }
