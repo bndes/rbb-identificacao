@@ -4,7 +4,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 
 import { ChangeDetectorRef } from '@angular/core';
-import { DashboardPessoaJuridica } from './DashboardPessoaJuridica';
+import { DashboardPessoaJuridica } from '../DashboardPessoaJuridica';
 import {FileHandleService} from "../file-handle.service";
 import { PessoaJuridica } from '../PessoaJuridica';
 import { Web3Service } from './../Web3Service';
@@ -66,7 +66,7 @@ const TIMESTAMP: string[] = [
 })
 export class ListacontasComponent implements OnInit {
 
-  displayedColumns: string[] = ['rbbid', 'cnpj', 'name', 'address' , 'perfil', 'timestamp', 'hashDeclaracao', 'evento', 'status', 'validacao', 'congelamento', 'explorer'];
+  displayedColumns: string[] = ['rbbid', 'cnpj', 'name', 'address' , 'perfil', 'timestamp', 'hashDeclaracao', 'evento', 'status',  'explorer'];
   dataSource: MatTableDataSource<DashboardPessoaJuridica>;
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;

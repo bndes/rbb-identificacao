@@ -1,1 +1,153 @@
-<p>validar-conta-admin works!</p>
+<body>
+    <div style="padding-bottom: 200px; padding-top: 150px;" class="container-fluid">
+        <div class="br-table is-datatable" id="datatable-default">
+          <div class="header">
+            <div class="top-bar">
+             <div style="border: 0.1px solid rgba(240, 248, 255, 0.459);" class="search-bar is-active " >
+                <div style="font-size: 30px; color: aliceblue;" class="title">Gerencia Contas da RBB</div>
+                <div class="divisor"></div>
+                <i style="font-size: 25px; padding-right: 39px; padding-left: 6px; color: aliceblue;" class="fas fa-search"></i>
+                 
+                <div class="br-input search-input is-medium has-icon">
+                  <label for="datatable-default-search-input">Buscar</label>
+                  <input matInput class="search-input is-medium has-icon" id="datatable-default-search-input" (keyup)="applyFilter($event)"   type="text" placeholder="Buscar na tabela" #input>
+                  
+                </div>
+            </div>
+            </div>
+          </div>
+        
+        <div id="tabela" class="mat-elevation-z8" >
+          <table mat-table [dataSource]="dataSource" matSort>
+           
+            <ng-container matColumnDef="rbbid">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> RBB ID </th>
+              <td mat-cell *matCellDef="let row"> {{row.RBBId}} </td>
+            </ng-container>
+        
+            <ng-container matColumnDef="cnpj">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> CNPJ </th>
+              <td mat-cell *matCellDef="let row"> {{row.cnpj}} </td>
+            </ng-container>
+    
+            <ng-container matColumnDef="address">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Blockchain Address </th>
+              <td mat-cell *matCellDef="let row"> {{row.contaBlockchain}} </td>
+            </ng-container>
+    
+            <ng-container matColumnDef="perfil">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Papel </th>
+              <td mat-cell *matCellDef="let row"> {{row.perfil}} </td>
+            </ng-container>        
+      
+            <ng-container matColumnDef="name">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Razão Social </th>
+              <td mat-cell *matCellDef="let row"> {{row.razaoSocial}} </td>
+            </ng-container>
+    
+            <ng-container matColumnDef="evento">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Evento </th>
+              <td  mat-cell *matCellDef="let row"> {{row.evento}} </td>
+            </ng-container>
+    
+            <ng-container matColumnDef="status">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Situação </th>
+              <td style="text-align: center; font-weight: 550; font-size: 16px; " mat-cell *matCellDef="let row"> 
+                {{row.status}} <span *ngIf='row.pausada'>e Pausada</span>
+              </td>
+            </ng-container>
+    
+            <ng-container matColumnDef="validacao">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Validar/Invalidar </th>
+              <td  style="text-align: center;" mat-cell *matCellDef="let row" > 
+                <span *ngIf='row.acao==1' >
+                  <button (click)='validarCadastro(row.contaBlockchain)' class="br-button search-trigger is-circle is-terciary" type="button">
+                    <i class="fas fa-check-circle"></i>
+                  </button> 
+                </span> 
+                <span *ngIf='row.acao==2' >
+                  <button (click)='validarCadastro(row.contaBlockchain)' class="br-button search-trigger is-circle is-terciary" type="button" disabled>
+                    <i class="fas fa-check-circle"></i>
+                  </button> 
+                </span>             
+                <span *ngIf='row.acao==1 || row.acao==2' >
+                  <button (click)='invalidarCadastro(row.contaBlockchain)' class="br-button search-trigger is-circle is-terciary" type="button">
+                    <i class="fas fa-stop-circle"></i>
+                  </button>
+                </span> 
+                <span *ngIf='row.acao == 0 || row.acao == 3' >
+                  <button (click)='validarCadastro(row.contaBlockchain)' class="br-button search-trigger is-circle is-terciary" type="button" disabled>
+                    <i class="fas fa-check-circle"></i>
+                  </button> 
+                  <button (click)='invalidarCadastro(row.contaBlockchain)' class="br-button search-trigger is-circle is-terciary" type="button" disabled>
+                    <i class="fas fa-stop-circle"></i>
+                  </button>
+                </span>          
+              </td>
+            </ng-container>      
+    
+            <ng-container matColumnDef="congelamento">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Pausar/Reativar/Pausa CNPJ </th>
+              <td  style="text-align: center;" mat-cell *matCellDef="let row" > 
+                <span *ngIf='true' >
+    
+                  <span *ngIf='row.acao == 2' >
+                    <span *ngIf='row.pausada'>
+                      <button (click)='pause(row.contaBlockchain)' class="br-button search-trigger is-circle is-terciary" type="button" disabled>
+                        <i class="fas fa-pause-circle"></i>
+                      </button>   
+                    </span>
+                    <span *ngIf='!row.pausada'>
+                      <button (click)='pause(row.contaBlockchain)' class="br-button search-trigger is-circle is-terciary" type="button">
+                        <i class="fas fa-pause-circle"></i>
+                      </button>   
+                    </span>
+                    <span *ngIf='row.pausada'>
+                      <button (click)='unpause(row.contaBlockchain)' class="br-button search-trigger is-circle is-terciary" type="button">
+                        <i class="fas fa-play-circle"></i>
+                      </button>
+                    </span>
+                    <span *ngIf='!row.pausada'>
+                      <button (click)='unpause(row.contaBlockchain)' class="br-button search-trigger is-circle is-terciary" type="button" disabled>
+                        <i class="fas fa-play-circle"></i>
+                      </button>                  
+                    </span>                
+    
+                    <button (click)='pauseCNPJ(row.RBBId)' class="br-button search-trigger is-circle is-terciary" type="button">
+                      <i class="fas fa-exclamation-circle"></i>
+                    </button> 
+                  </span>
+    
+                  <span *ngIf='row.acao == 0 || row.acao == 1 || row.acao == 3' >
+                    <button (click)='pause(row.contaBlockchain)' class="br-button search-trigger is-circle is-terciary" type="button" disabled>
+                      <i class="fas fa-pause-circle"></i>
+                    </button> 
+                    <button (click)='unpause(row.contaBlockchain)' class="br-button search-trigger is-circle is-terciary" type="button" disabled>
+                      <i class="fas fa-play-circle"></i>
+                    </button>
+                    <button (click)='pauseCNPJ(row.RBBId)' class="br-button search-trigger is-circle is-terciary" type="button" disabled>
+                      <i class="fas fa-exclamation-circle"></i>
+                    </button>   
+                  </span>
+                  
+                </span> 
+                <span *ngIf='false' >
+                    N/A
+                </span>          
+              </td>
+            </ng-container>      
+        
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        
+    
+            <tr class="mat-row" *matNoDataRow>
+              <td class="mat-cell" colspan="6">Nenhum resultado encontrado" {{input.value}} "</td>
+            </tr>
+          </table>
+              
+          <div class="footer"><mat-paginator [pageSizeOptions]="[5, 10, 15]"></mat-paginator></div>
+        </div>
+      </div>
+    </div>
+    </body>

@@ -4,7 +4,7 @@
       <div class="header">
         <div class="top-bar">
          <div style="border: 0.1px solid rgba(240, 248, 255, 0.459);" class="search-bar is-active " >
-            <div style="font-size: 30px; color: aliceblue;" class="title">Vínculos RBB</div>
+            <div style="font-size: 30px; color: aliceblue;" class="title">Lista Contas da RBB</div>
             <div class="divisor"></div>
             <i style="font-size: 25px; padding-right: 39px; padding-left: 6px; color: aliceblue;" class="fas fa-search"></i>
              
@@ -67,85 +67,7 @@
           </td>
         </ng-container>
 
-        <ng-container matColumnDef="validacao">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> Validar/Invalidar </th>
-          <td  style="text-align: center;" mat-cell *matCellDef="let row" > 
-            <span *ngIf='row.acao==1' >
-              <button (click)='validarCadastro(row.contaBlockchain)' class="br-button search-trigger is-circle is-terciary" type="button">
-                <i class="fas fa-check-circle"></i>
-              </button> 
-            </span> 
-            <span *ngIf='row.acao==2' >
-              <button (click)='validarCadastro(row.contaBlockchain)' class="br-button search-trigger is-circle is-terciary" type="button" disabled>
-                <i class="fas fa-check-circle"></i>
-              </button> 
-            </span>             
-            <span *ngIf='row.acao==1 || row.acao==2' >
-              <button (click)='invalidarCadastro(row.contaBlockchain)' class="br-button search-trigger is-circle is-terciary" type="button">
-                <i class="fas fa-stop-circle"></i>
-              </button>
-            </span> 
-            <span *ngIf='row.acao == 0 || row.acao == 3' >
-              <button (click)='validarCadastro(row.contaBlockchain)' class="br-button search-trigger is-circle is-terciary" type="button" disabled>
-                <i class="fas fa-check-circle"></i>
-              </button> 
-              <button (click)='invalidarCadastro(row.contaBlockchain)' class="br-button search-trigger is-circle is-terciary" type="button" disabled>
-                <i class="fas fa-stop-circle"></i>
-              </button>
-            </span>          
-          </td>
-        </ng-container>      
-
-        <ng-container matColumnDef="congelamento">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> Pausar/Reativar/Pausa CNPJ </th>
-          <td  style="text-align: center;" mat-cell *matCellDef="let row" > 
-            <span *ngIf='true' >
-
-              <span *ngIf='row.acao == 2' >
-                <span *ngIf='row.pausada'>
-                  <button (click)='pause(row.contaBlockchain)' class="br-button search-trigger is-circle is-terciary" type="button" disabled>
-                    <i class="fas fa-pause-circle"></i>
-                  </button>   
-                </span>
-                <span *ngIf='!row.pausada'>
-                  <button (click)='pause(row.contaBlockchain)' class="br-button search-trigger is-circle is-terciary" type="button">
-                    <i class="fas fa-pause-circle"></i>
-                  </button>   
-                </span>
-                <span *ngIf='row.pausada'>
-                  <button (click)='unpause(row.contaBlockchain)' class="br-button search-trigger is-circle is-terciary" type="button">
-                    <i class="fas fa-play-circle"></i>
-                  </button>
-                </span>
-                <span *ngIf='!row.pausada'>
-                  <button (click)='unpause(row.contaBlockchain)' class="br-button search-trigger is-circle is-terciary" type="button" disabled>
-                    <i class="fas fa-play-circle"></i>
-                  </button>                  
-                </span>                
-
-                <button (click)='pauseCNPJ(row.RBBId)' class="br-button search-trigger is-circle is-terciary" type="button">
-                  <i class="fas fa-exclamation-circle"></i>
-                </button> 
-              </span>
-
-              <span *ngIf='row.acao == 0 || row.acao == 1 || row.acao == 3' >
-                <button (click)='pause(row.contaBlockchain)' class="br-button search-trigger is-circle is-terciary" type="button" disabled>
-                  <i class="fas fa-pause-circle"></i>
-                </button> 
-                <button (click)='unpause(row.contaBlockchain)' class="br-button search-trigger is-circle is-terciary" type="button" disabled>
-                  <i class="fas fa-play-circle"></i>
-                </button>
-                <button (click)='pauseCNPJ(row.RBBId)' class="br-button search-trigger is-circle is-terciary" type="button" disabled>
-                  <i class="fas fa-exclamation-circle"></i>
-                </button>   
-              </span>
-              
-            </span> 
-            <span *ngIf='false' >
-                N/A
-            </span>          
-          </td>
-        </ng-container>      
+       
 
         <ng-container matColumnDef="explorer">
           <th mat-header-cell *matHeaderCellDef mat-sort-header> Link </th>
