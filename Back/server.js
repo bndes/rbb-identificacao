@@ -26,7 +26,8 @@ const CAMINHO_ROTEIRO_ASSINATURA_DIGITAL = config.infra.caminhoRoteiroAssinatura
 
 const MAX_FILE_SIZE = Number( config.negocio.maxFileSize );
 
-const mockPJ = config.negocio.mockPJ;
+const mockPJ 			= config.negocio.mockPJ;
+const mockValidacaoCert = config.negocio.mockValidacaoCert;
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -170,10 +171,12 @@ app.post('/api/constantesFront', function (req, res) {
 });
 
 console.log("operationAPIURL=" + config.infra.operationAPIURL);
+console.log("mockValidacaoCert=" + mockValidacaoCert);
 
 app.post('/api/constantesFrontPJ', function (req, res) {
 	console.log("operationAPIURL=" + config.infra.operationAPIURL);
-	console.log("mockMongoClient=" + config.negocio.mockMongoClient)
+	console.log("mockMongoClient=" + config.negocio.mockMongoClient);
+	
 	console.log("mockPJ=" + mockPJ)
 
 	let consts = { operationAPIURL: config.infra.operationAPIURL,  
@@ -371,7 +374,8 @@ function trataUpload(req, res, next) {
 				// A better way to copy the uploaded file. 
 				const src  = fs.createReadStream(tmp_path);
 				const cnpjEsperado = cnpj;
-				let retornoValidacaoCert = SERVER_FUNCTIONS.validateDocumentSignature(src, cnpjEsperado, true);
+				
+				let retornoValidacaoCert = SERVER_FUNCTIONS.validateDocumentSignature(src, cnpjEsperado, mockValidacaoCert);
 				if ( retornoValidacaoCert == 0 ) {
 					const dest = fs.createWriteStream(target_path);
 					src.pipe(dest);
