@@ -1,5 +1,10 @@
 <body>
-<div style="padding-bottom: 200px; padding-top: 150px;" class="container-fluid">
+  
+  <div class="container text-center">
+    <alert></alert>
+  </div>
+   
+  <div style="padding-bottom: 200px; padding-top: 150px;" class="container-fluid">
     <div class="br-table is-datatable" id="datatable-default">
       <div class="header">
         <div class="top-bar">
@@ -16,7 +21,11 @@
         </div>
         </div>
       </div>
-    
+      
+      <button class="btn" (click)="alertService.success('Success!!', alertOptions)" >
+        Clear
+      </button>
+
     <div id="tabela" class="mat-elevation-z8" >
       <table mat-table [dataSource]="dataSource" matSort>
        

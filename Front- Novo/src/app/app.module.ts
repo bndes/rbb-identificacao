@@ -18,7 +18,7 @@ import { PauseClienteComponent } from './pause-cliente/pause-cliente.component';
 import { PauseAdminComponent } from './pause-admin/pause-admin.component';
 import { HomeComponent } from './home/home.component';
 import { CallComponent } from './call/call.component';
-
+import { AlertModule } from './_alert';
 
 /* Services */
 import { Web3Service } from './Web3Service';
@@ -55,7 +55,8 @@ import { FileUploadModule } from 'ng2-file-upload';
     FormsModule,
     ReactiveFormsModule,
     MaterialModule,
-    FileUploadModule
+    FileUploadModule,
+    AlertModule
     
   ],
   providers: [PessoaJuridicaService, Web3Service, ConstantesService, GoogleMapsService, FileHandleService ],
