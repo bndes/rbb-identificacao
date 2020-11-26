@@ -1,28 +1,19 @@
 const ethers  = require('ethers');
-const express = require('express');
-var fs        = require('fs');
-var os        = require('os');
-var request   = require('request');
-
 var config    = require('./config.json');
 var v_wallet  = require('./wallet.json');
 
 var contrato_json_BNDESRegistry = require(config.infra.contrato_json_BNDESRegistry);
 
-// const app = express();
-// const port = 3000; //FIXME
-
 const SERVER_FUNCTIONS     = require('./server_functions.js');
 
-const privateKey = v_wallet.privkey;
-const provider   = new ethers.providers.JsonRpcProvider('http://localhost:9545');
-const wallet     = new ethers.Wallet(privateKey, provider);
-
-let contractAddress = contrato_json_BNDESRegistry.networks[config.infra.rede_blockchain].address;
-
-let RBBRegistry;
+const privateKey      = v_wallet.privkey;
+const provider        = new ethers.providers.JsonRpcProvider(config.infra.blockchain_provider);
+const wallet          = new ethers.Wallet(privateKey, provider);
+const contractAddress = contrato_json_BNDESRegistry.networks[config.infra.rede_blockchain].address;
 
 console.log("Oracle Validator at " + v_wallet.address);
+
+let RBBRegistry;
 
 initContract();
 listenEvent();
@@ -78,9 +69,6 @@ async function listenEvent() {
                 
             }
         }
-
-        
-
     });
 }
 

@@ -23,7 +23,7 @@ const DIR_CAMINHO_COMPROVANTE_LIQUIDACAO = config.infra.caminhoArquivos + config
                 
 async function preencheDeclaracao(cnpj, address, pj, modelo, mockPJ,res) {
   
-    const arquivoModelo = require ('./arquivos/modelo_declaracao/MODELO_CADASTRO.json'); //TODO: colocar no config
+    const arquivoModelo = require ( config.infra.modeloDeclaracao ); 
 
     var stringified = JSON.stringify(arquivoModelo);
     stringified = stringified.replace('##CNPJ##', cnpj );
