@@ -38474,15 +38474,13 @@
           "type": "event"
         }
       },
-      "links": {
-        "RBBLib": "0x4821924283e2094aCf93874C55f575252dFf865B"
-      },
-      "address": "0x37cC7714cD39Db0c36f52B4313378E68606eE8Ee",
-      "transactionHash": "0x286fb33091f33fd456edb6d43963d6c718a968f61731d884fefba7a01035588a"
+      "links": {},
+      "address": "0xeFDE680898e90cf837ef7D372021df4AAAecaE87",
+      "transactionHash": "0x246fa67984436bd7c50e7dcef40031e1cbed206aa1f3bebf732443fc0500068a"
     }
   },
   "schemaVersion": "3.2.5",
-  "updatedAt": "2020-11-24T21:44:43.886Z",
+  "updatedAt": "2020-11-26T18:57:28.925Z",
   "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",

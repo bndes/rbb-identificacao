@@ -121,7 +121,7 @@ export class ListacontasComponent implements OnInit {
           this.registrarExibicaoEventos();
       }, 1500)
 
-      setTimeout(() => {
+      setInterval(() => {
           this.estadoLista = this.estadoLista === "undefined" ? "vazia" : "cheia"
           
           users = Array.from(this.listaTransacoesPJ);
@@ -131,6 +131,8 @@ export class ListacontasComponent implements OnInit {
 
           this.ref.detectChanges()
       }, 2300)
+
+      
 
       
       //const users = Array.from({length: 1}, (_, k) => createNewUser(k + 1));

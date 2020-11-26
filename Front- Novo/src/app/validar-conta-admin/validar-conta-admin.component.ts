@@ -116,14 +116,14 @@ export class ValidarContaAdminComponent implements OnInit {
   ngOnInit() {
     let users;
 
-      setTimeout(() => {
+      setInterval(() => {
           this.listaTransacoesPJ = [];
           console.log("Zerou lista de transacoes");
 
           this.registrarExibicaoEventos();
       }, 1500)
 
-      setTimeout(() => {
+      setInterval(() => {
           this.estadoLista = this.estadoLista === "undefined" ? "vazia" : "cheia"
           
           users = Array.from(this.listaTransacoesPJ);
