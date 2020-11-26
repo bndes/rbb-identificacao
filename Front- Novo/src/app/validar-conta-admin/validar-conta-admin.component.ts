@@ -68,7 +68,7 @@ const TIMESTAMP: string[] = [
 })
 export class ValidarContaAdminComponent implements OnInit {
 
-  displayedColumns: string[] = ['rbbid', 'cnpj', 'name', 'address' , 'perfil',  'evento', 'status', 'validacao', 'congelamento'];
+  displayedColumns: string[] = ['rbbid', 'cnpj', 'name', 'address' , 'perfil',  'evento', 'status', 'validacao', 'congelamento', 'congelamentoCNPJ'];
   dataSource: MatTableDataSource<DashboardPessoaJuridica>;
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
@@ -210,7 +210,7 @@ export class ValidarContaAdminComponent implements OnInit {
                   uniqueIdentifier: eventoCadastro.transactionHash,
                   dataHora: eventoCadastro.dateTimeExpiration,
                   hashDeclaracao: eventoCadastro.args.hashProof,
-                  evento: "Realização do Cadastro",
+                  evento: "Cadastro",
                   status: "",
                   acao: -1,
                   filePathAndName: "",
@@ -290,7 +290,7 @@ export class ValidarContaAdminComponent implements OnInit {
                   uniqueIdentifier: eventoTroca.transactionHash + "New",                    
                   dataHora: null,
                   hashDeclaracao: eventoTroca.args.hashProof,
-                  evento: "Conta Associada por Troca",
+                  evento: "Troca",
                   status: "",
                   acao: -1,
                   filePathAndName: "",                    
@@ -338,7 +338,7 @@ export class ValidarContaAdminComponent implements OnInit {
                   uniqueIdentifier: event.transactionHash,
                   dataHora: null,
                   hashDeclaracao: "",
-                  evento: "Validação de Conta",
+                  evento: "Validação",
                   status: "",
                   acao: -1,
                   filePathAndName: "",                    
@@ -389,7 +389,7 @@ export class ValidarContaAdminComponent implements OnInit {
                   uniqueIdentifier: event.transactionHash,                    
                   dataHora: null,
                   hashDeclaracao: "",
-                  evento: "Invalidação de Conta",
+                  evento: "Invalidação",
                   status: "",
                   acao: -1,
                   filePathAndName: "",                    
@@ -541,7 +541,7 @@ export class ValidarContaAdminComponent implements OnInit {
                                                 "O cadastro da conta foi validado e confirmado na blockchain.", 
                                                 self.zone)
                                                 */
-            self.router.navigate(['home/associa/contas']);
+            self.router.navigate(['home/validar']);
             }        
           ,(error) => {
             /*
@@ -579,7 +579,7 @@ export class ValidarContaAdminComponent implements OnInit {
           //  self.bnAlertsService.criarAlerta("info", "Sucesso", s, 5);
             console.log(s);
   
-            self.router.navigate(['home/associa/contas']);
+            self.router.navigate(['home/validar']);
       },
       (error) => {
         console.log("Erro ao invalidar cadastro")
@@ -610,7 +610,7 @@ export class ValidarContaAdminComponent implements OnInit {
                                                 "O cadastro da conta foi validado e confirmado na blockchain.", 
                                                 self.zone)
                                                 */
-            self.router.navigate(['home/associa/contas']);
+            self.router.navigate(['home/validar']);
             }        
           ,(error) => {
             /*
@@ -646,7 +646,7 @@ export class ValidarContaAdminComponent implements OnInit {
                                                 "O cadastro da conta foi validado e confirmado na blockchain.", 
                                                 self.zone)
                                                 */
-            self.router.navigate(['home/associa/contas']);
+            self.router.navigate(['home/validar']);
             }        
           ,(error) => {
             /*
@@ -683,7 +683,7 @@ export class ValidarContaAdminComponent implements OnInit {
                                                 "O cadastro da conta foi validado e confirmado na blockchain.", 
                                                 self.zone)
                                                 */
-            self.router.navigate(['home/associa/contas']);
+            self.router.navigate(['home/validar']);
             }        
           ,(error) => {
             /*

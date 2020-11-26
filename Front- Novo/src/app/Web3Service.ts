@@ -518,13 +518,13 @@ export class Web3Service {
             return "Disponível";
         }
         else if (result==1) {
-            return "Aguardando validação do Cadastro";
+            return "Aguardando";
         }                
         else if (result==2) {
             return "Validada";
         }    
         else if (result==3) {
-            return "Conta invalidada";
+            return "Invalidada";
         }                                                        
         else {
             return "N/A";
