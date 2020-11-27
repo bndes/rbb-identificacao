@@ -123,30 +123,27 @@ export class ValidarContaAdminComponent implements OnInit {
   ngOnInit() {
     let users;
 
-      setInterval(() => {
-          this.listaTransacoesPJ = [];
-          console.log("Zerou lista de transacoes");
+    setInterval(() => {
+      console.log("Remonta lista de transacoes");
+      this.listaTransacoesPJ = [];      
+      this.registrarExibicaoEventos();  
+    }, 1500)
 
-          this.registrarExibicaoEventos();
-      }, 1500)
+    setInterval(() => {
+      this.estadoLista = this.estadoLista === "undefined" ? "vazia" : "cheia"          
+      users = Array.from(this.listaTransacoesPJ);
+      this.dataSource = new MatTableDataSource(users);
+      this.dataSource.paginator = this.paginator;
+      this.dataSource.sort = this.sort;
+      this.ref.detectChanges()
+    }, 6300)
+  
+    
+    //const users = Array.from({length: 1}, (_, k) => createNewUser(k + 1));
+    
 
-      setInterval(() => {
-          this.estadoLista = this.estadoLista === "undefined" ? "vazia" : "cheia"
-          
-          users = Array.from(this.listaTransacoesPJ);
-          this.dataSource = new MatTableDataSource(users);
-          this.dataSource.paginator = this.paginator;
-          this.dataSource.sort = this.sort;
-
-          this.ref.detectChanges()
-      }, 2300)
-
-      
-      //const users = Array.from({length: 1}, (_, k) => createNewUser(k + 1));
-      
-
-      // Assign the data to the data source for the table to render
-     
+    // Assign the data to the data source for the table to render
+    
   }
 
   async recuperaContaSelecionada() {
@@ -210,7 +207,7 @@ export class ValidarContaAdminComponent implements OnInit {
 
               transacaoPJ = {
                   RBBId: eventoCadastro.args.RBBId,
-                  cnpj : eventoCadastro.args.CNPJ,
+                  cnpj : Utils.completarCnpjComZero(eventoCadastro.args.CNPJ),
                   razaoSocial: "",
                   contaBlockchain: eventoCadastro.args.addr,
                   hashID: eventoCadastro.transactionHash,
@@ -263,7 +260,7 @@ export class ValidarContaAdminComponent implements OnInit {
           if (!error) {
 
               let transacaoPJContaInativada = {
-                  cnpj: eventoTroca.args.CNPJ,
+                  cnpj: Utils.completarCnpjComZero(eventoTroca.args.CNPJ),
                   razaoSocial: "",
                   contaBlockchain: eventoTroca.args.oldAddr,
                   hashID: eventoTroca.transactionHash,
@@ -289,7 +286,7 @@ export class ValidarContaAdminComponent implements OnInit {
 
 
               transacaoPJ = {
-                  cnpj: eventoTroca.args.CNPJ,
+                  cnpj: Utils.completarCnpjComZero(eventoTroca.args.CNPJ),
                   RBBId: eventoTroca.args.RBBId,
                   razaoSocial: "",
                   contaBlockchain: eventoTroca.args.newAddr,
@@ -338,7 +335,7 @@ export class ValidarContaAdminComponent implements OnInit {
                     
               transacaoPJ = {
                   RBBId :event.args.RBBId,
-                  cnpj: event.args.CNPJ,
+                  cnpj: Utils.completarCnpjComZero(event.args.CNPJ),
                   razaoSocial: "",
                   contaBlockchain: event.args.addr,
                   hashID: event.transactionHash,
@@ -389,7 +386,7 @@ export class ValidarContaAdminComponent implements OnInit {
                     
               transacaoPJ = {
                   RBBId :event.args.RBBId,
-                  cnpj: event.args.CNPJ,
+                  cnpj: Utils.completarCnpjComZero(event.args.CNPJ),
                   razaoSocial: "",
                   contaBlockchain: event.args.addr,
                   hashID: event.transactionHash,

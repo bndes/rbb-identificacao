@@ -19,6 +19,8 @@ import { PauseAdminComponent } from './pause-admin/pause-admin.component';
 import { HomeComponent } from './home/home.component';
 import { CallComponent } from './call/call.component';
 import { AlertModule } from './_alert';
+import { NgxMaskModule, IConfig } from 'ngx-mask'
+ 
 
 /* Services */
 import { Web3Service } from './Web3Service';
@@ -28,6 +30,9 @@ import { ConstantesService } from './ConstantesService';
 import { GoogleMapsService } from './shared/google-maps.service';
 
 import { FileUploadModule } from 'ng2-file-upload';
+
+export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
+ 
 
 
 @NgModule({
@@ -56,7 +61,8 @@ import { FileUploadModule } from 'ng2-file-upload';
     ReactiveFormsModule,
     MaterialModule,
     FileUploadModule,
-    AlertModule
+    AlertModule,
+    NgxMaskModule.forRoot(),
     
   ],
   providers: [PessoaJuridicaService, Web3Service, ConstantesService, GoogleMapsService, FileHandleService ],

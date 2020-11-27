@@ -137,7 +137,7 @@ export class ListacontasComponent implements OnInit {
           this.dataSource.sort = this.sort;
 
           this.ref.detectChanges()
-      }, 2300)
+      }, 6300)
 
       
 
@@ -210,7 +210,7 @@ export class ListacontasComponent implements OnInit {
 
               transacaoPJ = {
                   RBBId: eventoCadastro.args.RBBId,
-                  cnpj : eventoCadastro.args.CNPJ,
+                  cnpj : Utils.completarCnpjComZero(eventoCadastro.args.CNPJ),
                   razaoSocial: "",
                   contaBlockchain: eventoCadastro.args.addr,
                   hashID: eventoCadastro.transactionHash,
@@ -263,7 +263,7 @@ export class ListacontasComponent implements OnInit {
           if (!error) {
 
               let transacaoPJContaInativada = {
-                  cnpj: eventoTroca.args.CNPJ,
+                  cnpj: Utils.completarCnpjComZero(eventoTroca.args.CNPJ),
                   razaoSocial: "",
                   contaBlockchain: eventoTroca.args.oldAddr,
                   hashID: eventoTroca.transactionHash,
@@ -289,7 +289,7 @@ export class ListacontasComponent implements OnInit {
 
 
               transacaoPJ = {
-                  cnpj: eventoTroca.args.CNPJ,
+                  cnpj: Utils.completarCnpjComZero(eventoTroca.args.CNPJ),
                   RBBId: eventoTroca.args.RBBId,
                   razaoSocial: "",
                   contaBlockchain: eventoTroca.args.newAddr,
@@ -338,7 +338,7 @@ export class ListacontasComponent implements OnInit {
                     
               transacaoPJ = {
                   RBBId :event.args.RBBId,
-                  cnpj: event.args.CNPJ,
+                  cnpj: Utils.completarCnpjComZero(event.args.CNPJ),
                   razaoSocial: "",
                   contaBlockchain: event.args.addr,
                   hashID: event.transactionHash,
@@ -389,7 +389,7 @@ export class ListacontasComponent implements OnInit {
                     
               transacaoPJ = {
                   RBBId :event.args.RBBId,
-                  cnpj: event.args.CNPJ,
+                  cnpj: Utils.completarCnpjComZero(event.args.CNPJ),
                   razaoSocial: "",
                   contaBlockchain: event.args.addr,
                   hashID: event.transactionHash,

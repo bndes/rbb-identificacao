@@ -283,9 +283,9 @@ export class Web3Service {
 
     getPJInfo(addr: string, fSuccess: any, fError: any): number {
         let self = this;
-        console.log("getPJInfo com addr=" + addr);
-        console.log("RBBRegistrySmartContract=");
-        console.log(this.RBBRegistrySmartContract);
+        // console.log("getPJInfo com addr=" + addr);
+        // console.log("RBBRegistrySmartContract=");
+        // console.log(this.RBBRegistrySmartContract);
         return this.RBBRegistrySmartContract.getRegistry(addr,
             (error, result) => {
                 if (error) fError(error);

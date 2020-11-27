@@ -25,7 +25,7 @@ export class MenuComponent implements OnInit {
       this.selectedAccount = await this.web3Service.getCurrentAccountSync();
       console.log(this.selectedAccount);
       this.usuario = await this.recuperaRegistroBlockchain(this.selectedAccount);
-  }, 3000)
+  }, 5000)
   }
 
   toggleSideBar(){
