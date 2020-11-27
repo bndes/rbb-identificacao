@@ -2,6 +2,7 @@ import { Injectable  } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ConstantesService } from './ConstantesService';
 import { formattedError } from '@angular/compiler';
+import { Utils } from 'src/utils';
 
 @Injectable()
 export class Web3Service {
@@ -490,6 +491,10 @@ export class Web3Service {
 
         pjInfo.statusAsString = this.getEstadoContaAsStringByCodigo(pjInfo.status);
         pjInfo.roleAsString   = this.getPapelContaAsString(pjInfo.role);
+
+        if ( pjInfo.cnpj != undefined ) {
+            pjInfo.cnpj = Utils.completarCnpjComZero(pjInfo.cnpj);
+        }
 
         if (pjInfo.status == 2) {
             pjInfo.isValidada =  true;
