@@ -1,12 +1,16 @@
 
     <body>
-        
+
+    <div class="container text-center">
+        <alert></alert>
+    </div>
+
     <div class="container">    
         <div class="rightbox">
             <h1 style="font-size: 120%;" >Associar Conta Blockchain ao e-CNPJ</h1>
             <div class="br-input">
                 <label>Informe o CNPJ:</label>
-                <input name="cnpjWithMask" [(ngModel)]="cliente.cnpjWithMask"  class="form-control form-control-sm" (input)="changeCnpj()" 
+                <input name="cnpjWithMask" mask="00.000.000/0000-00" [(ngModel)]="cliente.cnpjWithMask"  class="form-control form-control-sm" (input)="changeCnpj()" 
                 required [disabled]="this.flagUploadConcluido" />
             </div>
                 

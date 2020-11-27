@@ -12,7 +12,7 @@ import { Web3Service } from './../Web3Service';
 //import { Utils } from '../shared/utils';
 import { DeclarationComponentInterface } from '../shared/declaration-component.interface';
 import { FileHandleService } from '../file-handle.service';
-
+import { AlertService } from '../_alert';
 
 @Component({
   selector: 'app-associa-conta-admin',
@@ -32,9 +32,15 @@ export class AssociaContaAdminComponent implements OnInit {
   declaracao_corpo: string;
   declaracao: string;
 
+  alertOptions = {
+    autoClose: true,
+    keepAfterRouteChange: false
+};
+
+
   constructor(private pessoaJuridicaService: PessoaJuridicaService,
     private web3Service: Web3Service, private router: Router, private zone: NgZone, private ref: ChangeDetectorRef,
-    public fileHandleService: FileHandleService) {       
+    public fileHandleService: FileHandleService, public alertService: AlertService) {
 
       let self = this;
 
@@ -58,7 +64,7 @@ export class AssociaContaAdminComponent implements OnInit {
     this.cliente.subcreditos = new Array<Subcredito>();
   }
 
-  changeCnpj() {
+  async changeCnpj() {
 
     this.cliente.cnpj = Utils.removeSpecialCharacters(this.cliente.cnpjWithMask);
     let cnpj = this.cliente.cnpj;
@@ -66,24 +72,27 @@ export class AssociaContaAdminComponent implements OnInit {
 
     if ( cnpj.length == 14 ) { 
       console.log (" Buscando o CNPJ do cliente (14 digitos fornecidos)...  " + cnpj)
-      this.recuperaClientePorCNPJ(cnpj);
+      await this.recuperaClientePorCNPJ(cnpj);
     }
 
-    this.pessoaJuridicaService.pedeDeclaracao(cnpj, this.selectedAccount).subscribe(
-      empresa => { 
-        console.log("associa...pedeDeclaracao(cnpj)");
-        console.log(empresa);
+      if (this.cliente.dadosCadastrais) {
+        this.pessoaJuridicaService.pedeDeclaracao(cnpj, this.selectedAccount).subscribe(
+          empresa => { 
+            console.log("associa...pedeDeclaracao(cnpj)");
+            console.log(empresa);
+            this.declaracao_titulo =  JSON.stringify(empresa.declaracao_titulo);
+            this.declaracao_corpo =  JSON.stringify(empresa.declaracao_corpo);        
+          },
+          error => {
+            console.log("associa...pedeDeclaracao(cnpj)");
+            console.log(error);
+          }
+        );
         
-        this.declaracao_titulo =  JSON.stringify(empresa.declaracao_titulo);
-        this.declaracao_corpo =  JSON.stringify(empresa.declaracao_corpo); 
-
-        
-      },
-      error => {
-        console.log("associa...pedeDeclaracao(cnpj)");
-        console.log(error);
+      } else {
+          let texto = "CNPJ não encontrado";
+          this.alertService.error(texto, this.alertOptions);
       }
-    );
     
     this.preparaUpload(this.cliente.cnpj, this.subcreditoSelecionado, this.selectedAccount, this);
   }
@@ -158,7 +167,7 @@ export class AssociaContaAdminComponent implements OnInit {
 
   }
 
-  recuperaClientePorCNPJ(cnpj) {
+  async recuperaClientePorCNPJ(cnpj) {
 
     console.log("RECUPERA CLIENTE com CNPJ = " + cnpj);
 
@@ -185,7 +194,7 @@ export class AssociaContaAdminComponent implements OnInit {
           //Do no clean fields to better UX
           let texto = "CNPJ não identificado";
           console.log(texto);
-          //Utils.criarAlertaAcaoUsuario(this.bnAlertsService, texto);
+          self.alertService.error(texto, self.alertOptions);
 
         }
       },
@@ -193,6 +202,7 @@ export class AssociaContaAdminComponent implements OnInit {
         let texto = "Erro ao buscar dados do cliente";
         console.log(texto);
         //Utils.criarAlertaErro( this.bnAlertsService, texto,error);
+        self.alertService.error(texto, self.alertOptions);
         this.inicializaDadosDerivadosPessoaJuridica();
       });
 
@@ -243,6 +253,7 @@ export class AssociaContaAdminComponent implements OnInit {
       let s = "O Contrato é um Campo Obrigatório";
       console.log(s);
       //this.bnAlertsService.criarAlerta("error", "Erro", s, 2)
+      this.alertService.error(s, this.alertOptions);
       return
     }
 
@@ -250,12 +261,14 @@ export class AssociaContaAdminComponent implements OnInit {
       let s = "O envio da declaração é obrigatório";
       console.log(s);
       //this.bnAlertsService.criarAlerta("error", "Erro", s, 2)
+      this.alertService.error(s, this.alertOptions);
       return
     } 
     else if (!Utils.isValidHash(this.hashdeclaracao)) {
       let s = "O Hash da declaração está preenchido com valor inválido";
       console.log(s);
       //this.bnAlertsService.criarAlerta("error", "Erro", s, 2)
+      this.alertService.error(s, this.alertOptions);
       return;
     }
       
@@ -268,6 +281,7 @@ export class AssociaContaAdminComponent implements OnInit {
           let msg = "A conta "+ this.selectedAccount +" não está disponível para associação"; 
           console.log(msg);
           //Utils.criarAlertaErro( self.bnAlertsService, "Conta não disponível para associação", msg);  
+          self.alertService.error(msg, self.alertOptions);
         }
 
         else {
@@ -285,10 +299,13 @@ export class AssociaContaAdminComponent implements OnInit {
                                                 "A associação foi confirmada na blockchain.", 
                                                 self.zone) 
                                                 */
+            self.alertService.info("Associação do cnpj " + self.cliente.cnpj + " enviada. Aguarde a confirmação.", this.alertOptions);                                                           
             self.router.navigate(['home/associa/contas']);
             
             }        
           ,(error) => {
+            self.alertService.error("Erro ao associar na blockchain", self.alertOptions);
+            
             /*
             Utils.criarAlertaErro( self.bnAlertsService, 
                                     "Erro ao associar na blockchain", 
@@ -303,6 +320,7 @@ export class AssociaContaAdminComponent implements OnInit {
         } 
 
       }, (error) => {
+        self.alertService.error("Erro ao verificar se conta está disponível", self.alertOptions);
         /*
         Utils.criarAlertaErro( self.bnAlertsService, 
           "Erro ao verificar se conta está disponível", 
