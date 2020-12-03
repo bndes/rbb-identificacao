@@ -302,13 +302,16 @@ export class Web3Service {
         let self = this;
 
         return new Promise (function(resolve) {
-            self.getPJInfo(address, function(result) {
-                resolve(result);
-            }, function(reject) {
-                console.log("ERRO getPJInfo  SYNC");
-                reject(false);
-            });
-        })
+                                self.getPJInfo( address, 
+                                                function(result) {
+                                                    resolve(result);
+                                                }, 
+                                                function(reject) {
+                                                    console.log("ERRO getPJInfo  SYNC");
+                                                    resolve(reject);
+                                                }
+                                );
+                            })
     }    
 
     getAddressOwner(fSuccess: any, fError: any): number {

@@ -12,7 +12,7 @@ import { Web3Service } from './../Web3Service';
 //import { Utils } from '../shared/utils';
 import { DeclarationComponentInterface } from '../shared/declaration-component.interface';
 import { FileHandleService } from '../file-handle.service';
-
+import { AlertService } from '../_alert';
 
 
 @Component({
@@ -33,9 +33,14 @@ export class AssociaContaClienteComponent implements OnInit {
   declaracao_corpo: string;
   declaracao: string;
 
+  alertOptions = {
+    autoClose: true,
+    keepAfterRouteChange: false
+};
+
   constructor(private pessoaJuridicaService: PessoaJuridicaService,
     private web3Service: Web3Service, private router: Router, private zone: NgZone, private ref: ChangeDetectorRef,
-    public fileHandleService: FileHandleService) {       
+    public fileHandleService: FileHandleService, public alertService: AlertService) {       
 
       let self = this;
 
@@ -187,6 +192,7 @@ export class AssociaContaClienteComponent implements OnInit {
           let texto = "CNPJ não identificado";
           console.log(texto);
           //Utils.criarAlertaAcaoUsuario(this.bnAlertsService, texto);
+          this.alertService.error(texto, this.alertOptions);
 
         }
       },
@@ -194,6 +200,7 @@ export class AssociaContaClienteComponent implements OnInit {
         let texto = "Erro ao buscar dados do cliente";
         console.log(texto);
         //Utils.criarAlertaErro( this.bnAlertsService, texto,error);
+        this.alertService.error(texto, this.alertOptions);
         this.inicializaDadosDerivadosPessoaJuridica();
       });
 
@@ -248,6 +255,7 @@ console.log('associarContaCliente:: inicio')
           
           let msg = "A conta "+ this.selectedAccount +" não está disponível para associação"; 
           //Utils.criarAlertaErro( self.bnAlertsService, "Conta não disponível para associação", msg);  
+          this.alertService.error(msg, this.alertOptions);
         }
 
         else {
@@ -265,6 +273,7 @@ console.log('associarContaCliente:: inicio')
                                                 "A associação foi confirmada na blockchain.", 
                                                 self.zone) 
                                                 */
+            this.alertService.success("Gravação concluída na Blockchain.", this.alertOptions);
             self.router.navigate(['home/associa/contas']);
             
             }        
@@ -274,11 +283,13 @@ console.log('associarContaCliente:: inicio')
                                     "Erro ao associar na blockchain", 
                                     error)  
                                     */
+                                   this.alertService.error("Erro ao asssociar", this.alertOptions);
           });
           /*
           Utils.criarAlertaAcaoUsuario( self.bnAlertsService, 
                                       "Confirme a operação no metamask e aguarde a confirmação da associação da conta.")
          */
+        this.alertService.info("Confirme no metamask", this.alertOptions);
 
         } 
 
@@ -288,6 +299,7 @@ console.log('associarContaCliente:: inicio')
           "Erro ao verificar se conta está disponível", 
           error);
             */
+           this.alertService.error("Erro ao verificar se a conta está disponível", this.alertOptions);
       });
 
 
