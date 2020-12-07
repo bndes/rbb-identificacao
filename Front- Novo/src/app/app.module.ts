@@ -7,7 +7,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MenuComponent } from './components/menu/menu.component';
 import { MaterialModule } from 'src/material.module';
 import { FooterComponent } from './components/footer/footer.component';
-import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { TemplateComponent } from './template/template.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { AssociaContaAdminComponent } from './associa-conta-admin/associa-conta-admin.component';
@@ -40,7 +39,6 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
     AppComponent,
     MenuComponent,
     FooterComponent,
-    SidebarComponent,
     TemplateComponent,
     AssociaContaAdminComponent,
     AssociaContaClienteComponent,

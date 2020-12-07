@@ -14,6 +14,8 @@ export class MenuComponent implements OnInit {
 
   usuario : any;
   selectedAccount : any;
+  events: string[] = [];
+  opened: boolean;
 
   constructor(private web3Service: Web3Service) { 
     
