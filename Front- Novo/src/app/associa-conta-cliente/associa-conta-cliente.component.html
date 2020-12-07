@@ -1,11 +1,11 @@
 
     <body>
         
-        <div class="text-center">
+        <div style="position: absolute;  width: 100%;" class="text-center">
             <alert></alert>
         </div>
             
-        <div class="container">    
+        <div [ngClass]="{'containerResize' : cliente.dadosCadastrais}" class="container">    
             <div class="rightbox">
                 <h1 style="font-size: 120%;" >Associar Conta Blockchain ao e-CNPJ</h1>
                 <div class="br-input">
@@ -26,20 +26,12 @@
                     <div class="msg-conta-invalida" >
                         {{contaEstaValida}}
                     </div>
-                </div>
-    
-            
-            
-            
-    
-    
+                </div> 
+                <button  class="br-button primary" type="button" (click)="associarContaCliente()"  *ngIf='cliente.dadosCadastrais'>Associar
+                </button>  
             </div>
-            <div>
-            <button style="height: 5%; width: 30%;  margin-top: 10%; margin-left: 60%;  font-size: 21px;" class="br-button primary" type="button" (click)="associarContaCliente()">Associar
-            </button>
-    
-    
-        </div>
+                 
+        
         </div>
     
         <div class="leftbox">
