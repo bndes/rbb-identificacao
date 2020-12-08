@@ -11,7 +11,6 @@ body{
 .container {
   background: #FFFFFF;
   margin-left: 16%;
-  position: absolute;
   margin-top: 5%;
   box-shadow: 2px 5px 20px rgba(#070707, .5);
   border: 0.1px solid rgb(0, 0, 0);
@@ -25,7 +24,7 @@ body{
 
 
 .leftbox h1 {
-    font-size: 25px;
+    font-size: 28px;
     color: #FFFFFF;
     font-family: 'Montserrat', sans-serif;
     padding-left: 10%;
@@ -38,7 +37,7 @@ body{
   top: 25%;
   left: 14%;
   position: absolute;
-  width: 40%;
+  width: 600px;
   height: 7%;
   background:#4c73f5;
   box-shadow: 1px 3px 5px #070707;
@@ -72,7 +71,7 @@ nav a :first-child {
   padding-top: 10%;
   padding-left: 5%;
   width: 100%;
-  
+  height: fit-content;
 }
 
 h1 {
@@ -109,8 +108,8 @@ p {
   height: 50px;
   width: 200px;
   position: absolute;
-  top: 500px;
-  left: 800px;
+  top: 1100px;
+  left: 600px;
   font-size: 21px;
 }
 
@@ -217,14 +216,14 @@ p {
       font-size: 15px;
       color: #FFFFFF;
       font-family: 'Montserrat', sans-serif;
-      padding-left: 10%;
+      padding-left: 8%;
       margin-top: 2%;
     
   }
   
   .leftbox {
     
-    top: 25%;
+    top: 30%;
     left: 7%;
     position: absolute;
     width: 70%;
@@ -291,7 +290,7 @@ p {
   
   .leftbox {
     
-    top: 25%;
+    top: 30%;
     left: 7%;
     position: absolute;
     width: 70%;
@@ -362,7 +361,7 @@ p {
   
   .leftbox {
     
-    top: 26%;
+    top: 30%;
     left: 7%;
     position: absolute;
     width: 70%;
@@ -432,7 +431,7 @@ p {
   
   .leftbox {
     
-    top: 27%;
+    top: 30%;
     left: 14%;
     position: absolute;
     width: 500px;
@@ -501,10 +500,10 @@ p {
   
   .leftbox {
     
-    top: 27%;
+    top: 30%;
     left: 14%;
     position: absolute;
-    width: 500px;
+    width: 700px;
     height: 8%;
     background:#4c73f5;
     box-shadow: 1px 3px 5px #070707;

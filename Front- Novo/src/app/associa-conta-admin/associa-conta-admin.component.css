@@ -3,18 +3,26 @@
 
 body{
   background-color: #268744;
-  width: 100%;
+  width: 100vw;
   top: 0%;
+  height: max-content;
+  display: flex;
+
 }
 
 
 .container {
   background: #FFFFFF;
-  margin-left: 20%;
-  position: absolute;
+  margin-left: 15%;
   margin-top: 5%;
   box-shadow: 2px 5px 20px rgba(#070707, .5);
   border: 0.1px solid rgb(0, 0, 0);
+  margin-bottom: 15%;
+  height: 400px ;
+}
+
+.containerResize{
+  height: 1000px ;
 }
 
 
@@ -29,7 +37,7 @@ body{
 .leftbox {
   float: left;
   top: 25%;
-  left: 18%;
+  left: 12%;
   position: absolute;
   width: 40%;
   height: 7%;
@@ -65,7 +73,6 @@ nav a :first-child {
   padding-top: 10%;
   padding-left: 5%;
   width: 100%;
-  height: 80%;
 }
 
 h1 {
@@ -97,6 +104,9 @@ p {
   padding: 7px 0;
   color: #070707;
 }
+
+
+
 
 
 .btn {
@@ -136,10 +146,6 @@ p {
 }
 
 
-.container{
-  height: 870px;
-  width: 60%;
-}
 
 .container .leftbox {
     float: left;
