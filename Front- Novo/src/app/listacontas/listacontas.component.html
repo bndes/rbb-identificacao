@@ -22,7 +22,7 @@
         </div>
       </div>
 
-    <div id="tabela" class="mat-elevation-z8" >
+    <div id="tabela" class="mat-elevation-z8 responsive" >
       <table mat-table [dataSource]="dataSource" matSort>
        
         <ng-container matColumnDef="rbbid">
@@ -93,9 +93,8 @@
           <td class="mat-cell" colspan="6">Nenhum resultado encontrado" {{input.value}} "</td>
         </tr>
       </table>
-          
-      <div class="footer"><mat-paginator [pageSizeOptions]="[5, 10, 15]"></mat-paginator></div>
     </div>
+    <div class="footer"><mat-paginator [pageSizeOptions]="[5, 10, 15]"></mat-paginator></div>
   </div>
 </div>
 </body>

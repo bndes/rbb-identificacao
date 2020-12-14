@@ -39,7 +39,7 @@ body{
   top: 25%;
   left: 12%;
   position: absolute;
-  width: 40%;
+  width: 700px;
   height: 7%;
   background:#4c73f5;
   box-shadow: 1px 3px 5px #070707;
@@ -73,6 +73,16 @@ nav a :first-child {
   padding-top: 10%;
   padding-left: 5%;
   width: 100%;
+}
+
+.rightbox .br-button{
+  height: 5%; 
+  margin-top: 2%;
+  margin-left: 30%;
+  font-size: 21px;
+  height: 50px;
+  width: 300px;
+  margin-bottom: 50px;
 }
 
 h1 {
@@ -184,3 +194,119 @@ p {
   margin-top: 35px;
 }
 
+
+@media only screen and (max-width: 500px) {
+  
+.container {
+  background: #FFFFFF;
+  margin-left: 15%;
+  margin-top: 25%;
+  box-shadow: 2px 5px 20px rgba(#070707, .5);
+  border: 0.1px solid rgb(0, 0, 0);
+  margin-bottom: 15%;
+  height: 400px ;
+  width: 250px;
+}
+
+.containerResize{
+  height: 1400px ;
+}
+
+
+.leftbox h1 {
+    font-size: 12px;
+    color: #FFFFFF;
+    font-family: 'Montserrat', sans-serif;
+    padding-left: 10%;
+    margin-top: 1%;
+}
+
+.leftbox {
+  float: left;
+  top: 23%;
+  left: 12%;
+  position: absolute;
+  width: 240px;
+  height: 7%;
+  background:#4c73f5;
+  box-shadow: 1px 3px 5px #070707;
+ 
+}
+
+.container h1 {
+  font-family: 'Montserrat', sans-serif;
+  color: #4c73f5;
+  font-size: 16px !important;
+  margin-top: 30% ;
+  margin-bottom: 20px;
+}
+
+.rightbox .br-button{
+  height: 5%; 
+  margin-top: 8%;
+  margin-left: 15%;
+  font-size: 16px;
+  height: 50px;
+  width: 150px;
+  margin-bottom: 10px;
+}
+
+}
+
+
+@media only screen and (min-width: 510px) and (max-width: 750px) {
+  
+.container {
+  background: #FFFFFF;
+  margin-left: 15%;
+  margin-top: 20%;
+  box-shadow: 2px 5px 20px rgba(#070707, .5);
+  border: 0.1px solid rgb(0, 0, 0);
+  margin-bottom: 15%;
+  height: 400px ;
+  width: 400px ;
+}
+
+.containerResize{
+  height: 1150px ;
+}
+
+
+.leftbox h1 {
+    font-size: 18px;
+    color: #FFFFFF;
+    font-family: 'Montserrat', sans-serif;
+    padding-left: 10%;
+    margin-top: 1%;
+}
+
+.leftbox {
+  float: left;
+  top: 26%;
+  left: 5%;
+  position: absolute;
+  width: 340px;
+  height: 7%;
+  background:#4c73f5;
+  box-shadow: 1px 3px 5px #070707;
+ 
+}
+
+.container h1 {
+  font-family: 'Montserrat', sans-serif;
+  color: #4c73f5;
+  font-size: 16px !important;
+  margin-top: 16% ;
+  margin-bottom: 20px;
+}
+
+.rightbox .br-button{
+  height: 5%; 
+  margin-top: 8%;
+  margin-left: 17%;
+  font-size: 16px;
+  height: 45px;
+  width: 200px;
+  margin-bottom: 100px !important;
+}
+}
