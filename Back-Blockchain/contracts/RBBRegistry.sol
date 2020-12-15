@@ -415,6 +415,11 @@ contract RBBRegistry is Ownable() {
 
         return CNPJ_RBBId[CNPJ];
     } 
+    function getCNPJbyID(uint Id) public view returns (uint ) {
+        address addr =RBBId_addresses[Id][0];
+        
+        return legalEntitiesInfo[addr].CNPJ;
+    }
  
 
 }
