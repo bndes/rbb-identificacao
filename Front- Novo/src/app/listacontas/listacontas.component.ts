@@ -465,18 +465,9 @@ export class ListacontasComponent implements OnInit {
 
   }
 
-  recuperaDataHora(self, event, transacaoPJ) {
-      self.web3Service.getBlockTimestamp(event.blockHash,
-          function (error, result) {
-              if (!error) {
-                  transacaoPJ.dataHora = new Date(result.timestamp * 1000);
-                  self.ref.detectChanges();
-              }
-              else {
-                  console.log("Erro ao recuperar data e hora do bloco");
-                  console.error(error);
-              }
-      });
+  async recuperaDataHora(self, event, transacaoPJ) {
+    let timestamp = await this.web3Service.getBlockTimestamp(event.blockNumber);
+    transacaoPJ.dataHora = new Date(timestamp * 1000);
 
   }
 

@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { ConstantesService } from './ConstantesService';
 import { formattedError } from '@angular/compiler';
 import { Utils } from 'src/utils';
+import {ethers} from 'ethers';
 
 @Injectable()
 export class Web3Service {
@@ -24,11 +25,11 @@ export class Web3Service {
     private eventoBNDESRegistry: any;
     private eventoCadastro: any;
     private eventoTransacao: any;
-    private eventoDoacao: any;
 
-    private addressOwner: string;
-
-    private decimais : number;
+    private provider: any;
+    private netVersion: any;
+    private accountProvider: any;
+    private URLBlockchainProvider: string;
 
     constructor(private http: HttpClient, private constantes: ConstantesService) {
        
@@ -43,6 +44,7 @@ export class Web3Service {
                 this.RBBRegistryAddress = data["addrContratoBNDESRegistry"];
                 this.blockchainNetwork = data["blockchainNetwork"];
                 this.ABIRBBRegistry = data['abiBNDESRegistry'];
+                this.URLBlockchainProvider = data["URLBlockchainProvider"];
 
                 console.log("abis");
                 console.log(this.ABIRBBRegistry);
@@ -55,6 +57,35 @@ export class Web3Service {
             });
             
     }
+
+    async intializeWeb3() {
+
+        console.log("this.URLBlockchainProvider = " + this.URLBlockchainProvider);
+        this.provider = new ethers.providers.JsonRpcProvider(this.URLBlockchainProvider);
+        this.ethereum =  window['ethereum'];
+
+        this.netVersion = await this.ethereum.request({
+            method: 'net_version',
+        });
+        console.log(this.netVersion);
+
+        this.accountProvider = new ethers.providers.Web3Provider(this.ethereum);
+
+        console.log("accountProvider=");
+        console.log(this.accountProvider);        
+
+        console.log("INICIALIZOU O WEB3 - RBBRegistryAddress abaixo");
+        console.log("this.RBBRegistryAddress=" + this.RBBRegistryAddress);
+
+        this.RBBRegistrySmartContract = new ethers.Contract(this.RBBRegistryAddress, this.ABIRBBRegistry, this.provider);
+
+        console.log("INICIALIZOU O WEB3 - bndesTokenContract abaixo");
+        console.log("BNDESToken=");
+        //console.log(this.bndesTokenSmartContract);        
+        console.log("BNDESRegistry=");
+        console.log(this.RBBRegistrySmartContract);
+
+    } 
 
 
     public getInfoBlockchainNetwork(): any {
@@ -80,48 +111,44 @@ export class Web3Service {
 
     //fonte: https://www.xul.fr/javascript/callback-to-promise.php
     public getCurrentAccountSync() {
-        let self = this;
-        return new Promise(function(resolve, reject) {
-            self.web3.eth.getAccounts(function(error, accounts) {
-                resolve(accounts[0]);
-            })
-        })
+        if ( this.accountProvider == undefined ) this.intializeWeb3();
+        return this.accountProvider.getSigner().getAddress();
     }
 
 
-    private intializeWeb3(): void {
+//     private intializeWeb3OLD(): void {
 
-        if (typeof window['web3'] !== 'undefined') {
-            this.ethereum =  window['ethereum'];
-            console.log("ethereum=");
-            console.log(this.ethereum);
-            this.web3 = new this.Web3(window['web3'].currentProvider);
-            console.log("Conectado com noh");
+//         if (typeof window['web3'] !== 'undefined') {
+//             this.ethereum =  window['ethereum'];
+//             console.log("ethereum=");
+//             console.log(this.ethereum);
+//             this.web3 = new this.Web3(window['web3'].currentProvider);
+//             console.log("Conectado com noh");
     
-        } else {
-            console.log('Using HTTP node --- nao suportado');
-            return; 
-        }
+//         } else {
+//             console.log('Using HTTP node --- nao suportado');
+//             return; 
+//         }
 
-        //this.bndesTokenSmartContract = this.web3.eth.contract(this.ABIBndesToken).at(this.addrContratoBNDESToken);
-        this.RBBRegistrySmartContract = this.web3.eth.contract(this.ABIRBBRegistry).at(this.RBBRegistryAddress);
+//         //this.bndesTokenSmartContract = this.web3.eth.contract(this.ABIBndesToken).at(this.addrContratoBNDESToken);
+//         this.RBBRegistrySmartContract = this.web3.eth.contract(this.ABIRBBRegistry).at(this.RBBRegistryAddress);
 
-        console.log("INICIALIZOU O WEB3 - bndesTokenContract abaixo");
-        console.log("BNDESToken=");
-        //console.log(this.bndesTokenSmartContract);        
-        console.log("BNDESRegistry=");
-        console.log(this.RBBRegistrySmartContract);
+//         console.log("INICIALIZOU O WEB3 - bndesTokenContract abaixo");
+//         console.log("BNDESToken=");
+//         //console.log(this.bndesTokenSmartContract);        
+//         console.log("BNDESRegistry=");
+//         console.log(this.RBBRegistrySmartContract);
 
-        let self = this;
+//         let self = this;
 
-        this.getAddressOwner(function (addrOwner) {
-            console.log("Owner Addr =" + addrOwner);
-            self.addressOwner = addrOwner;
-        }, function (error) {
-            console.log("Erro ao buscar owner=" + error);
-        });
+//         this.getAddressOwner(function (addrOwner) {
+//             console.log("Owner Addr =" + addrOwner);
+//             self.addressOwner = addrOwner;
+//         }, function (error) {
+//             console.log("Erro ao buscar owner=" + error);
+//         });
 
-}
+// }
 
     conectar () {
         this.ethereum.enable();
@@ -152,31 +179,44 @@ export class Web3Service {
     }
 
     registraEventosCadastro(callback) {
-        this.eventoCadastro = this.RBBRegistrySmartContract.AccountRegistration({}, { fromBlock: 0, toBlock: 'latest' });
-        this.eventoCadastro.watch(callback);
+        this.RBBRegistrySmartContract.on("AccountRegistration", () => {
+            callback;
+        });
     }
     registraEventosValidacao(callback) {
-        this.eventoCadastro = this.RBBRegistrySmartContract.AccountValidation({}, { fromBlock: 0, toBlock: 'latest' });
-        this.eventoCadastro.watch(callback);
+        this.RBBRegistrySmartContract.on("AccountValidation", () => {
+            callback;
+        });
     }
     registraEventosInvalidacao(callback) {
-        this.eventoCadastro = this.RBBRegistrySmartContract.AccountInvalidation({}, { fromBlock: 0, toBlock: 'latest' });
-        this.eventoCadastro.watch(callback);
+        this.RBBRegistrySmartContract.on("AccountInvalidation", () => {
+            callback;
+        });
     }    
     registraEventosRoleChange(callback) {
-        this.eventoCadastro = this.RBBRegistrySmartContract.AccountRoleChange({}, { fromBlock: 0, toBlock: 'latest' });
-        this.eventoCadastro.watch(callback);
+        this.RBBRegistrySmartContract.on("AccountRoleChange", () => {
+            callback;
+        })
     }
     registraEventosPausa(callback) {        
-        this.eventoCadastro = this.RBBRegistrySmartContract.AccountPaused({}, { fromBlock: 0, toBlock: 'latest' });
-        this.eventoTransacao.watch(callback);
+        this.RBBRegistrySmartContract.on("AccountPaused", () => {
+            callback;
+        })
     }
     registraEventosDespausa(callback) {
-        this.eventoCadastro = this.RBBRegistrySmartContract.AccountUnpaused({}, { fromBlock: 0, toBlock: 'latest' });
-        this.eventoTransacao.watch(callback);
+        this.RBBRegistrySmartContract.on("AccountUnpaused", () => {
+            callback;
+        })
     }
     
     registraWatcherEventosLocal(txHashProcurado, callback) {
+        this.provider.once(txHashProcurado, (receipt) => {
+            console.log('Transaction Mined: ' + receipt.hash);
+            console.log(receipt);
+            callback;
+        });
+
+        /*
         let self = this;
         console.info("Callback ", callback);
         const filtro = { fromBlock: 'latest', toBlock: 'pending' }; 
@@ -188,13 +228,15 @@ export class Web3Service {
         });
      
         console.log("registrou o watcher de eventos");
+        */
     }
 
+    /*
     procuraTransacao(error, result, txHashProcurado, self, callback) {
         console.log( "Entrou no procuraTransacao" );
         console.log( "txHashProcurado: " + txHashProcurado );
         console.log( "result.transactionHash: " + result.transactionHash );
-        self.web3.eth.getTransactionReceipt(txHashProcurado,  function (error, result) {
+        self.provider.getTransactionReceipt(txHashProcurado,  function (error, result) {
             if ( !error ) {
                 let status = result.status
                 let STATUS_MINED = 0x1
@@ -211,7 +253,7 @@ export class Web3Service {
             } 
         });     
     }
-
+*/
 
     async cadastra(cnpj: number, hashdeclaracao: string,
         fSuccess: any, fError: any) {
@@ -223,6 +265,7 @@ export class Web3Service {
             ", hashdeclaracao: " + hashdeclaracao 
             )
 
+            /*  FIXME
         this.RBBRegistrySmartContract.registryLegalEntity(cnpj, 
             hashdeclaracao,
             { from: contaBlockchain, gas: 500000 },
@@ -230,6 +273,7 @@ export class Web3Service {
                 if (error) fError(error);
                 else fSuccess(result);
             });
+            */
     }
 
     async pause(contaBlockchain: string, fSuccess: any, fError: any) {
@@ -287,6 +331,9 @@ export class Web3Service {
         // console.log("getPJInfo com addr=" + addr);
         // console.log("RBBRegistrySmartContract=");
         // console.log(this.RBBRegistrySmartContract);
+
+        //FIXME
+        /* 
         return this.RBBRegistrySmartContract.getRegistry(addr,
             (error, result) => {
                 if (error) fError(error);
@@ -296,6 +343,7 @@ export class Web3Service {
                     fSuccess(pjInfo);
                 }
             });
+            */return 0;
     }
 
     getPJInfoSync(address: string) {
@@ -315,26 +363,26 @@ export class Web3Service {
     }    
 
     getAddressOwner(fSuccess: any, fError: any): number {
+        return this.RBBRegistrySmartContract.owner();
+        
+        /*
         return this.RBBRegistrySmartContract.owner(
             (error, result) => {
                 if (error) fError(error);
                 else fSuccess(result);
             });
+            */
     }
 
-    getBlockTimestamp(blockHash: number, fResult: any) {
+    async getBlockTimestamp(blockNumber: number) {
 
-        this.web3.eth.getBlock(blockHash, fResult);
+        let block = await this.provider.getBlock(blockNumber);
+        return block.timestamp;
 
     }      
 
     isResponsibleForRegistryValidation(address: string, fSuccess: any, fError: any): boolean {
-
-        return this.RBBRegistrySmartContract.isSortOfAdmin(address,
-            (error, result) => {
-                if (error) fError(error);
-                else fSuccess(result);
-            });
+        return this.RBBRegistrySmartContract.isSortOfAdmin(address);
     }
 
     isResponsibleForRegistryValidationSync(address: string) {
@@ -351,20 +399,11 @@ export class Web3Service {
     }    
 
     accountIsActive(address: string, fSuccess: any, fError: any): boolean {
-        return this.RBBRegistrySmartContract.isValidatedAccount(address, 
-        (error, result) => {
-            if(error) fError(error);
-            else fSuccess(result);
-        });
+        return this.RBBRegistrySmartContract.isValidatedAccount(address);
     }
 
     isContaDisponivel(address: string, fSuccess: any, fError: any): boolean {
- 
-        return this.RBBRegistrySmartContract.isAvailableAccount(address, 
-            (error, result) => {
-                if(error) fError(error);
-                else fSuccess(result);
-            });
+        return this.RBBRegistrySmartContract.isAvailableAccount(address); 
     }
 
     public isContaDisponivelSync(address: string) {
@@ -383,11 +422,7 @@ export class Web3Service {
 
 
     isContaAguardandoValidacao(address: string, fSuccess: any, fError: any): boolean {
-        return this.RBBRegistrySmartContract.isWaitingValidationAccount(address, 
-            (error, result) => {
-                if(error) fError(error);
-                else fSuccess(result);
-            });
+        return this.RBBRegistrySmartContract.isWaitingValidationAccount(address); 
     }
 
     public isContaAguardandoValidacaoSync(address: string) {
@@ -405,11 +440,7 @@ export class Web3Service {
     }
 
     isContaValidada(address: string, fSuccess: any, fError: any): boolean {
-        return this.RBBRegistrySmartContract.isValidatedAccount(address, 
-            (error, result) => {
-                if(error) fError(error);
-                else fSuccess(result);
-            });
+        return this.RBBRegistrySmartContract.isValidatedAccount(address); 
     }
 
     public isContaValidadaSync(address: string) {
@@ -455,20 +486,11 @@ export class Web3Service {
 
     getEstadoContaAsString(address: string, fSuccess: any, fError: any): string {
         let self = this;
-        console.log("getEstadoContaAsString no web3:" + address);
-        return this.RBBRegistrySmartContract.getAccountState(address, 
-        (error, result) => {
-            if(error) {
-                console.log("Mensagem de erro ao chamar BNDESRegistry:");
-                console.log(error);                
-                fError(error);
-            }
-            else {
-                console.log("Sucesso ao recuperar valor - getAccountState no web3:" + result);
-                let str = self.getEstadoContaAsStringByCodigo (result);
-                fSuccess(str);
-            }   
-        });
+
+        let result =  this.RBBRegistrySmartContract.getAccountState(address); 
+        let str = self.getEstadoContaAsStringByCodigo (result);
+        return str;
+        
     }
 
     //Métodos de tradução back-front

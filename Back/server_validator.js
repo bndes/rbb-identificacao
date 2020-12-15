@@ -7,7 +7,7 @@ var contrato_json_BNDESRegistry = require(config.infra.contrato_json_BNDESRegist
 const SERVER_FUNCTIONS     = require('./server_functions.js');
 
 const privateKey      = v_wallet.privkey;
-const provider        = new ethers.providers.JsonRpcProvider(config.infra.blockchain_provider);
+const provider        = new ethers.providers.JsonRpcProvider(config.infra.URL_blockchain_provider);
 const wallet          = new ethers.Wallet(privateKey, provider);
 const contractAddress = contrato_json_BNDESRegistry.networks[config.infra.rede_blockchain].address;
 

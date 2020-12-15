@@ -166,7 +166,8 @@ app.post('/api/constantesFront', function (req, res) {
 		addrContratoBNDESRegistry: addrContratoBNDESRegistry,
 		blockchainNetwork: config.infra.rede_blockchain,
 		//abiBNDESToken: contrato_json_BNDESToken['abi'],
-		abiBNDESRegistry: contrato_json_BNDESRegistry['abi']
+		abiBNDESRegistry: contrato_json_BNDESRegistry['abi'],
+		URLBlockchainProvider: config.infra.URL_blockchain_provider
 	 });
 });
 
