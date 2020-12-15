@@ -73,27 +73,10 @@ export class AssociaContaAdminComponent implements OnInit {
     if ( cnpj.length == 14 ) { 
       console.log (" Buscando o CNPJ do cliente (14 digitos fornecidos)...  " + cnpj)
       await this.recuperaClientePorCNPJ(cnpj);
-    }
+      console.log("this.selectedAccount = " + this.selectedAccount + " | cnpj = " + cnpj);
+      console.log(this.cliente.dadosCadastrais);
 
-      if (this.cliente.dadosCadastrais) {
-        this.pessoaJuridicaService.pedeDeclaracao(cnpj, this.selectedAccount).subscribe(
-          empresa => { 
-            console.log("associa...pedeDeclaracao(cnpj)");
-            console.log(empresa);
-            this.declaracao_titulo =  JSON.stringify(empresa.declaracao_titulo);
-            this.declaracao_corpo =  JSON.stringify(empresa.declaracao_corpo);        
-          },
-          error => {
-            console.log("associa...pedeDeclaracao(cnpj)");
-            console.log(error);
-          }
-        );
-        
-      } else {
-          let texto = "CNPJ não encontrado";
-          this.alertService.error(texto, this.alertOptions);
-      }
-    
+    }
     this.preparaUpload(this.cliente.cnpj, this.subcreditoSelecionado, this.selectedAccount, this);
   }
 
@@ -167,6 +150,28 @@ export class AssociaContaAdminComponent implements OnInit {
 
   }
 
+  pedeEpreenchePDF(self, cnpj) {
+    if (self.cliente.dadosCadastrais) {
+        
+      self.pessoaJuridicaService.pedeDeclaracao(cnpj, self.selectedAccount).subscribe(
+        empresa => { 
+          console.log("associa...pedeDeclaracao(cnpj)");
+          console.log(empresa);
+          self.declaracao_titulo =  JSON.stringify(empresa.declaracao_titulo);
+          self.declaracao_corpo =  JSON.stringify(empresa.declaracao_corpo);        
+        },
+        error => {
+          console.log("associa...pedeDeclaracao(cnpj)");
+          console.log(error);
+        }
+      );
+      
+    } else {
+        let texto = "CNPJ não encontrado na busca";
+        self.alertService.error(texto, self.alertOptions);
+    }
+  }
+
   async recuperaClientePorCNPJ(cnpj) {
 
     console.log("RECUPERA CLIENTE com CNPJ = " + cnpj);
@@ -188,6 +193,7 @@ export class AssociaContaAdminComponent implements OnInit {
             //self.includeAccountIfNoAssociated(self, cnpj, subStr);
 
           }
+          self.pedeEpreenchePDF(self, cnpj);
 
         }
         else {
