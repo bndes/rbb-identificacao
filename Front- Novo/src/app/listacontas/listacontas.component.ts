@@ -121,7 +121,7 @@ export class ListacontasComponent implements OnInit {
   ngOnInit() {
     let users;
 
-      setTimeout(() => {
+      setTimeout(async () => {
           this.listaTransacoesPJ = [];
           console.log("Zerou lista de transacoes");
 
@@ -175,7 +175,7 @@ export class ListacontasComponent implements OnInit {
       
   }
 
-  registrarExibicaoEventos() {
+  async registrarExibicaoEventos() {
 
       this.blockchainNetworkPrefix = this.web3Service.getInfoBlockchainNetwork().blockchainNetworkPrefix;
 
@@ -192,61 +192,59 @@ export class ListacontasComponent implements OnInit {
       //TODO: this.registraEventosDespausa();
   }
 
+  async processaEventoCadastro(evento) {
+    let transacaoPJ: DashboardPessoaJuridica;
+    let eventoCadastro = evento
+    let self = this;
 
-  registraEventosCadastro() {
+    console.log("Evento Cadastro");
+    console.log(eventoCadastro);
 
-      console.log("*** Executou o metodo de registrar eventos CADASTRO");
+    transacaoPJ = {
+        RBBId: eventoCadastro.args.RBBId,
+        cnpj : Utils.completarCnpjComZero(eventoCadastro.args.CNPJ),
+        razaoSocial: "",
+        contaBlockchain: eventoCadastro.args.addr,
+        hashID: eventoCadastro.transactionHash,
+        uniqueIdentifier: eventoCadastro.transactionHash,
+        dataHora: eventoCadastro.dateTimeExpiration,
+        hashDeclaracao: eventoCadastro.args.hashProof,
+        evento: "Cadastro",
+        status: "",
+        acao: -1,
+        filePathAndName: "",
+        perfil: "",
+        pausada: ""
+    }
+    
+    self.includeIfNotExists(transacaoPJ);
+    self.recuperaInfoDerivadaPorCnpj(self, transacaoPJ);
+    self.recuperaDataHora(self, event, transacaoPJ);
+    self.recuperaFilePathAndName(self,transacaoPJ);
 
-      let self = this;        
-      this.web3Service.registraEventosCadastro(async function (error, event) {
+    let registro = await self.recuperaRegistroBlockchain(transacaoPJ.contaBlockchain);
+    transacaoPJ.perfil = registro.roleAsString;
+    transacaoPJ.status = registro.statusAsString;
+    transacaoPJ.acao = registro.status; 
+    transacaoPJ.pausada = registro.paused;
 
-          if (!error) {
+  }
 
-              let transacaoPJ: DashboardPessoaJuridica;
-              let eventoCadastro = event
+  async registraEventosCadastro() {
+      let self = this; 
 
-              console.log("Evento Cadastro");
-              console.log(eventoCadastro);
+      console.log("*** ListaContas: Executou o metodo de registrar eventos CADASTRO ");
 
-              transacaoPJ = {
-                  RBBId: eventoCadastro.args.RBBId,
-                  cnpj : Utils.completarCnpjComZero(eventoCadastro.args.CNPJ),
-                  razaoSocial: "",
-                  contaBlockchain: eventoCadastro.args.addr,
-                  hashID: eventoCadastro.transactionHash,
-                  uniqueIdentifier: eventoCadastro.transactionHash,
-                  dataHora: eventoCadastro.dateTimeExpiration,
-                  hashDeclaracao: eventoCadastro.args.hashProof,
-                  evento: "Cadastro",
-                  status: "",
-                  acao: -1,
-                  filePathAndName: "",
-                  perfil: "",
-                  pausada: ""
-              }
-
-              
-              self.includeIfNotExists(transacaoPJ);
-              self.recuperaInfoDerivadaPorCnpj(self, transacaoPJ);
-              self.recuperaDataHora(self, event, transacaoPJ);
-              self.recuperaFilePathAndName(self,transacaoPJ);
-
-              let registro = await self.recuperaRegistroBlockchain(transacaoPJ.contaBlockchain);
-              transacaoPJ.perfil = registro.roleAsString;
-              transacaoPJ.status = registro.statusAsString;
-              transacaoPJ.acao = registro.status; 
-              transacaoPJ.pausada = registro.paused;
-
-
-          } else {
-              console.log("Erro no registro de eventos de cadastro");
-              console.log(error);
+      this.web3Service.recuperaEventosCadastro().then(async function(eventos) {
+          console.log("recuperaEventosCadastro().then");
+          for (let i=0; i<eventos.length; i++) {
+            await self.processaEventoCadastro(eventos[i]);
           }
-      });
+        });  
   }
 
 
-  registraEventosRoleChange() {
+  async registraEventosRoleChange() {
 
       console.log("*** Executou o metodo de registrar eventos upgrade para Admin");
 
@@ -321,7 +319,7 @@ export class ListacontasComponent implements OnInit {
       });        
   }
 
-  registraEventosValidacao() {
+  async registraEventosValidacao() {
 
       console.log("*** Executou o metodo de registrar eventos VALIDACAO");        
 
@@ -373,7 +371,7 @@ export class ListacontasComponent implements OnInit {
   }
 
 
-  registraEventosInvalidacao() {
+  async registraEventosInvalidacao() {
 
       console.log("*** Executou o metodo de registrar eventos INVALIDACAO");                
 
