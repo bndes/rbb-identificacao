@@ -249,19 +249,9 @@ export class AssociaContaAdminComponent implements OnInit {
     if (include) subcreditos.push(sub);
   }
 
-
-
   async associarContaCliente() {
-
+    console.log('associarContaAdministrador:: inicio')
     let self = this;
-
-    if (this.subcreditoSelecionado === undefined) {
-      let s = "O Contrato é um Campo Obrigatório";
-      console.log(s);
-      //this.bnAlertsService.criarAlerta("error", "Erro", s, 2)
-      this.alertService.error(s, this.alertOptions);
-      return
-    }
 
     if (this.hashdeclaracao==undefined || this.hashdeclaracao==null) {
       let s = "O envio da declaração é obrigatório";
@@ -276,64 +266,26 @@ export class AssociaContaAdminComponent implements OnInit {
       //this.bnAlertsService.criarAlerta("error", "Erro", s, 2)
       this.alertService.error(s, this.alertOptions);
       return;
+    } 
+
+    let result = await this.web3Service.isContaDisponivel(this.selectedAccount); 
+
+    if (!result) {  
+      let msg = "A conta "+ this.selectedAccount +" não está disponível para associação"; 
+      this.alertService.error(msg, this.alertOptions);
     }
+    else {
       
-    this.web3Service.isContaDisponivel(this.selectedAccount, 
-    
-      (result) => {
-
-        if (!result) {
-          
-          let msg = "A conta "+ this.selectedAccount +" não está disponível para associação"; 
-          console.log(msg);
-          //Utils.criarAlertaErro( self.bnAlertsService, "Conta não disponível para associação", msg);  
-          self.alertService.error(msg, self.alertOptions);
-        }
-
-        else {
-
-
-          this.web3Service.cadastra(parseInt(self.cliente.cnpj), self.hashdeclaracao,
-
-            (txHash) => {
-  
-              /*
-            Utils.criarAlertasAvisoConfirmacao( txHash, 
-                                                self.web3Service, 
-                                                self.bnAlertsService, 
-                                                "Associação do cnpj " + self.cliente.cnpj + " enviada. Aguarde a confirmação.", 
-                                                "A associação foi confirmada na blockchain.", 
-                                                self.zone) 
-                                                */
-            self.alertService.info("Associação do cnpj " + self.cliente.cnpj + " enviada. Aguarde a confirmação.", this.alertOptions);                                                           
-            self.router.navigate(['home/associa/contas']);
-            
-            }        
-          ,(error) => {
-            self.alertService.error("Erro ao associar na blockchain", self.alertOptions);
-            
-            /*
-            Utils.criarAlertaErro( self.bnAlertsService, 
-                                    "Erro ao associar na blockchain", 
-                                    error)  
-                                    */
-          });
-          /*
-          Utils.criarAlertaAcaoUsuario( self.bnAlertsService, 
-                                      "Confirme a operação no metamask e aguarde a confirmação da associação da conta.")
-         */
-
-        } 
-
-      }, (error) => {
-        self.alertService.error("Erro ao verificar se conta está disponível", self.alertOptions);
-        /*
-        Utils.criarAlertaErro( self.bnAlertsService, 
-          "Erro ao verificar se conta está disponível", 
-          error);
-            */
+      this.web3Service.cadastra(parseInt(self.cliente.cnpj), self.hashdeclaracao).then(
+        function(txHash) { 
+          self.alertService.success("Gravação concluída na Blockchain.", self.alertOptions);
+          self.router.navigate(['home/associa/contas']);            
+        }        
+      , function(error) {  
+          self.alertService.error("Erro ao asssociar", self.alertOptions);
       });
-
+      this.alertService.info("Confirme no metamask", this.alertOptions);
+    } 
 
   }
 

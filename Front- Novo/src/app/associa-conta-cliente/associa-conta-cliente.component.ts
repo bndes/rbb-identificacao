@@ -244,7 +244,7 @@ export class AssociaContaClienteComponent implements OnInit {
 
 
   async associarContaCliente() {
-console.log('associarContaCliente:: inicio')
+    console.log('associarContaRegular:: inicio')
     let self = this;
      
     let result = await this.web3Service.isContaDisponivel(this.selectedAccount); 
