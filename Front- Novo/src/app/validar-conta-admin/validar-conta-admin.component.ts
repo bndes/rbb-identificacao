@@ -163,7 +163,7 @@ export class ValidarContaAdminComponent implements OnInit {
 
   async recuperaRegistroBlockchain(enderecoBlockchain) : Promise<any> {
       if (enderecoBlockchain != undefined && enderecoBlockchain != null) {
-          let usuario = await this.web3Service.getPJInfoSync(enderecoBlockchain);
+          let usuario = await this.web3Service.getPJInfo(enderecoBlockchain);
           return usuario;
       } else {
           console.log('this.usuario');
@@ -599,37 +599,20 @@ export class ValidarContaAdminComponent implements OnInit {
         return;
       }    
   
-      let self = this;
-  
-      let booleano = this.web3Service.pause(contaBlockchain, 
+      let booleano = <boolean> (await this.web3Service.pause(contaBlockchain)); 
           
-           (txHash) => {
-             /*
-            Utils.criarAlertasAvisoConfirmacao( txHash, 
-                                                self.web3Service, 
-                                                self.bnAlertsService, 
-                                                "Validação de conta enviada. Aguarde a confirmação.", 
-                                                "O cadastro da conta foi validado e confirmado na blockchain.", 
-                                                self.zone)
-                                                */
-            let texto = "Validação de conta enviada. Aguarde a confirmação.";
-            this.alertService.info(texto, this.alertOptions);                                             
-            self.router.navigate(['home/validar']);
-            }        
-          ,(error) => {
-            /*
-            Utils.criarAlertaErro( self.bnAlertsService, 
-                                   "Erro ao validar cadastro na blockchain", 
-                                   error )  
-                                   */
-            let texto = "Erro ao validar cadastro na blockchain";
-            this.alertService.error(texto, this.alertOptions);                
-          }
-        );
-       // Utils.criarAlertaAcaoUsuario( self.bnAlertsService, 
-         //                             "Confirme a operação no metamask e aguarde a confirmação." )         
-         let texto = "Confirme a operação no metamask e aguarde a confirmação.";
-         this.alertService.info(texto, this.alertOptions); 
+      if (booleano) {
+        let texto = "Pause de conta enviada. Aguarde a confirmação.";
+        this.alertService.info(texto, this.alertOptions);                                             
+        this.router.navigate(['home/validar']);
+      } 
+      else {
+        let texto = "Erro ao pausar cadastro na blockchain";
+        this.alertService.error(texto, this.alertOptions);                
+      }
+      
+      let texto = "Confirme a operação no metamask e aguarde a confirmação.";
+      this.alertService.info(texto, this.alertOptions); 
     }
 
     async unpause(contaBlockchain) {
@@ -641,37 +624,21 @@ export class ValidarContaAdminComponent implements OnInit {
         return;
       }    
   
-      let self = this;
-  
-      let booleano = this.web3Service.unpause(contaBlockchain, 
+      let booleano = <boolean> (await this.web3Service.unpause(contaBlockchain)); 
           
-           (txHash) => {
-             /*
-            Utils.criarAlertasAvisoConfirmacao( txHash, 
-                                                self.web3Service, 
-                                                self.bnAlertsService, 
-                                                "Validação de conta enviada. Aguarde a confirmação.", 
-                                                "O cadastro da conta foi validado e confirmado na blockchain.", 
-                                                self.zone)
-                                                */
-            let texto = "Validação de conta enviada. Aguarde a confirmação.";                                                
-            this.alertService.info(texto, this.alertOptions); 
-            self.router.navigate(['home/validar']);
-            }        
-          ,(error) => {
-            /*
-            Utils.criarAlertaErro( self.bnAlertsService, 
-                                   "Erro ao validar cadastro na blockchain", 
-                                   error )  
-                                   */
-            let texto = "Erro ao validar cadastro na blockchain";
-            this.alertService.error(texto, this.alertOptions); 
-          }
-        );
-       // Utils.criarAlertaAcaoUsuario( self.bnAlertsService, 
-         //                             "Confirme a operação no metamask e aguarde a confirmação." )         
-         let texto = "Confirme a operação no metamask e aguarde a confirmação.";
-         this.alertService.info(texto, this.alertOptions); 
+      if (booleano) {
+        let texto = "Pause de conta enviada. Aguarde a confirmação.";
+        this.alertService.info(texto, this.alertOptions);                                             
+        this.router.navigate(['home/validar']);
+      } 
+      else {
+        let texto = "Erro ao pausar cadastro na blockchain";
+        this.alertService.error(texto, this.alertOptions);                
+      }
+      
+      let texto = "Confirme a operação no metamask e aguarde a confirmação.";
+      this.alertService.info(texto, this.alertOptions); 
+
     }
 
 
@@ -684,37 +651,20 @@ export class ValidarContaAdminComponent implements OnInit {
         return;
       }    
   
-      let self = this;
-  
-      let booleano = this.web3Service.pauseLegalEntity(rbbid, 
+      let booleano = <boolean> (await this.web3Service.pauseLegalEntity(rbbid)); 
           
-           (txHash) => {
-             /*
-            Utils.criarAlertasAvisoConfirmacao( txHash, 
-                                                self.web3Service, 
-                                                self.bnAlertsService, 
-                                                "Validação de conta enviada. Aguarde a confirmação.", 
-                                                "O cadastro da conta foi validado e confirmado na blockchain.", 
-                                                self.zone)
-                                                */
-            let texto = "Validação de conta enviada. Aguarde a confirmação.";
-            this.alertService.info(texto, this.alertOptions); 
-            self.router.navigate(['home/validar']);
-            }        
-          ,(error) => {
-            /*
-            Utils.criarAlertaErro( self.bnAlertsService, 
-                                   "Erro ao validar cadastro na blockchain", 
-                                   error )  
-                                   */
-            let texto = "Erro ao validar cadastro na blockchain";
-            this.alertService.error(texto, this.alertOptions); 
-          }
-        );
-       // Utils.criarAlertaAcaoUsuario( self.bnAlertsService, 
-         //                             "Confirme a operação no metamask e aguarde a confirmação." )         
-        let texto = "Confirme a operação no metamask e aguarde a confirmação.";
-        this.alertService.info(texto, this.alertOptions); 
+      if (booleano) {
+        let texto = "Pause de conta enviada. Aguarde a confirmação.";
+        this.alertService.info(texto, this.alertOptions);                                             
+        this.router.navigate(['home/validar']);
+      } 
+      else {
+        let texto = "Erro ao pausar cadastro na blockchain";
+        this.alertService.error(texto, this.alertOptions);                
+      }
+      
+      let texto = "Confirme a operação no metamask e aguarde a confirmação.";
+      this.alertService.info(texto, this.alertOptions); 
     }
 
 

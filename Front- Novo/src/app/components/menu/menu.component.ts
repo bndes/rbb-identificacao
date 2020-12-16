@@ -36,7 +36,7 @@ export class MenuComponent implements OnInit {
   
   async recuperaRegistroBlockchain(enderecoBlockchain) : Promise<any> {
     if (enderecoBlockchain != undefined && enderecoBlockchain != null) {
-        let usuario = await this.web3Service.getPJInfoSync(enderecoBlockchain);
+        let usuario = await this.web3Service.getPJInfo(enderecoBlockchain);
         return usuario;
     } else {
         console.log('this.usuario');

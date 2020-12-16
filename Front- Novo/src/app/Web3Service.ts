@@ -270,109 +270,60 @@ export class Web3Service {
     
     }
 
-    async pause(contaBlockchain: string, fSuccess: any, fError: any) {
+    async pause(contaBlockchain: string) {
         let responsavel = await this.getCurrentAccountSync();    
         
         console.log("Web3Service - Pause");
         console.log("Conta Blockchain: " + contaBlockchain );
 
-        this.RBBRegistrySmartContract.pauseAddress(contaBlockchain,
-            { from: responsavel, gas: 500000 },
-            (error, result) => {
-                if (error) fError(error);
-                else fSuccess(result);
-            });
+        const signer = this.accountProvider.getSigner();
+        const contWithSigner = this.RBBRegistrySmartContract.connect(signer);
+        return (await contWithSigner.pauseAddress(contaBlockchain));
+
     }
 
-    async unpause(contaBlockchain: string, fSuccess: any, fError: any) {
+    async unpause(contaBlockchain: string) {
         let responsavel = await this.getCurrentAccountSync();    
         
         console.log("Web3Service - Unpause");
         console.log("Conta Blockchain: " + contaBlockchain );
 
-        this.RBBRegistrySmartContract.unpauseAddress(contaBlockchain,
-            { from: responsavel, gas: 500000 },
-            (error, result) => {
-                if (error) fError(error);
-                else fSuccess(result);
-            });
+        const signer = this.accountProvider.getSigner();
+        const contWithSigner = this.RBBRegistrySmartContract.connect(signer);
+        return (await contWithSigner.unpauseAddress(contaBlockchain));
+
     }
 
-    async pauseLegalEntity(rbbid: number, fSuccess: any, fError: any) {
+    async pauseLegalEntity(rbbid: number) {
         let responsavel = await this.getCurrentAccountSync();    
         
         console.log("Web3Service - pauseLegalEntity");
         console.log("RBBId: " + rbbid );
 
-        this.RBBRegistrySmartContract.pauseLegalEntity(rbbid,
-            { from: responsavel, gas: 500000 },
-            (error, result) => {
-                if (error) fError(error);
-                else fSuccess(result);
-            });
+        const signer = this.accountProvider.getSigner();
+        const contWithSigner = this.RBBRegistrySmartContract.connect(signer);
+        return (await contWithSigner.pauseLegalEntity(rbbid));            
     }
 
-    getId(addr: string, fSuccess: any, fError: any): number {
-        return this.RBBRegistrySmartContract.getId(addr,
-            (error, result) => {
-                if (error) fError(error);
-                else fSuccess(result);
-            });
+    async getId(address: string): Promise<number> {
+        let result = await this.RBBRegistrySmartContract.getId(address); 
+        return result;
     }
 
-    getPJInfo(addr: string, fSuccess: any, fError: any): number {
-        let self = this;
-        // console.log("getPJInfo com addr=" + addr);
-        // console.log("RBBRegistrySmartContract=");
-        // console.log(this.RBBRegistrySmartContract);
+    async getPJInfo(address: string): Promise<any> {
+       let result = await this.RBBRegistrySmartContract.getRegistry(address); 
+       let pjInfo = this.montaPJInfo(result);
+       pjInfo.address = address; //apendice com endereco
+       return pjInfo;
+    }   
 
-        //FIXME
-        /* 
-        return this.RBBRegistrySmartContract.getRegistry(addr,
-            (error, result) => {
-                if (error) fError(error);
-                else {
-                    let pjInfo = self.montaPJInfo(result);
-                    pjInfo.address = addr; //apendice com endereco
-                    fSuccess(pjInfo);
-                }
-            });
-            */return 0;
-    }
-
-    getPJInfoSync(address: string) {
-        let self = this;
-
-        return new Promise (function(resolve) {
-                                self.getPJInfo( address, 
-                                                function(result) {
-                                                    resolve(result);
-                                                }, 
-                                                function(reject) {
-                                                    console.log("ERRO getPJInfo  SYNC");
-                                                    resolve(reject);
-                                                }
-                                );
-                            })
-    }    
-
-    getAddressOwner(fSuccess: any, fError: any): number {
+    async getAddressOwner(): Promise<number> {
         return this.RBBRegistrySmartContract.owner();
-        
-        /*
-        return this.RBBRegistrySmartContract.owner(
-            (error, result) => {
-                if (error) fError(error);
-                else fSuccess(result);
-            });
-            */
     }
 
     async getBlockTimestamp(blockNumber: number) {
-
         let block = await this.provider.getBlock(blockNumber);
         return block.timestamp;
-
     }      
 
     isResponsibleForRegistryValidation(address: string, fSuccess: any, fError: any): boolean {
@@ -478,6 +429,7 @@ export class Web3Service {
     montaPJInfo(result): any {
         let pjInfo: any;
 
+        console.log("montaPJInfo");
         console.log(result);
         
         pjInfo  = {};
@@ -488,8 +440,8 @@ export class Web3Service {
         pjInfo.rbbid = result[0];
         pjInfo.cnpj = result[1];
         pjInfo.hashDeclaracao = result[2];
-        pjInfo.status = result[3].c[0];
-        pjInfo.role = result[4].c[0];
+        pjInfo.status = result[3];
+        pjInfo.role = result[4];
         pjInfo.paused = result[5];
         pjInfo.dateTimeExpiration = result[6];
         //pjInfo.address = result[5];
