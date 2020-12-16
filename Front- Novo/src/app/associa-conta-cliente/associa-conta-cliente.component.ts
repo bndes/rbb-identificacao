@@ -247,61 +247,24 @@ export class AssociaContaClienteComponent implements OnInit {
 console.log('associarContaCliente:: inicio')
     let self = this;
      
-    this.web3Service.isContaDisponivel(this.selectedAccount, 
-    
-      (result) => {
+    let result = await this.web3Service.isContaDisponivel(this.selectedAccount); 
 
-        if (!result) {
-          
-          let msg = "A conta "+ this.selectedAccount +" não está disponível para associação"; 
-          //Utils.criarAlertaErro( self.bnAlertsService, "Conta não disponível para associação", msg);  
-          this.alertService.error(msg, this.alertOptions);
-        }
-
-        else {
-
-          this.hashdeclaracao = "0";
-          this.web3Service.cadastra(parseInt(self.cliente.cnpj), this.hashdeclaracao,
-
-            (txHash) => {
-  
-              /*
-            Utils.criarAlertasAvisoConfirmacao( txHash, 
-                                                self.web3Service, 
-                                                self.bnAlertsService, 
-                                                "Associação do cnpj " + self.cliente.cnpj + " enviada. Aguarde a confirmação.", 
-                                                "A associação foi confirmada na blockchain.", 
-                                                self.zone) 
-                                                */
-            this.alertService.success("Gravação concluída na Blockchain.", this.alertOptions);
-            self.router.navigate(['home/associa/contas']);
-            
-            }        
-          ,(error) => {
-            /*
-            Utils.criarAlertaErro( self.bnAlertsService, 
-                                    "Erro ao associar na blockchain", 
-                                    error)  
-                                    */
-                                   this.alertService.error("Erro ao asssociar", this.alertOptions);
-          });
-          /*
-          Utils.criarAlertaAcaoUsuario( self.bnAlertsService, 
-                                      "Confirme a operação no metamask e aguarde a confirmação da associação da conta.")
-         */
-        this.alertService.info("Confirme no metamask", this.alertOptions);
-
-        } 
-
-      }, (error) => {
-        /*
-        Utils.criarAlertaErro( self.bnAlertsService, 
-          "Erro ao verificar se conta está disponível", 
-          error);
-            */
-           this.alertService.error("Erro ao verificar se a conta está disponível", this.alertOptions);
+    if (!result) {  
+      let msg = "A conta "+ this.selectedAccount +" não está disponível para associação"; 
+      this.alertService.error(msg, this.alertOptions);
+    }
+    else {
+      this.hashdeclaracao = "0";
+      this.web3Service.cadastra(parseInt(self.cliente.cnpj), self.hashdeclaracao).then(
+        function(txHash) { 
+          self.alertService.success("Gravação concluída na Blockchain.", self.alertOptions);
+          self.router.navigate(['home/associa/contas']);            
+        }        
+      , function(error) {  
+          self.alertService.error("Erro ao asssociar", self.alertOptions);
       });
-
+      this.alertService.info("Confirme no metamask", this.alertOptions);
+    } 
 
   }
 

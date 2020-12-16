@@ -255,8 +255,7 @@ export class Web3Service {
     }
 */
 
-    async cadastra(cnpj: number, hashdeclaracao: string,
-        fSuccess: any, fError: any) {
+    async cadastra(cnpj: number, hashdeclaracao: string): Promise<any>  {
 
         let contaBlockchain = await this.getCurrentAccountSync();    
         
@@ -265,15 +264,10 @@ export class Web3Service {
             ", hashdeclaracao: " + hashdeclaracao 
             )
 
-            /*  FIXME
-        this.RBBRegistrySmartContract.registryLegalEntity(cnpj, 
-            hashdeclaracao,
-            { from: contaBlockchain, gas: 500000 },
-            (error, result) => {
-                if (error) fError(error);
-                else fSuccess(result);
-            });
-            */
+        const signer = this.accountProvider.getSigner();
+        const contWithSigner = this.RBBRegistrySmartContract.connect(signer);
+        return (await contWithSigner.registryLegalEntity(cnpj, hashdeclaracao));
+    
     }
 
     async pause(contaBlockchain: string, fSuccess: any, fError: any) {
@@ -402,24 +396,10 @@ export class Web3Service {
         return this.RBBRegistrySmartContract.isValidatedAccount(address);
     }
 
-    isContaDisponivel(address: string, fSuccess: any, fError: any): boolean {
-        return this.RBBRegistrySmartContract.isAvailableAccount(address); 
+    async isContaDisponivel(address: string): Promise<boolean> {
+        let result = await this.RBBRegistrySmartContract.isAvailableAccount(address); 
+        return result;
     }
-
-    public isContaDisponivelSync(address: string) {
-        
-        let self = this;
-
-        return new Promise (function(resolve) {
-            self.isContaDisponivel(address, function(result) {
-                resolve(result);
-            }, function(reject) {
-                console.log("ERRO IS CONTA DISPONIVEL SYNC");
-                reject(false);
-            });
-        })
-    }
-
 
     isContaAguardandoValidacao(address: string, fSuccess: any, fError: any): boolean {
         return this.RBBRegistrySmartContract.isWaitingValidationAccount(address); 
