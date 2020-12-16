@@ -326,99 +326,37 @@ export class Web3Service {
         return block.timestamp;
     }      
 
-    isResponsibleForRegistryValidation(address: string, fSuccess: any, fError: any): boolean {
-        return this.RBBRegistrySmartContract.isSortOfAdmin(address);
-    }
-
-    isResponsibleForRegistryValidationSync(address: string) {
-        let self = this;
-
-        return new Promise (function(resolve) {
-            self.isResponsibleForRegistryValidation(address, function(result) {
-                resolve(result);
-            }, function(reject) {
-                console.log("ERRO isResponsibleForRegistryValidation  SYNC");
-                reject(false);
-            });
-        })
-    }    
-
-    accountIsActive(address: string, fSuccess: any, fError: any): boolean {
-        return this.RBBRegistrySmartContract.isValidatedAccount(address);
-    }
+    async isResponsibleForRegistryValidation(address: string): Promise<boolean> {
+        return await this.RBBRegistrySmartContract.isSortOfAdmin(address);
+    }  
 
     async isContaDisponivel(address: string): Promise<boolean> {
         let result = await this.RBBRegistrySmartContract.isAvailableAccount(address); 
         return result;
     }
 
-    isContaAguardandoValidacao(address: string, fSuccess: any, fError: any): boolean {
-        return this.RBBRegistrySmartContract.isWaitingValidationAccount(address); 
+    async isContaAguardandoValidacao(address: string): Promise<boolean> {
+        return await this.RBBRegistrySmartContract.isWaitingValidationAccount(address); 
     }
 
-    public isContaAguardandoValidacaoSync(address: string) {
-        
-        let self = this;
-
-        return new Promise (function(resolve) {
-            self.isContaAguardandoValidacao(address, function(result) {
-                resolve(result);
-            }, function(reject) {
-                console.log("ERRO IS CONTA AGUARDANDO VALIDACAO SYNC");
-                reject(false);
-            });
-        })
+    async isContaValidada(address: string): Promise<boolean> {
+        return await this.RBBRegistrySmartContract.isValidatedAccount(address);
     }
 
-    isContaValidada(address: string, fSuccess: any, fError: any): boolean {
-        return this.RBBRegistrySmartContract.isValidatedAccount(address); 
+    async validarCadastro(address: string) {        
+        return await this.RBBRegistrySmartContract.validateRegistrySameOrg(address);
     }
 
-    public isContaValidadaSync(address: string) {
-        
-        let self = this;
-
-        return new Promise (function(resolve) {
-            self.isContaValidada(address, function(result) {
-                resolve(result);
-            }, function(reject) {
-                console.log("ERRO IS CONTA VALIDADA SYNC");
-                reject(false);
-            });
-        })
-    }
-
-    async validarCadastro(address: string, fSuccess: any, fError: any) {
-        
-        let contaBlockchain = await this.getCurrentAccountSync();    
-
-        this.RBBRegistrySmartContract.validateRegistrySameOrg(address, 
-            { from: contaBlockchain, gas: 500000 },
-            (error, result) => {
-                if(error) { fError(error); return false; }
-                else { fSuccess(result); return true; }
-            });
-    }
-
-    async invalidarCadastro(address: string, fSuccess: any, fError: any) {
-
-        let contaBlockchain = await this.getCurrentAccountSync();    
-
-        this.RBBRegistrySmartContract.invalidateRegistrySameOrg(address, 
-            { from: contaBlockchain, gas: 500000 },
-            (error, result) => {
-                if(error) { fError(error); return false; }
-                else { fSuccess(result); return true; }
-            });
-        return false;
+    async invalidarCadastro(address: string) { 
+        return await this.RBBRegistrySmartContract.invalidateRegistrySameOrg(address);
     }
 
     
 
-    getEstadoContaAsString(address: string, fSuccess: any, fError: any): string {
+    async getEstadoContaAsString(address: string): Promise<string> {
         let self = this;
 
-        let result =  this.RBBRegistrySmartContract.getAccountState(address); 
+        let result =  await this.RBBRegistrySmartContract.getAccountState(address); 
         let str = self.getEstadoContaAsStringByCodigo (result);
         return str;
         

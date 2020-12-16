@@ -462,48 +462,47 @@ export class ValidarContaAdminComponent implements OnInit {
 
   }
 
-  async recuperaDataHora(self, event, transacaoPJ) {
-    let timestamp = await this.web3Service.getBlockTimestamp(event.blockNumber);
-    transacaoPJ.dataHora = new Date(timestamp * 1000);
+    async recuperaDataHora(self, event, transacaoPJ) {
+      let timestamp = await this.web3Service.getBlockTimestamp(event.blockNumber);
+      transacaoPJ.dataHora = new Date(timestamp * 1000);
+    }
 
-  }
+    recuperaFilePathAndName(self,transacaoPJ) {
 
-  recuperaFilePathAndName(self,transacaoPJ) {
+        if ( transacaoPJ == undefined || 
+            (transacaoPJ.cnpj == undefined || transacaoPJ.cnpj == "" ) || ( transacaoPJ.hashDeclaracao == undefined || transacaoPJ.hashDeclaracao == "") || 
+            (transacaoPJ.contaBlockchain == undefined || transacaoPJ.contaBlockchain == "" ) 
+          ) {
+            console.log("Transacao incompleta no recuperaFilePathAndName do dashboard-empresa");
+            return;
+        }
 
-      if ( transacaoPJ == undefined || 
-          (transacaoPJ.cnpj == undefined || transacaoPJ.cnpj == "" ) || ( transacaoPJ.hashDeclaracao == undefined || transacaoPJ.hashDeclaracao == "") || 
-           (transacaoPJ.contaBlockchain == undefined || transacaoPJ.contaBlockchain == "" ) 
-         ) {
-          console.log("Transacao incompleta no recuperaFilePathAndName do dashboard-empresa");
-          return;
-      }
+        let antigoNumeroContrato = 0;
 
-      let antigoNumeroContrato = 0;
-
-      self.fileHandleService.buscaFileInfo(transacaoPJ.cnpj, antigoNumeroContrato, 
-          transacaoPJ.contaBlockchain, transacaoPJ.hashDeclaracao, "declaracao").subscribe(
-          result => {
-            if (result && result.pathAndName) {
-              transacaoPJ.filePathAndName=ConstantesService.serverUrl+result.pathAndName;
-            }
-            else {
-              let texto = "Não foi possível encontrar informações associadas ao arquivo desse cadastro.";
+        self.fileHandleService.buscaFileInfo(transacaoPJ.cnpj, antigoNumeroContrato, 
+            transacaoPJ.contaBlockchain, transacaoPJ.hashDeclaracao, "declaracao").subscribe(
+            result => {
+              if (result && result.pathAndName) {
+                transacaoPJ.filePathAndName=ConstantesService.serverUrl+result.pathAndName;
+              }
+              else {
+                let texto = "Não foi possível encontrar informações associadas ao arquivo desse cadastro.";
+                console.log(texto);
+                //Utils.criarAlertaAcaoUsuario( self.bnAlertsService, texto);       
+              }                  
+            }, 
+            error => {
+              let texto = "Erro ao buscar dados de arquivo";
               console.log(texto);
-              //Utils.criarAlertaAcaoUsuario( self.bnAlertsService, texto);       
-            }                  
-          }, 
-          error => {
-            let texto = "Erro ao buscar dados de arquivo";
-            console.log(texto);
-            console.log("cnpj=" + transacaoPJ.cnpj);
-            console.log("contaBlockchain=" + transacaoPJ.contaBlockchain);
-//              Utils.criarAlertaErro( self.bnAlertsService, texto,error);
-          }) //fecha busca fileInfo
+              console.log("cnpj=" + transacaoPJ.cnpj);
+              console.log("contaBlockchain=" + transacaoPJ.contaBlockchain);
+  //              Utils.criarAlertaErro( self.bnAlertsService, texto,error);
+            }) //fecha busca fileInfo
 
 
-  }
+    }
 
-  async validarCadastro(contaBlockchainValidar) {
+    async validarCadastro(contaBlockchainValidar) {
       console.log(contaBlockchainValidar);
       
       if (contaBlockchainValidar === undefined) {
@@ -511,9 +510,8 @@ export class ValidarContaAdminComponent implements OnInit {
         console.log("error", "Erro", s, 2);
         return;
       }    
-  // let x = await this.recuperaRegistroBlockchain(this.selectedAccount);
-  // console.log("this.usuario.address = "+ this.usuario.address)
-      let bRV = await this.web3Service.isResponsibleForRegistryValidationSync(this.selectedAccount);
+
+      let bRV = await this.web3Service.isResponsibleForRegistryValidation(this.selectedAccount);
       if (!bRV) 
       {
           let s = "Conta selecionada no Metamask não pode executar uma validação.";
@@ -521,41 +519,24 @@ export class ValidarContaAdminComponent implements OnInit {
           return;
       }
     
-  
-      let self = this;
-  
-      let booleano = this.web3Service.validarCadastro(contaBlockchainValidar, 
-  
-        
-           (txHash) => {
-             /*
-            Utils.criarAlertasAvisoConfirmacao( txHash, 
-                                                self.web3Service, 
-                                                self.bnAlertsService, 
-                                                "Validação de conta enviada. Aguarde a confirmação.", 
-                                                "O cadastro da conta foi validado e confirmado na blockchain.", 
-                                                self.zone)
-                                                */
-            let texto = "Validação de conta enviada. Aguarde a confirmação.";                                              
-            this.alertService.info(texto, this.alertOptions);                                               
-            self.router.navigate(['home/validar']);
-            }        
-          ,(error) => {
-            /*
-            Utils.criarAlertaErro( self.bnAlertsService, 
-                                   "Erro ao validar cadastro na blockchain", 
-                                   error )  
-                                   */
-            let texto = "Erro ao validar cadastro na blockchain";
-            this.alertService.error(texto, this.alertOptions);                
-          }
-        );
-       // Utils.criarAlertaAcaoUsuario( self.bnAlertsService, 
-         //                             "Confirme a operação no metamask e aguarde a confirmação." )         
-         let texto = "Confirme a operação no metamask e aguarde a confirmação.";
-         this.alertService.info(texto, this.alertOptions);   
+
+      let booleano = <boolean> (await this.web3Service.validarCadastro(contaBlockchainValidar)); 
+          
+      if (booleano) {
+        let texto = "O cadastro da conta foi validado.";
+            this.alertService.success(texto, this.alertOptions);   
+            console.log(texto);  
+            this.router.navigate(['home/validar']);
+      } 
+      else {
+        let texto = "Erro ao validar cadastro na blockchain";
+        this.alertService.error(texto, this.alertOptions);                
+      }
+      
+      let texto = "Confirme a operação no metamask e aguarde a confirmação.";
+      this.alertService.info(texto, this.alertOptions); 
     }
-  
+    
     async invalidarCadastro(contaBlockchainInvalidar) {
   
       let self = this;
@@ -566,29 +547,30 @@ export class ValidarContaAdminComponent implements OnInit {
         return;
       }
   
-      let bRV = await this.web3Service.isResponsibleForRegistryValidationSync(this.selectedAccount);
+      let bRV = await this.web3Service.isResponsibleForRegistryValidation(this.selectedAccount);
       if (!bRV) 
       {
           let s = "Conta selecionada no Metamask não pode executar a ação de invalidar.";
           console.log("error", "Erro", s, 5);
           return;
       }
-  
-      let booleano = this.web3Service.invalidarCadastro(contaBlockchainInvalidar, 
-        (result) => {
-            let texto = "O cadastro da conta foi invalidado.";
-          //  self.bnAlertsService.criarAlerta("info", "Sucesso", s, 5);
+
+      let booleano = <boolean> (await this.web3Service.invalidarCadastro(contaBlockchainInvalidar)); 
+          
+      if (booleano) {
+        let texto = "O cadastro da conta foi invalidado.";
             this.alertService.success(texto, this.alertOptions);   
-            console.log(texto);
-  
+            console.log(texto);  
             self.router.navigate(['home/validar']);
-      },
-      (error) => {
-        console.log("Erro ao invalidar cadastro")
-      });
+      } 
+      else {
+        let texto = "Erro ao invalidar cadastro na blockchain";
+        this.alertService.error(texto, this.alertOptions);                
+      }
+      
+      let texto = "Confirme a operação no metamask e aguarde a confirmação.";
+      this.alertService.info(texto, this.alertOptions); 
     }
-
-
     
     async pause(contaBlockchain) {
       console.log(contaBlockchain);
@@ -641,7 +623,6 @@ export class ValidarContaAdminComponent implements OnInit {
 
     }
 
-
     async pauseCNPJ(rbbid) {
       console.log(rbbid);
       
@@ -666,7 +647,6 @@ export class ValidarContaAdminComponent implements OnInit {
       let texto = "Confirme a operação no metamask e aguarde a confirmação.";
       this.alertService.info(texto, this.alertOptions); 
     }
-
 
 }
 

@@ -122,31 +122,25 @@ export class AssociaContaAdminComponent implements OnInit {
 
   }
 
-  verificaEstadoContaBlockchainSelecionada(contaBlockchainSelecionada) {
+  async verificaEstadoContaBlockchainSelecionada(contaBlockchainSelecionada) {
     
     let self = this;
     console.log("result contaBlockchainSelecionada=" + contaBlockchainSelecionada);            
 
     if (contaBlockchainSelecionada) {
+      let estadoConta = await this.web3Service.getEstadoContaAsString(contaBlockchainSelecionada);
 
-        this.web3Service.getEstadoContaAsString(contaBlockchainSelecionada,
-
-          result => {
-
-            self.contaEstaValida = result
-            console.log("result conta=" + result);            
-                  
-            setTimeout(() => {
-              self.ref.detectChanges()
-            }, 1000)
-
-          },
-          error => {
-            console.error("Erro ao verificar o estado da conta")
-          }
-        )
-
-    }
+        if (estadoConta){
+          self.contaEstaValida = estadoConta
+          console.log("result conta=" + estadoConta);            
+                
+          setTimeout(() => {
+            self.ref.detectChanges()
+          }, 1000)
+        } else {
+          console.error("Erro ao verificar o estado da conta")
+        }
+  }
 
   }
 
