@@ -123,37 +123,31 @@ export class Web3Service {
         return await this.RBBRegistrySmartContract.queryFilter(filter);
     }
 
-    registraEventosCadastro(callback) {
-        this.RBBRegistrySmartContract.on("AccountRegistration",  function(evento) {
-            callback();
-        });
-    }
-    registraEventosValidacao(callback) {
-        this.RBBRegistrySmartContract.on("AccountValidation", () => {
-            callback();
-        });
-    }
-    registraEventosInvalidacao(callback) {
-        this.RBBRegistrySmartContract.on("AccountInvalidation", () => {
-            callback();
-        });
-    }    
-    registraEventosRoleChange(callback) {
-        this.RBBRegistrySmartContract.on("AccountRoleChange", () => {
-            callback();
-        })
-    }
-    registraEventosPausa(callback) {        
-        this.RBBRegistrySmartContract.on("AccountPaused", () => {
-            callback();
-        })
-    }
-    registraEventosDespausa(callback) {
-        this.RBBRegistrySmartContract.on("AccountUnpaused", () => {
-            callback();
-        })
+    async recuperaEventosValidacao() {
+        let filter = this.RBBRegistrySmartContract.filters.AccountValidation(null);
+        return await this.RBBRegistrySmartContract.queryFilter(filter);
     }
     
+    async recuperaEventosInvalidacao() {
+        let filter = this.RBBRegistrySmartContract.filters.AccountInvalidation(null);
+        return await this.RBBRegistrySmartContract.queryFilter(filter);
+    }   
+    
+    async recuperaEventosTroca() {
+        let filter = this.RBBRegistrySmartContract.filters.AccountRoleChange(null);
+        return await this.RBBRegistrySmartContract.queryFilter(filter);
+    }     
+    
+    async recuperaEventosPausa() {
+        let filter = this.RBBRegistrySmartContract.filters.AccountPaused(null);
+        return await this.RBBRegistrySmartContract.queryFilter(filter);
+    }       
+    
+    async recuperaEventosDespausa() {
+        let filter = this.RBBRegistrySmartContract.filters.AccountUnpaused(null);
+        return await this.RBBRegistrySmartContract.queryFilter(filter);
+    }  
+        
     registraWatcherEventosLocal(txHashProcurado, callback) {
         this.provider.once(txHashProcurado, (receipt) => {
             console.log('Transaction Mined: ' + receipt.hash);
