@@ -131,7 +131,7 @@ export class ListaEventos {
 
     }
 
-    static async registraEventosValidacao(caller, web3Service) {
+    static async registraEventosValidacao(web3Service, caller) {
 
         console.log("*** Executou o metodo de registrar eventos VALIDACAO");
 
@@ -146,11 +146,9 @@ export class ListaEventos {
 
     }
 
-    static async registraEventosInvalidacao(caller, web3Service) {
+    static async registraEventosInvalidacao(web3Service, caller) {
 
         console.log("*** Executou o metodo de registrar eventos INVALIDACAO");
-
-        let self = this;
 
         web3Service.recuperaEventosInvalidacao().then(async function (eventos) {
             console.log("recuperaEventosInvalidacao().then");
@@ -161,7 +159,7 @@ export class ListaEventos {
 
     }
 
-    static async registraEventosPausa(caller, web3Service) {
+    static async registraEventosPausa(web3Service, caller) {
 
         console.log("*** Executou o metodo de registrar eventos Pausa");
 
@@ -176,7 +174,7 @@ export class ListaEventos {
 
     }
 
-    static async registraEventosDespausa(caller, web3Service) {
+    static async registraEventosDespausa(web3Service, caller) {
 
         console.log("*** Executou o metodo de registrar eventos Despausa");
 
