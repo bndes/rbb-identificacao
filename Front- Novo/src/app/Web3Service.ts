@@ -244,6 +244,24 @@ export class Web3Service {
         return (await contWithSigner.pauseLegalEntity(rbbid));            
     }
 
+    async validarCadastro(address: string) {          
+        console.log("Web3Service - validarCadastro");
+        console.log("address: " + address );
+
+        const signer = this.accountProvider.getSigner();
+        const contWithSigner = this.RBBRegistrySmartContract.connect(signer);
+        return (await contWithSigner.validateRegistrySameOrg(address));  
+    }
+
+    async invalidarCadastro(address: string) { 
+        console.log("Web3Service - invalidarCadastro");
+        console.log("address: " + address );
+
+        const signer = this.accountProvider.getSigner();
+        const contWithSigner = this.RBBRegistrySmartContract.connect(signer);
+        return (await contWithSigner.invalidateRegistrySameOrg(address));          
+    }
+
     async getId(address: string): Promise<number> {
         let result = await this.RBBRegistrySmartContract.getId(address); 
         return result;
@@ -280,17 +298,7 @@ export class Web3Service {
 
     async isContaValidada(address: string): Promise<boolean> {
         return await this.RBBRegistrySmartContract.isValidatedAccount(address);
-    }
-
-    async validarCadastro(address: string) {        
-        return await this.RBBRegistrySmartContract.validateRegistrySameOrg(address);
-    }
-
-    async invalidarCadastro(address: string) { 
-        return await this.RBBRegistrySmartContract.invalidateRegistrySameOrg(address);
-    }
-
-    
+    }    
 
     async getEstadoContaAsString(address: string): Promise<string> {
         let self = this;

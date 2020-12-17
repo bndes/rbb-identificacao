@@ -122,10 +122,10 @@ export class ValidarContaAdminComponent implements OnInit {
 
   ngOnInit() {
     let users;
-
-    setInterval(() => {
-      console.log("Remonta lista de transacoes");
-      this.listaTransacoesPJ = [];      
+    
+    setInterval(() => {         
+      console.log("Inicializa lista de transacoes");
+      this.listaTransacoesPJ = [];   
       this.registrarExibicaoEventos();  
     }, 1500)
 
@@ -279,8 +279,8 @@ export class ValidarContaAdminComponent implements OnInit {
         console.log("error", "Erro", s, 2);
         return;
       }    
-
-      let bRV = await this.web3Service.isResponsibleForRegistryValidation(this.selectedAccount);
+console.log("validarCadsatro::this.selectedAccount" + this.selectedAccount)
+      let bRV = <boolean> (await this.web3Service.isResponsibleForRegistryValidation(this.selectedAccount));
       if (!bRV) 
       {
           let s = "Conta selecionada no Metamask não pode executar uma validação.";
@@ -316,7 +316,7 @@ export class ValidarContaAdminComponent implements OnInit {
         return;
       }
   
-      let bRV = await this.web3Service.isResponsibleForRegistryValidation(this.selectedAccount);
+      let bRV = <boolean> (await this.web3Service.isResponsibleForRegistryValidation(this.selectedAccount));
       if (!bRV) 
       {
           let s = "Conta selecionada no Metamask não pode executar a ação de invalidar.";
