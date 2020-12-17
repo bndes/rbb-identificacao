@@ -122,21 +122,26 @@ export class ListacontasComponent implements OnInit {
 
     ngOnInit() {
         let users;
-        
-        setTimeout(async () => {
-            console.log("Inicializa lista de transacoes");
-            this.listaTransacoesPJ = [];            
-            this.registrarExibicaoEventos();
-        }, 1500)
 
-        setInterval(() => {
-            this.estadoLista = this.estadoLista === "undefined" ? "vazia" : "cheia"
-            users = Array.from(this.listaTransacoesPJ);
-            this.dataSource = new MatTableDataSource(users);
-            this.dataSource.paginator = this.paginator;
-            this.dataSource.sort = this.sort;
-            this.ref.detectChanges()
-        }, 6300)
+        setInterval(() => {         
+            if (users == undefined || users.length != Array.from(this.listaTransacoesPJ).length) {
+              console.log("ngOnInit :: Inicializa lista de transacoes");
+              this.listaTransacoesPJ = [];   
+            }
+            this.monitoraEventos();  
+          }, 1500)
+      
+          setInterval(() => {
+            this.estadoLista = this.estadoLista === "undefined" ? "vazia" : "cheia"          
+            if ( users == undefined || users.length != Array.from(this.listaTransacoesPJ).length ) {
+              console.log("ngOnInit :: Atualiza se houve mudança.")
+              users = Array.from(this.listaTransacoesPJ);
+              this.dataSource = new MatTableDataSource(users);
+              this.dataSource.paginator = this.paginator;
+              this.dataSource.sort = this.sort;
+              this.ref.detectChanges()
+            }
+          }, 6300)        
 
 
 
@@ -174,7 +179,7 @@ export class ListacontasComponent implements OnInit {
 
     }
 
-    async registrarExibicaoEventos() {
+    async monitoraEventos() {
 
         this.blockchainNetworkPrefix = this.web3Service.getInfoBlockchainNetwork().blockchainNetworkPrefix;
 
@@ -250,25 +255,29 @@ export class ListacontasComponent implements OnInit {
 
         let antigoNumeroContrato = 0;
 
-        self.fileHandleService.buscaFileInfo(transacaoPJ.cnpj, antigoNumeroContrato,
-            transacaoPJ.contaBlockchain, transacaoPJ.hashDeclaracao, "declaracao").subscribe(
-                result => {
-                    if (result && result.pathAndName) {
-                        transacaoPJ.filePathAndName = ConstantesService.serverUrl + result.pathAndName;
-                    }
-                    else {
-                        let texto = "Não foi possível encontrar informações associadas ao arquivo desse cadastro.";
+        if ( transacaoPJ.hashDeclaracao != 0) {
+            self.fileHandleService.buscaFileInfo(transacaoPJ.cnpj, antigoNumeroContrato,
+                transacaoPJ.contaBlockchain, transacaoPJ.hashDeclaracao, "declaracao").subscribe(
+                    result => {
+                        if (result && result.pathAndName) {
+                            transacaoPJ.filePathAndName = ConstantesService.serverUrl + result.pathAndName;
+                        }
+                        else {
+                            let texto = "Não foi possível encontrar informações associadas ao arquivo desse cadastro.";
+                            console.log(texto);
+                            this.alertService.error(texto, this.alertOptions);
+                        }
+                    },
+                    error => {
+                        let texto = transacaoPJ.cnpj + " - " + antigoNumeroContrato + " - " +
+                                                transacaoPJ.contaBlockchain + " - " + transacaoPJ.hashDeclaracao
                         console.log(texto);
+                        console.log("cnpj=" + transacaoPJ.cnpj);
+                        console.log("contaBlockchain=" + transacaoPJ.contaBlockchain);
                         this.alertService.error(texto, this.alertOptions);
-                    }
-                },
-                error => {
-                    let texto = "Erro ao buscar dados de arquivo";
-                    console.log(texto);
-                    console.log("cnpj=" + transacaoPJ.cnpj);
-                    console.log("contaBlockchain=" + transacaoPJ.contaBlockchain);
-                    this.alertService.error(texto, this.alertOptions);
-                }) //fecha busca fileInfo
+                    }) //fecha busca fileInfo
+        }
+
 
 
     }

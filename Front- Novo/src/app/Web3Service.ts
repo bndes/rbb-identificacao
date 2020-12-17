@@ -215,9 +215,15 @@ export class Web3Service {
         console.log("Web3Service - Pause");
         console.log("Conta Blockchain: " + contaBlockchain );
 
-        const signer = this.accountProvider.getSigner();
-        const contWithSigner = this.RBBRegistrySmartContract.connect(signer);
-        return (await contWithSigner.pauseAddress(contaBlockchain));
+        try {
+            const signer = this.accountProvider.getSigner();
+            const contWithSigner = this.RBBRegistrySmartContract.connect(signer);
+            (await contWithSigner.pauseAddress(contaBlockchain));          
+        } catch (error) {
+            console.log("pause:" )
+            console.log( error);
+            return false;
+        } 
 
     }
 
@@ -226,10 +232,16 @@ export class Web3Service {
         
         console.log("Web3Service - Unpause");
         console.log("Conta Blockchain: " + contaBlockchain );
-
-        const signer = this.accountProvider.getSigner();
-        const contWithSigner = this.RBBRegistrySmartContract.connect(signer);
-        return (await contWithSigner.unpauseAddress(contaBlockchain));
+        
+        try {
+            const signer = this.accountProvider.getSigner();
+            const contWithSigner = this.RBBRegistrySmartContract.connect(signer);
+            (await contWithSigner.unpauseAddress(contaBlockchain));          
+        } catch (error) {
+            console.log("unpause:" )
+            console.log( error);
+            return false;
+        }         
 
     }
 
@@ -239,27 +251,45 @@ export class Web3Service {
         console.log("Web3Service - pauseLegalEntity");
         console.log("RBBId: " + rbbid );
 
-        const signer = this.accountProvider.getSigner();
-        const contWithSigner = this.RBBRegistrySmartContract.connect(signer);
-        return (await contWithSigner.pauseLegalEntity(rbbid));            
+        try {
+            const signer = this.accountProvider.getSigner();
+            const contWithSigner = this.RBBRegistrySmartContract.connect(signer);
+            (await contWithSigner.pauseLegalEntity(rbbid));          
+        } catch (error) {
+            console.log("pauseLegalEntity:" )
+            console.log( error);
+            return false;
+        }               
     }
 
     async validarCadastro(address: string) {          
         console.log("Web3Service - validarCadastro");
         console.log("address: " + address );
 
-        const signer = this.accountProvider.getSigner();
-        const contWithSigner = this.RBBRegistrySmartContract.connect(signer);
-        return (await contWithSigner.validateRegistrySameOrg(address));  
+        try {
+            const signer = this.accountProvider.getSigner();
+            const contWithSigner = this.RBBRegistrySmartContract.connect(signer);
+            (await contWithSigner.validateRegistrySameOrg(address));          
+        } catch (error) {
+            console.log("validarCadastro:" )
+            console.log( error);
+            return false;
+        }
     }
 
     async invalidarCadastro(address: string) { 
         console.log("Web3Service - invalidarCadastro");
         console.log("address: " + address );
 
-        const signer = this.accountProvider.getSigner();
-        const contWithSigner = this.RBBRegistrySmartContract.connect(signer);
-        return (await contWithSigner.invalidateRegistrySameOrg(address));          
+        try {
+            const signer = this.accountProvider.getSigner();
+            const contWithSigner = this.RBBRegistrySmartContract.connect(signer);
+            (await contWithSigner.invalidateRegistrySameOrg(address));          
+        } catch (error) {
+            console.log("invalidarCadastro:" )
+            console.log( error);
+            return false;
+        }
     }
 
     async getId(address: string): Promise<number> {

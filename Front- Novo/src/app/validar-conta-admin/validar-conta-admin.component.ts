@@ -124,18 +124,23 @@ export class ValidarContaAdminComponent implements OnInit {
     let users;
     
     setInterval(() => {         
-      console.log("Inicializa lista de transacoes");
-      this.listaTransacoesPJ = [];   
-      this.registrarExibicaoEventos();  
+      if (users == undefined || users.length != Array.from(this.listaTransacoesPJ).length) {
+        console.log("ngOnInit :: Inicializa lista de transacoes");
+        this.listaTransacoesPJ = [];   
+      }
+      this.monitoraEventos();  
     }, 1500)
 
     setInterval(() => {
       this.estadoLista = this.estadoLista === "undefined" ? "vazia" : "cheia"          
-      users = Array.from(this.listaTransacoesPJ);
-      this.dataSource = new MatTableDataSource(users);
-      this.dataSource.paginator = this.paginator;
-      this.dataSource.sort = this.sort;
-      this.ref.detectChanges()
+      if ( users == undefined || users.length != Array.from(this.listaTransacoesPJ).length ) {
+        console.log("ngOnInit :: Atualiza se houve mudança.")
+        users = Array.from(this.listaTransacoesPJ);
+        this.dataSource = new MatTableDataSource(users);
+        this.dataSource.paginator = this.paginator;
+        this.dataSource.sort = this.sort;
+        this.ref.detectChanges()
+      }
     }, 6300)
   
     
@@ -172,7 +177,7 @@ export class ValidarContaAdminComponent implements OnInit {
       
   }
 
-  registrarExibicaoEventos() {
+  monitoraEventos() {
 
       this.blockchainNetworkPrefix = this.web3Service.getInfoBlockchainNetwork().blockchainNetworkPrefix;
 
@@ -285,6 +290,7 @@ console.log("validarCadsatro::this.selectedAccount" + this.selectedAccount)
       {
           let s = "Conta selecionada no Metamask não pode executar uma validação.";
           console.log("error", "Erro", s, 5);
+          this.alertService.error(s, this.alertOptions); 
           return;
       }
     
@@ -299,7 +305,8 @@ console.log("validarCadsatro::this.selectedAccount" + this.selectedAccount)
       } 
       else {
         let texto = "Erro ao validar cadastro na blockchain";
-        this.alertService.error(texto, this.alertOptions);                
+        this.alertService.error(texto, this.alertOptions);  
+        return;              
       }
       
       let texto = "Confirme a operação no metamask e aguarde a confirmação.";
@@ -321,6 +328,7 @@ console.log("validarCadsatro::this.selectedAccount" + this.selectedAccount)
       {
           let s = "Conta selecionada no Metamask não pode executar a ação de invalidar.";
           console.log("error", "Erro", s, 5);
+          this.alertService.error(s, this.alertOptions); 
           return;
       }
 
@@ -335,6 +343,7 @@ console.log("validarCadsatro::this.selectedAccount" + this.selectedAccount)
       else {
         let texto = "Erro ao invalidar cadastro na blockchain";
         this.alertService.error(texto, this.alertOptions);                
+        return;
       }
       
       let texto = "Confirme a operação no metamask e aguarde a confirmação.";
@@ -360,6 +369,7 @@ console.log("validarCadsatro::this.selectedAccount" + this.selectedAccount)
       else {
         let texto = "Erro ao pausar cadastro na blockchain";
         this.alertService.error(texto, this.alertOptions);                
+        return;
       }
       
       let texto = "Confirme a operação no metamask e aguarde a confirmação.";
@@ -385,6 +395,7 @@ console.log("validarCadsatro::this.selectedAccount" + this.selectedAccount)
       else {
         let texto = "Erro ao pausar cadastro na blockchain";
         this.alertService.error(texto, this.alertOptions);                
+        return;
       }
       
       let texto = "Confirme a operação no metamask e aguarde a confirmação.";
@@ -411,6 +422,7 @@ console.log("validarCadsatro::this.selectedAccount" + this.selectedAccount)
       else {
         let texto = "Erro ao pausar cadastro na blockchain";
         this.alertService.error(texto, this.alertOptions);                
+        return;
       }
       
       let texto = "Confirme a operação no metamask e aguarde a confirmação.";
