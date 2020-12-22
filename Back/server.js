@@ -434,8 +434,95 @@ async function buscaFileInfo(req, res) {
 
 }
 
+
+const ethers  = require('ethers');
+var v_wallet  = require('./wallet.json');
+
+const privateKey      = v_wallet.privkey;
+const provider        = new ethers.providers.JsonRpcProvider(config.infra.URL_blockchain_provider);
+const wallet          = new ethers.Wallet(privateKey, provider);
+const contractAddress = contrato_json_BNDESRegistry.networks[config.infra.rede_blockchain].address;
+
+console.log("Oracle Validator at " + v_wallet.address);
+
+let RBBRegistry;
+
+initContract();
+listenEvent();
+
 // listen (start app with node server.js) ======================================
 app.listen(8080, "0.0.0.0");
 
 let data = "\n" + new Date() + "\nApp listening on port 8080 ";
 console.log(data);
+
+
+
+async function initContract() {
+            
+    let abi = contrato_json_BNDESRegistry['abi'];
+    RBBRegistry = new ethers.Contract(contractAddress, abi, provider);
+    console.log("Contract RBBRegistry at " + contractAddress);
+
+}
+
+function completarCnpjComZero(cnpj){
+    return ("00000000000000" + cnpj).slice(-14)
+ }
+
+
+async function listenEvent() {
+    console.log("");
+    console.log("Listening to event AccountRegistration ...");
+    console.log("");
+    RBBRegistry.on("AccountRegistration", async (addr, RBBId, CNPJ, hashProof, dateTimeExpiration) => {
+    
+        console.log(addr);    
+        console.log(RBBId);    
+        console.log(CNPJ);     
+        console.log(hashProof);
+        console.log(dateTimeExpiration);
+
+        if ( hashProof == "0" ) {
+            console.log("Conta Regular nao eh validada automaticamente. Ficara aguardando validacao manual.")
+        } else {
+            CNPJ = completarCnpjComZero(CNPJ);
+
+            let RBBRegistryWithSigner = RBBRegistry.connect(wallet);
+    
+            try {
+                let contrato = 0;
+                let tipo = 'declaracao';
+                let filePathAndNameToFront = await SERVER_FUNCTIONS.buscaTipoArquivo(CNPJ, contrato, addr, tipo, hashProof);
+                console.log(filePathAndNameToFront);
+                let tx = await RBBRegistryWithSigner.validateRegistry(addr);
+                console.log(tx.hash);
+                await tx.wait();
+                console.log("O cadastro foi validado.");
+            } catch(err) {
+                
+                console.log("Nao conseguiu encontrar o arquivo da declaracao.");
+                let tx = await RBBRegistryWithSigner.invalidateRegistry(addr);
+                console.log(tx.hash);
+                await tx.wait();
+                console.log("O cadastro foi invalidado.");
+                
+            }
+        }
+    });
+}
+
+async function checkIDStatus(id) {
+
+let blockchainAccount = await RBBRegistry.getBlockchainAccounts (id);
+let blockchainAccountStatus = await RBBRegistry.getAccountState(blockchainAccount[0]);
+
+    console.log( { "id"      : id,
+                 "address" : blockchainAccount, 
+                 "status"  : blockchainAccountStatus
+               } );
+    
+}
+
+
+
