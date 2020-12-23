@@ -5,7 +5,6 @@ RUN npm install
 
 RUN npm run-script build
 
-
 FROM nginx
 # Corrigir timezone
 RUN ln -snf /usr/share/zoneinfo/America/Sao_Paulo /etc/localtime
