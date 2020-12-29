@@ -1,6 +1,6 @@
 import { DashboardPessoaJuridica } from '../DashboardPessoaJuridica';
 import { Utils } from './utils';
-
+ 
 export class ListaEventos {
 
     static async registraEventosCadastro(web3Service, caller) {
