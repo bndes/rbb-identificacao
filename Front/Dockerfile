@@ -1,4 +1,4 @@
-FROM node:8 as builder
+FROM node:10.16.3 as builder
 ADD . /rbbid-front
 WORKDIR /rbbid-front
 RUN npm install
