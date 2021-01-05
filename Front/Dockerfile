@@ -14,7 +14,7 @@ ADD default.conf /etc/nginx/conf.d/
 
 
 # Copy result of build to nginx folder
-COPY --from=builder /rbbid-front/dist /usr/share/nginx/html
+COPY --from=builder /rbbid-front/dist/rbb-identificacao /usr/share/nginx/html
 
 # Expondo as portas necessárias
 EXPOSE 8000
