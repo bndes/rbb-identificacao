@@ -22,7 +22,7 @@ body{
 }
 
 .containerResize{
-  height: 1000px ;
+  height: 1060px ;
 }
 
 
@@ -77,7 +77,7 @@ nav a :first-child {
 
 .rightbox .br-button{
   height: 5%; 
-  margin-top: 2%;
+  margin-top: 4%;
   margin-left: 30%;
   font-size: 21px;
   height: 50px;
@@ -142,14 +142,6 @@ p {
   width: 75%;
   margin-bottom: 15px;
 }
-
-
-.br-upload{
-  width: 75%;
-  margin-top: 6px;
-}
-
-
 
 .label{
   padding-left: 5px;
@@ -254,7 +246,7 @@ p {
 }
 
 
-@media only screen and (min-width: 510px) and (max-width: 750px) {
+@media only screen and (min-width: 502px) and (max-width: 750px) {
   
 .container {
   background: #FFFFFF;
@@ -268,7 +260,7 @@ p {
 }
 
 .containerResize{
-  height: 1150px ;
+  height: 1350px ;
 }
 
 
@@ -282,7 +274,7 @@ p {
 
 .leftbox {
   float: left;
-  top: 26%;
+  top: 30%;
   left: 5%;
   position: absolute;
   width: 340px;
@@ -296,7 +288,7 @@ p {
   font-family: 'Montserrat', sans-serif;
   color: #4c73f5;
   font-size: 16px !important;
-  margin-top: 16% ;
+  margin-top: 20% ;
   margin-bottom: 20px;
 }
 
@@ -310,3 +302,368 @@ p {
   margin-bottom: 100px !important;
 }
 }
+
+
+@media only screen and (min-width: 752px) and (max-width: 800px) {
+  .container {
+    background: #FFFFFF;
+    margin-left: 15%;
+    margin-top: 20%;
+    box-shadow: 2px 5px 20px rgba(#070707, .5);
+    border: 0.1px solid rgb(0, 0, 0);
+    margin-bottom: 15%;
+    height: 400px ;
+    width: 600px ;
+  }
+  
+  .containerResize{
+    height: 1350px ;
+  }
+  
+  
+  .leftbox h1 {
+      font-size: 18px;
+      color: #FFFFFF;
+      font-family: 'Montserrat', sans-serif;
+      padding-left: 10%;
+      margin-top: 4%;
+  }
+  
+  .leftbox {
+    float: left;
+    top: 32%;
+    left: 5%;
+    position: absolute;
+    width: 470px;
+    height: 7%;
+    background:#4c73f5;
+    box-shadow: 1px 3px 5px #070707;
+   
+  }
+  
+  .container h1 {
+    font-family: 'Montserrat', sans-serif;
+    color: #4c73f5;
+    font-size: 16px !important;
+    margin-top: 14% ;
+    margin-bottom: 20px;
+  }
+  
+  .rightbox .br-button{
+    height: 5%; 
+    margin-top: 8%;
+    margin-left: 17%;
+    font-size: 16px;
+    height: 45px;
+    width: 200px;
+    margin-bottom: 100px !important;
+  }
+}
+
+
+@media only screen and (min-width: 801px) and (max-width: 1000px) {
+  
+  .container {
+    background: #FFFFFF;
+    margin-left: 15%;
+    margin-top: 20%;
+    box-shadow: 2px 5px 20px rgba(#070707, .5);
+    border: 0.1px solid rgb(0, 0, 0);
+    margin-bottom: 15%;
+    height: 400px ;
+    width: 600px ;
+  }
+  
+  .containerResize{
+    height: 1260px ;
+  }
+  
+  
+  .leftbox h1 {
+      font-size: 20px;
+      color: #FFFFFF;
+      font-family: 'Montserrat', sans-serif;
+      padding-left: 10%;
+      margin-top: 4%;
+  }
+  
+  .leftbox {
+    float: left;
+    top: 32%;
+    left: 10%;
+    position: absolute;
+    width: 540px;
+    height: 7%;
+    background:#4c73f5;
+    box-shadow: 1px 3px 5px #070707;
+   
+  }
+  
+  .container h1 {
+    font-family: 'Montserrat', sans-serif;
+    color: #4c73f5;
+    font-size: 16px !important;
+    margin-top: 18% ;
+    margin-bottom: 20px;
+  }
+  
+  .rightbox .br-button{
+    height: 5%; 
+    margin-top: 5%;
+    margin-left: 27%;
+    font-size: 16px;
+    height: 45px;
+    width: 200px;
+    margin-bottom: 100px !important;
+  }
+  
+  .br-card{
+    height: 700px !important;
+  }
+
+  }
+  
+  @media only screen and (min-width: 1001px) and (max-width: 1150px) {
+  
+    .container {
+      background: #FFFFFF;
+      margin-left: 15%;
+      margin-top: 15%;
+      box-shadow: 2px 5px 20px rgba(#070707, .5);
+      border: 0.1px solid rgb(0, 0, 0);
+      margin-bottom: 15%;
+      height: 400px ;
+      width: 800px ;
+    }
+    
+    .containerResize{
+      height: 1260px ;
+    }
+    
+    
+    .leftbox h1 {
+        font-size: 20px;
+        color: #FFFFFF;
+        font-family: 'Montserrat', sans-serif;
+        padding-left: 10%;
+        margin-top: 4%;
+    }
+    
+    .leftbox {
+      float: left;
+      top: 30%;
+      left: 10%;
+      position: absolute;
+      width: 540px;
+      height: 7%;
+      background:#4c73f5;
+      box-shadow: 1px 3px 5px #070707;
+     
+    }
+    
+    .container h1 {
+      font-family: 'Montserrat', sans-serif;
+      color: #4c73f5;
+      font-size: 16px !important;
+      margin-top: 7% ;
+      margin-bottom: 20px;
+    }
+    
+    .rightbox .br-button{
+      height: 5%; 
+      margin-top: 5%;
+      margin-left: 27%;
+      font-size: 16px;
+      height: 45px;
+      width: 200px;
+      margin-bottom: 100px !important;
+    }
+    
+    .br-card{
+      height: 700px !important;
+    }
+  }
+
+  
+  @media only screen and (min-width: 1170px) and (max-width: 1450px) {
+  
+    .container {
+      background: #FFFFFF;
+      margin-left: 15%;
+      margin-top: 15%;
+      box-shadow: 2px 5px 20px rgba(#070707, .5);
+      border: 0.1px solid rgb(0, 0, 0);
+      margin-bottom: 15%;
+      height: 400px ;
+      width: 1100px ;
+    }
+    
+    .containerResize{
+      height: 1260px ;
+    }
+    
+    
+    .leftbox h1 {
+        font-size: 20px;
+        color: #FFFFFF;
+        font-family: 'Montserrat', sans-serif;
+        padding-left: 10%;
+        margin-top: 4%;
+    }
+    
+    .leftbox {
+      float: left;
+      top: 38%;
+      left: 10%;
+      position: absolute;
+      width: 540px;
+      height: 7%;
+      background:#4c73f5;
+      box-shadow: 1px 3px 5px #070707;
+     
+    }
+    
+    .container h1 {
+      font-family: 'Montserrat', sans-serif;
+      color: #4c73f5;
+      font-size: 16px !important;
+      margin-top:4% ;
+      margin-bottom: 20px;
+    }
+    
+    .rightbox .br-button{
+      height: 5%; 
+      margin-top: 5%;
+      margin-left: 27%;
+      font-size: 16px;
+      height: 45px;
+      width: 200px;
+      margin-bottom: 100px !important;
+    }
+    
+    .br-card{
+      height: 700px !important;
+    }
+  }
+
+  
+  @media only screen and (min-width: 1455px) and (max-width: 1650px) {
+    .container {
+      background: #FFFFFF;
+      margin-left: 15%;
+      margin-top: 15%;
+      box-shadow: 2px 5px 20px rgba(#070707, .5);
+      border: 0.1px solid rgb(0, 0, 0);
+      margin-bottom: 15%;
+      height: 400px ;
+      width: 1100px ;
+    }
+    
+    .containerResize{
+      height: 1260px ;
+    }
+    
+    
+    .leftbox h1 {
+        font-size: 20px;
+        color: #FFFFFF;
+        font-family: 'Montserrat', sans-serif;
+        padding-left: 10%;
+        margin-top: 4%;
+    }
+    
+    .leftbox {
+      float: left;
+      top: 38%;
+      left: 10%;
+      position: absolute;
+      width: 540px;
+      height: 7%;
+      background:#4c73f5;
+      box-shadow: 1px 3px 5px #070707;
+     
+    }
+    
+    .container h1 {
+      font-family: 'Montserrat', sans-serif;
+      color: #4c73f5;
+      font-size: 16px !important;
+      margin-top:4% ;
+      margin-bottom: 20px;
+    }
+    
+    .rightbox .br-button{
+      height: 5%; 
+      margin-top: 5%;
+      margin-left: 27%;
+      font-size: 16px;
+      height: 45px;
+      width: 200px;
+      margin-bottom: 100px !important;
+    }
+    
+    .br-card{
+      height: 700px !important;
+    }
+  }
+
+  
+  @media only screen and (min-width: 1655px) and (max-width: 2500px) {
+    .container {
+      background: #FFFFFF;
+      margin-left: 15%;
+      margin-top: 5%;
+      box-shadow: 2px 5px 20px rgba(#070707, .5);
+      border: 0.1px solid rgb(0, 0, 0);
+      margin-bottom: 15%;
+      height: 400px ;
+      width: 1100px ;
+    }
+    
+    .containerResize{
+      height: 1260px ;
+    }
+    
+    
+    .leftbox h1 {
+        font-size: 20px;
+        color: #FFFFFF;
+        font-family: 'Montserrat', sans-serif;
+        padding-left: 10%;
+        margin-top: 4%;
+    }
+    
+    .leftbox {
+      float: left;
+      top: 26%;
+      left: 10%;
+      position: absolute;
+      width: 540px;
+      height: 7%;
+      background:#4c73f5;
+      box-shadow: 1px 3px 5px #070707;
+     
+    }
+    
+    .container h1 {
+      font-family: 'Montserrat', sans-serif;
+      color: #4c73f5;
+      font-size: 16px !important;
+      margin-top:4% ;
+      margin-bottom: 20px;
+    }
+    
+    .rightbox .br-button{
+      height: 5%; 
+      margin-top: 5%;
+      margin-left: 27%;
+      font-size: 16px;
+      height: 45px;
+      width: 200px;
+      margin-bottom: 100px !important;
+    }
+    
+    .br-card{
+      height: 700px !important;
+    }
+  }

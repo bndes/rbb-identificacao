@@ -115,19 +115,10 @@ p {
 }
 
 
-.noshow {
-  opacity: 0;
-}
 
 .br-input {
   width: 75%;
   margin-bottom: 15px;
-}
-
-
-.br-upload{
-  width: 75%;
-  margin-top: 6px;
 }
 
 

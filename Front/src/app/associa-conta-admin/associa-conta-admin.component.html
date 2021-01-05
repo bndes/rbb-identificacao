@@ -29,57 +29,47 @@
             </div>
 
         
-            <div class="conteudo form-group" *ngIf='cliente.dadosCadastrais' >
-
-                <div class="row">
-                <div class="form-group col-md-12 col-sm-12">
-                    <p>Procedimento de Declaração</p>
+            <div style="height: fit-content; background-color: #d2e4ff44; box-shadow: 0 0 3px #000000, 0 0 5px #b0b0b4;"  class="br-card conteudo form-group" *ngIf='cliente.dadosCadastrais' >
+                <div style="background-color:#d2e4ff44;"  class="front">
+                <div  class="header">
+                    <h1 style="font-size: 20px; margin-top: 10px !important;">Procedimento de Declaração</h1>
                 </div>
-                </div>
-                <div class="row">
-                <div class="form-group col-md-10 col-sm-10 ">
-                    <label>1. Antes de começar, certifique-se que você tem o <b>Adobe Reader</b> instalado em sua máquina. Caso não tenha, clique <a target="_blank" href="https://get2.adobe.com/br/reader/">aqui</a> para instalar</label>
-                    <br>              
-                </div>
-                </div>
-                <div class="row">
-                <div class="form-group col-md-10 col-sm-10">
-                    <label>2. Clique <a target="_blank" href="{{fileHandleService.getCaminhoRoteiroAssinaturaDigital()}}">aqui</a> para ler o <b>Roteiro de Instruções</b> para essa etapa. </label>
-                </div>
-                </div>  
-                <div class="row">
-                <div class="form-group col-md-10 col-sm-10">
-                    <label>3. Clique no botão abaixo para <b>salvar localmente</b> a Declaração de Propriedade e Responsabilidade sobre Conta Blockchain, e abrir com o Adobe Reader.</label>            
-                    <button type="button" placement="bottom" ngbTooltip="Baixar declaracao" (click)="createPdf()">
-                    <i class="fa fa-floppy-o" aria-hidden="true"></i> Baixar declaração
-                    </button>
-                </div>
-                </div>     
+                <div class="content">
+                  
+                        <label>1. Antes de começar, certifique-se que você tem o <b>Adobe Reader</b> instalado em sua máquina. Caso não tenha, clique <a target="_blank" href="https://get2.adobe.com/br/reader/">aqui</a> para instalar</label>
+                            
+                        <label>2. Clique <a target="_blank" href="{{fileHandleService.getCaminhoRoteiroAssinaturaDigital()}}">aqui</a> para ler o <b>Roteiro de Instruções</b> para essa etapa. </label>
+          
+                        <label>3. Clique <button class="link" ngbTooltip="Baixar declaracao" (click)="createPdf()">aqui</button> para <b>salvar localmente</b> a Declaração de Propriedade e Responsabilidade sobre Conta Blockchain, e abrir com o Adobe Reader.</label>            
+               
+                        <label>4. Seguindo as instruções do Roteiro, <b>assine a declaração digitalmente com seu e-CNPJ</b> conectado ao computador. </label>
                 
-                <div class="row">
-                <div class="form-group col-md-10 col-sm-10">
-                    <label>4. Seguindo as instruções do Roteiro, <b>assine a declaração digitalmente com seu e-CNPJ</b> conectado ao computador. </label>
+                        <label>5. Clique no botão abaixo para <b>fazer upload do PDF</b> da Declaração assinado digitalmente. </label>
+                        <br>
+                    <div class="br-upload" style="margin-top: 30px; margin-right: 1000px;" >
+                        <button id="btArquivo"  (click)="fileInput.click()" class=" br-button upload-button"><i class="fas fa-upload"></i>Upload</button>
+                        
+                        <input type="file" id="arquivo"  accept=".pdf" #fileInput ng2FileSelect [uploader]="this.fileHandleService.uploader" (change)="this.fileHandleService.chamaUpload()"/>
+                        
+                        <div class="msg-hash-declaracao" *ngIf="hashdeclaracao">
+                            Hash da Declaração: {{hashdeclaracao}}
+                        </div>
+                        <div class="upload-list"></div>
+                    </div>
                 </div>
-                </div>  
-        
-                
-        
-                <div class="row">                 
-                <div class="form-group col-md-10 col-sm-10">
-                    <label>5. Clique no botão abaixo para <b>fazer upload do PDF</b> da Declaração assinado digitalmente. </label>
-                </div>
-                <div class="form-group col-md-10 col-sm-10">
+                <!--   <div class="form-group col-md-10 col-sm-10">
                     <input ng2FileSelect id="arquivo" type="file" accept=".pdf" [uploader]="this.fileHandleService.uploader" (change)="this.fileHandleService.chamaUpload()" /> 
                     <div class="msg-hash-declaracao" *ngIf="hashdeclaracao">
                         Hash da Declaração: {{hashdeclaracao}}
                     </div>
-                </div>              
-                </div>    
-            
+                </div>    -->           
+              <div  class="footer">
+                <button class="br-button primary" type="button" (click)="associarContaCliente()" *ngIf='cliente.dadosCadastrais'>Associar
+                </button>
             </div>
-           <button 
-            class="br-button primary" type="button" (click)="associarContaCliente()" *ngIf='cliente.dadosCadastrais'>Associar
-            </button>
+                </div>
+           
+            </div>
         </div>
     <div>
      
