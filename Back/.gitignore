@@ -2,8 +2,6 @@
 package-lock.json
 config.json
 arquivos/declaracao
-arquivos/upload
-
 
 # dependencies
 /node_modules
