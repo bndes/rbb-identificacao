@@ -15,6 +15,7 @@ const multer 			= require('multer');
 const request 			= require('request');
 
 const SERVER_FUNCTIONS     = require('./server_functions.js');
+const mock_pj		       = require('./mock_pj.json');
 
 const DIR_UPLOAD = config.infra.caminhoArquivos + config.infra.caminhoUpload;
 const DIR_CAMINHO_DECLARACAO = config.infra.caminhoArquivos + config.infra.caminhoDeclaracao;
@@ -122,7 +123,7 @@ console.log("config.infra.rede_blockchain (1=Main|4=Rinkeby|4447=local) = " + co
 
 //let addrContratoBNDESToken;
 let addrContratoBNDESRegistry;
-if (config.infra.rede_blockchain < 10) {  
+if (config.infra.rede_blockchain < 10 || config.infra.rede_blockchain == 648629 ) {  
 	console.log ("config.infra.rede_blockchain=" + config.infra.rede_blockchain);
 	//addrContratoBNDESToken = config.infra.endereco_BNDESToken;
 	addrContratoBNDESRegistry = config.infra.endereco_BNDESRegistry;
@@ -210,6 +211,13 @@ console.log('/api/pj-por-cnpj::mockPJ=' + mockPJ);
 
 		if (mockPJ) {
 			console.log("mock PJ ON!");
+
+			let debugAqui = false;
+			if (debugAqui) {
+				res.status(200).json(mock_pj);
+				return; 				
+			}
+				
 
 			if ( cnpjRecebido == undefined || cnpjRecebido == '00000undefined' || cnpjRecebido == '00000000000000')	
 				return;
@@ -472,9 +480,9 @@ function completarCnpjComZero(cnpj){
 
 
 async function listenEvent() {
-    console.log("");
-    console.log("Listening to event AccountRegistration ...");
-    console.log("");
+    console.log("** ORACLE ** - ");
+    console.log("** ORACLE ** - Listening to event AccountRegistration ...");
+    console.log("** ORACLE ** - ");
     RBBRegistry.on("AccountRegistration", async (addr, RBBId, CNPJ, hashProof, dateTimeExpiration) => {
     
         console.log(addr);    
@@ -484,30 +492,47 @@ async function listenEvent() {
         console.log(dateTimeExpiration);
 
         if ( hashProof == "0" ) {
-            console.log("Conta Regular nao eh validada automaticamente. Ficara aguardando validacao manual.")
+            console.log("** ORACLE ** - Conta Regular nao eh validada automaticamente. Ficara aguardando validacao manual.")
         } else {
             CNPJ = completarCnpjComZero(CNPJ);
 
             let RBBRegistryWithSigner = RBBRegistry.connect(wallet);
+			let encontrouArquivo = false;
     
-            try {
+			try {
                 let contrato = 0;
                 let tipo = 'declaracao';
                 let filePathAndNameToFront = await SERVER_FUNCTIONS.buscaTipoArquivo(CNPJ, contrato, addr, tipo, hashProof);
                 console.log(filePathAndNameToFront);
-                let tx = await RBBRegistryWithSigner.validateRegistry(addr);
-                console.log(tx.hash);
-                await tx.wait();
-                console.log("O cadastro foi validado.");
-            } catch(err) {
-                
-                console.log("Nao conseguiu encontrar o arquivo da declaracao.");
-                let tx = await RBBRegistryWithSigner.invalidateRegistry(addr);
-                console.log(tx.hash);
-                await tx.wait();
-                console.log("O cadastro foi invalidado.");
-                
-            }
+				encontrouArquivo = true;     
+            } catch(err) {                
+                console.log("** ORACLE ** - Nao conseguiu encontrar o arquivo da declaracao.");
+				encontrouArquivo = false;
+            }			
+			if (encontrouArquivo) {
+				try {
+					console.log("** ORACLE ** - Faz chamada da validação do registro.");
+					let tx = await RBBRegistryWithSigner.validateRegistry(addr);
+					console.log(tx.hash);
+					await tx.wait();
+					console.log("** ORACLE ** - O cadastro foi validado.");
+
+					return ; //processamento concluido com sucesso. pode sair da rotina
+
+				} catch(err) {                
+					console.log("** ORACLE ** - Erro ao validar o registro.");					
+				}
+			} else {
+				try {
+					console.log("** ORACLE ** - Faz chamada da invalidação do registro.");
+					let tx = await RBBRegistryWithSigner.invalidateRegistry(addr);
+					console.log(tx.hash);
+					await tx.wait();
+					console.log("** ORACLE ** - O cadastro foi invalidado.");
+				} catch(err) {                
+					console.log("** ORACLE ** - Erro ao invalidar o registro.");	
+				}
+			}
         }
     });
 }
