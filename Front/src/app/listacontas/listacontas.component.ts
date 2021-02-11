@@ -269,12 +269,9 @@ export class ListacontasComponent implements OnInit {
                         }
                     },
                     error => {
-                        let texto = transacaoPJ.cnpj + " - " + antigoNumeroContrato + " - " +
+                        let texto = "Erro : recuperaFilePathAndName() - " + transacaoPJ.cnpj + " - " + antigoNumeroContrato + " - " +
                                                 transacaoPJ.contaBlockchain + " - " + transacaoPJ.hashDeclaracao
                         console.log(texto);
-                        console.log("cnpj=" + transacaoPJ.cnpj);
-                        console.log("contaBlockchain=" + transacaoPJ.contaBlockchain);
-                        this.alertService.error(texto, this.alertOptions);
                     }) //fecha busca fileInfo
         }
 
