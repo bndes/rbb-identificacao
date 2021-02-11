@@ -129,7 +129,7 @@ export class ListacontasComponent implements OnInit {
               this.listaTransacoesPJ = [];   
             }
             this.monitoraEventos();  
-          }, 1500)
+          }, 3500)
       
           setInterval(() => {
             this.estadoLista = this.estadoLista === "undefined" ? "vazia" : "cheia"          
