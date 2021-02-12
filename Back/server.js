@@ -21,6 +21,7 @@ const DIR_UPLOAD = config.infra.caminhoArquivos + config.infra.caminhoUpload;
 const DIR_CAMINHO_DECLARACAO = config.infra.caminhoArquivos + config.infra.caminhoDeclaracao;
 const DIR_CAMINHO_COMPROVANTE_DOACAO = config.infra.caminhoArquivos + config.infra.caminhoComprovanteDoacao;
 const DIR_CAMINHO_COMPROVANTE_LIQUIDACAO = config.infra.caminhoArquivos + config.infra.caminhoComprovanteLiquidacao;
+const CNPJ_EMPRESA_URL = config.infra.cnpjEmpresaURL;
 
 const CAMINHO_MODELO_DECLARACAO_CONTA_DIGITAL = config.infra.caminhoModeloDeclaracaoContaBlockchain;
 const CAMINHO_ROTEIRO_ASSINATURA_DIGITAL = config.infra.caminhoRoteiroAssinaturaDigital;
@@ -212,17 +213,10 @@ console.log('/api/pj-por-cnpj::mockPJ=' + mockPJ);
 		if (mockPJ) {
 			console.log("mock PJ ON!");
 
-			let debugAqui = false;
-			if (debugAqui) {
-				res.status(200).json(mock_pj);
-				return; 				
-			}
-				
-
 			if ( cnpjRecebido == undefined || cnpjRecebido == '00000undefined' || cnpjRecebido == '00000000000000')	
 				return;
 
-			https.get('https://www.receitaws.com.br/v1/cnpj/' + cnpjRecebido, (resp) => {
+			https.get(CNPJ_EMPRESA_URL + cnpjRecebido, (resp) => {
 				let data = '';
 
 				resp.on('data', (chunk) => {

@@ -1,4 +1,5 @@
 const config        = require('./config.json');
+const sql		    = require("mssql");
 const keccak256     = require('keccak256'); 
 const axios         = require('axios').default;
 const FormData      = require('form-data')
@@ -20,6 +21,11 @@ module.exports = {  validateDocumentSignature,
 const DIR_CAMINHO_DECLARACAO = config.infra.caminhoArquivos + config.infra.caminhoDeclaracao;
 const DIR_CAMINHO_COMPROVANTE_DOACAO = config.infra.caminhoArquivos + config.infra.caminhoComprovanteDoacao;
 const DIR_CAMINHO_COMPROVANTE_LIQUIDACAO = config.infra.caminhoArquivos + config.infra.caminhoComprovanteLiquidacao;
+const CNPJ_EMPRESA_URL =  config.infra.cnpjEmpresaURL;
+
+//Configuracao de acesso ao BD
+let configAcessoBDPJ = config.infra.acesso_BD_PJ;
+configAcessoBDPJ.password = process.env.BNC_BD_PJ_PASSWORD;
                 
 async function preencheDeclaracao(cnpj, address, pj, modelo, mockPJ,res) {
   
@@ -70,7 +76,7 @@ let retorno;
             return await processaRetornoBuscaDadosCNPJ(cnpj, address, retorno, CAMINHO_MODELO_DECLARACAO_CONTA_DIGITAL, mockPJ,res);
         }
         
-        https.get('https://www.receitaws.com.br/v1/cnpj/' + cnpjRecebido, (resp)  => {
+        https.get(CNPJ_EMPRESA_URL + cnpjRecebido, (resp)  => {
             let data = '';
 
             resp.on('data', (chunk) => {
