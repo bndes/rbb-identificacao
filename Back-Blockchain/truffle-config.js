@@ -1,4 +1,4 @@
-const HDWalletProvider = require("@truffle/hdwallet-provider");
+//const HDWalletProvider = require("@truffle/hdwallet-provider");
 const privateKey = "0x0000000000000000000000000000000000000000000000000000000000000000";
 const writerIP = "127.0.0.1";
 const writerPort = "4545";
