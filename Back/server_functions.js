@@ -202,6 +202,7 @@ function validateDocumentSignature(fileReadStream, cnpjEsperado, mock) {
 
 function processaDeclaracao(declaracaoReadStream, cnpjEsperado) {
     const URLVRA = "http://web.dsv.bndes.net/vra/rest/validar-assinatura?verificacaoSimplificada=true";
+    //TODO: parametrizar
     const form = new FormData();
     //form.append('my_field', 'my value');
     //form.append('my_buffer', new Buffer(10));
