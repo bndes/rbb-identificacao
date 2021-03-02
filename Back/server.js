@@ -505,26 +505,26 @@ async function listenEvent() {
             }			
 			if (encontrouArquivo) {
 				try {
-					console.log("** ORACLE ** - Faz chamada da validação do registro.");
-					let tx = await RBBRegistryWithSigner.validateRegistry(addr);
+					console.log("** ORACLE ** - Faz chamada da pré-validação do registro.");
+					let tx = await RBBRegistryWithSigner.preValidateRegistry(addr, true);
 					console.log(tx.hash);
 					await tx.wait();
-					console.log("** ORACLE ** - O cadastro foi validado.");
+					console.log("** ORACLE ** - O cadastro foi pré-validado.");
 
 					return ; //processamento concluido com sucesso. pode sair da rotina
 
 				} catch(err) {                
-					console.log("** ORACLE ** - Erro ao validar o registro.");					
+					console.log("** ORACLE ** - Erro ao pré-validar o registro.");					
 				}
 			} else {
 				try {
-					console.log("** ORACLE ** - Faz chamada da invalidação do registro.");
-					let tx = await RBBRegistryWithSigner.invalidateRegistry(addr);
+					console.log("** ORACLE ** - Faz chamada da pré-invalidação do registro.");
+					let tx = await RBBRegistryWithSigner.preValidateRegistry(addr, false);
 					console.log(tx.hash);
 					await tx.wait();
-					console.log("** ORACLE ** - O cadastro foi invalidado.");
+					console.log("** ORACLE ** - O cadastro foi pré-invalidado.");
 				} catch(err) {                
-					console.log("** ORACLE ** - Erro ao invalidar o registro.");	
+					console.log("** ORACLE ** - Erro ao pré-invalidar o registro.");	
 				}
 			}
         }

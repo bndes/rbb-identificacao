@@ -398,16 +398,21 @@ export class Web3Service {
             return "Aguardando";
         }                
         else if (result==2) {
-            return "Validada";
+            return "Pré-Validada";
         }    
         else if (result==3) {
+            return "Pré-Invalidada";
+        }                  
+        else if (result==4) {
+            return "Validada";
+        }            
+        else if (result==5) {
             return "Invalidada";
         }                                                        
         else {
             return "N/A";
         }        
     }
-
 
     getPapelContaAsString (result): string {
         if (result==0) {

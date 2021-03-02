@@ -5,7 +5,7 @@ import "./IRBBRegistry.sol";
 
 contract RBBRegistry is IRBBRegistry, Ownable() {
 
-    enum BlockchainAccountState {AVAILABLE,WAITING_VALIDATION,VALIDATED,INVALIDATED}
+    enum BlockchainAccountState {AVAILABLE,WAITING_VALIDATION,WAITING_APPROVAL,WAITING_REJECTION,VALIDATED,INVALIDATED}
     BlockchainAccountState blockchainState; /* Variable not used, only defined to create the enum type. */
                                 
     /**
@@ -50,6 +50,8 @@ contract RBBRegistry is IRBBRegistry, Ownable() {
     mapping (uint => uint) public CNPJ_RBBId;
 
     event AccountRegistration       (address addr, uint RBBId, uint CNPJ, string hashProof, uint256 dateTimeExpiration);
+    event AccountWaitingApproval    (address addr, uint RBBId, uint CNPJ, address responsible);
+    event AccountWaitingRejection   (address addr, uint RBBId, uint CNPJ, address responsible);
     event AccountValidation         (address addr, uint RBBId, uint CNPJ, address responsible);
     event AccountInvalidation       (address addr, uint RBBId, uint CNPJ, address responsible);
     event AccountPaused             (address addr, uint RBBId, uint CNPJ, address responsible);
@@ -118,6 +120,11 @@ contract RBBRegistry is IRBBRegistry, Ownable() {
         _;
     }
 
+    modifier onlyValidated() { 
+        require( legalEntitiesInfo[msg.sender].state == BlockchainAccountState.VALIDATED , "Apenas contas validadas podem atuar." );
+        _;
+    }    
+
     modifier onlyWhenNotExpired() { 
         require( legalEntitiesInfo[msg.sender].dateTimeExpiration > now , "Apenas contas com declarações cujos certificados ainda são válidos." );
         _;
@@ -127,7 +134,7 @@ contract RBBRegistry is IRBBRegistry, Ownable() {
     * Validates the initial registry of your own LegalEntity
     * @param userAddr Ethereum address that needs to be validated
     */
-    function validateRegistrySameOrg(address userAddr) public onlyWhenNotPaused onlyWhenNotExpired {
+    function validateRegistrySameOrg(address userAddr) public onlyWhenNotPaused onlyWhenNotExpired onlyValidated {
 
         address responsible = msg.sender;
 
@@ -143,8 +150,8 @@ contract RBBRegistry is IRBBRegistry, Ownable() {
                    "O usuário a ser validado deve ter o papel REGULAR" );
 
 
-        require( legalEntitiesInfo[userAddr].state == BlockchainAccountState.WAITING_VALIDATION,
-                   "A conta a validar precisa estar no estado Aguardando Validação");
+        require( isWaitingAccount(userAddr), "A conta a validar precisa estar em estado Aguardando");
+                   
 
         legalEntitiesInfo[userAddr].state = BlockchainAccountState.VALIDATED;
 
@@ -158,7 +165,7 @@ contract RBBRegistry is IRBBRegistry, Ownable() {
     * Validates the initial registry of others LegalEntities
     * @param userAddr Ethereum address that needs to be validated
     */
-    function validateRegistry(address userAddr) public onlyWhenNotPaused onlyWhenNotExpired {
+    function validateRegistry(address userAddr) public onlyWhenNotPaused onlyWhenNotExpired onlyValidated {
 
         address responsible = msg.sender;
         
@@ -168,8 +175,7 @@ contract RBBRegistry is IRBBRegistry, Ownable() {
         require ( legalEntitiesInfo[userAddr].role == BlockchainAccountRole.ADMIN  
             , "A conta a validar deve ter o papel de ADMIN" );
 
-        require(legalEntitiesInfo[userAddr].state == BlockchainAccountState.WAITING_VALIDATION,
-            "A conta precisa estar no estado Aguardando Validação");
+        require( isWaitingAccount(userAddr), "A conta precisa estar em estado Aguardando");
 
         legalEntitiesInfo[userAddr].state = BlockchainAccountState.VALIDATED;
 
@@ -179,11 +185,43 @@ contract RBBRegistry is IRBBRegistry, Ownable() {
                                 responsible);
     }    
 
+    /**
+    * Validates the initial registry of others LegalEntities
+    * @param userAddr Ethereum address that needs to be validated
+    */
+    function preValidateRegistry(address userAddr, bool approval) public onlyWhenNotPaused onlyWhenNotExpired onlyValidated{
+
+        address responsible = msg.sender;
+        
+        require ( legalEntitiesInfo[responsible].role == BlockchainAccountRole.SUPADMIN 
+            , "O responsável pela validação deve ser SUPADMIN" );
+
+        require ( legalEntitiesInfo[userAddr].role == BlockchainAccountRole.ADMIN  
+            , "A conta a validar deve ter o papel de ADMIN" );
+
+        require( legalEntitiesInfo[userAddr].state == BlockchainAccountState.WAITING_VALIDATION, "A conta precisa estar em estado Aguardando Validação");
+
+        if ( approval ) {
+            legalEntitiesInfo[userAddr].state = BlockchainAccountState.WAITING_APPROVAL;
+            emit AccountWaitingApproval(    userAddr, 
+                                            legalEntitiesInfo[userAddr].RBBId, 
+                                            legalEntitiesInfo[userAddr].CNPJ, 
+                                            responsible );
+        }
+        else {
+            legalEntitiesInfo[userAddr].state = BlockchainAccountState.WAITING_REJECTION;
+            emit AccountWaitingRejection(   userAddr, 
+                                            legalEntitiesInfo[userAddr].RBBId, 
+                                            legalEntitiesInfo[userAddr].CNPJ, 
+                                            responsible );
+        }
+    }        
+
 /**
     * Pause an account     
     * @param addr Ethereum address that needs to be paused
     */
-    function pauseAddress(address addr) public onlyWhenNotPaused {
+    function pauseAddress(address addr) public onlyWhenNotPaused onlyValidated {
 
         address responsible = msg.sender;
 
@@ -200,7 +238,7 @@ contract RBBRegistry is IRBBRegistry, Ownable() {
                             responsible);
     }
 
-    function pauseLegalEntity(uint RBBId) public onlyWhenNotPaused {
+    function pauseLegalEntity(uint RBBId) public onlyWhenNotPaused onlyValidated {
 
         address responsible = msg.sender;
         address[] memory addresses  = RBBId_addresses[RBBId];
@@ -226,7 +264,7 @@ contract RBBRegistry is IRBBRegistry, Ownable() {
     * Unpause an account     
     * @param addr Ethereum address that needs to be validated
     */
-    function unpauseAddress(address addr) public onlyWhenNotPaused onlyWhenNotExpired {
+    function unpauseAddress(address addr) public onlyWhenNotPaused onlyWhenNotExpired onlyValidated {
 
         address responsible = msg.sender;
 
@@ -249,7 +287,7 @@ contract RBBRegistry is IRBBRegistry, Ownable() {
     * The invalidation can be called at any time in the lifecycle of the address (not only when it is WAITING_VALIDATION)
     * @param addr Ethereum address that needs to be validated
     */
-    function invalidateRegistrySameOrg(address addr) public onlyWhenNotPaused onlyWhenNotExpired {
+    function invalidateRegistrySameOrg(address addr) public onlyWhenNotPaused onlyWhenNotExpired onlyValidated {
 
         address responsible = msg.sender;
 
@@ -269,7 +307,7 @@ contract RBBRegistry is IRBBRegistry, Ownable() {
     /*
     * @param addr Ethereum address that needs to be validated
     */
-    function invalidateRegistry(address addr) public onlyWhenNotPaused onlyWhenNotExpired {
+    function invalidateRegistry(address addr) public onlyWhenNotPaused onlyWhenNotExpired onlyValidated {
 
         address responsible = msg.sender;
 
@@ -298,8 +336,10 @@ contract RBBRegistry is IRBBRegistry, Ownable() {
         return legalEntitiesInfo[addr].state == BlockchainAccountState.AVAILABLE;
     }
 
-    function isWaitingValidationAccount(address addr) public view returns (bool) {
-        return legalEntitiesInfo[addr].state == BlockchainAccountState.WAITING_VALIDATION;
+    function isWaitingAccount(address addr) public view returns (bool) {
+        return legalEntitiesInfo[addr].state == BlockchainAccountState.WAITING_VALIDATION
+            || legalEntitiesInfo[addr].state == BlockchainAccountState.WAITING_APPROVAL
+            || legalEntitiesInfo[addr].state == BlockchainAccountState.WAITING_REJECTION ;
     }
 
     function isValidatedAccount(address addr) public view returns (bool) {
