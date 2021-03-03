@@ -5,7 +5,8 @@
 export const environment = {
   production: false,
   urlAddress: 'http://localhost:3000',
-  serverUrl: 'http://localhost:8080/api/'
+  serverUrl: 'http://localhost:8080/api/',
+  serverUrlRoot: 'http://localhost:8080/'
 };
 
 /*

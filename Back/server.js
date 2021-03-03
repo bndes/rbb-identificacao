@@ -418,7 +418,7 @@ async function buscaFileInfo(req, res) {
 		let hashFile 		  = req.body.hashFile;		
 
 		let filePathAndNameToFront = await SERVER_FUNCTIONS.buscaTipoArquivo(cnpj, contrato, blockchainAccount, tipo, hashFile);
-
+console.log("filePathAndNameToFront = " + filePathAndNameToFront);
 		let respJson = {
 			pathAndName: filePathAndNameToFront
 		};

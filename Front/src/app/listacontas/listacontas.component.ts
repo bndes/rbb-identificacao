@@ -68,7 +68,7 @@ const TIMESTAMP: string[] = [
 })
 export class ListacontasComponent implements OnInit {
 
-    displayedColumns: string[] = ['rbbid', 'cnpj', 'name', 'address', 'perfil', 'timestamp', 'hashDeclaracao', 'evento', 'status', 'explorer'];
+    displayedColumns: string[] = ['rbbid', 'cnpj', 'name', 'address', 'perfil', 'timestamp', 'hashDeclaracao', 'evento', 'status', 'declaracao', 'explorer'];
     dataSource: MatTableDataSource<DashboardPessoaJuridica>;
 
     @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
@@ -260,7 +260,7 @@ export class ListacontasComponent implements OnInit {
                 transacaoPJ.contaBlockchain, transacaoPJ.hashDeclaracao, "declaracao").subscribe(
                     result => {
                         if (result && result.pathAndName) {
-                            transacaoPJ.filePathAndName = ConstantesService.serverUrl + result.pathAndName;
+                            transacaoPJ.filePathAndName = ConstantesService.serverUrlRoot + result.pathAndName;
                         }
                         else {
                             let texto = "Não foi possível encontrar informações associadas ao arquivo desse cadastro.";
