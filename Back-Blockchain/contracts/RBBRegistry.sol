@@ -7,14 +7,19 @@ contract RBBRegistry is IRBBRegistry, Ownable() {
 
     enum BlockchainAccountState {AVAILABLE,WAITING_VALIDATION,VALIDATED,INVALIDATED}
     BlockchainAccountState blockchainState; /* Variable not used, only defined to create the enum type. */
-                                
+      
     /**
     REGULAR  - operates 
     ADMIN    - validates the regular.
-    SUPADMIN - validates the ADMIN. Contract Owner can set multiple SUPADMINs (including himself, machines and human accounts).
      */
-    enum BlockchainAccountRole {REGULAR, ADMIN, SUPADMIN} 
+    enum BlockchainAccountRole {REGULAR, ADMIN} 
     BlockchainAccountRole blockchainRole;  /* Variable not used, only defined to create the enum type. */
+
+    //Ativação/inativação de Registries no processo usual (pode ser via um processo automatizado) 
+    address public responsibleForRegistryValidation;
+
+    //Inativação e pause/unpause decorrente de eventos não previstos (por exemplo, um comportamento inadequado de um Registry) 
+    address public responsibleForActingAfterMonitoring;
 
     /* This is a helper variable to emulate a sequence and autoincrement Ids*/
     uint public currentRBBId = 0;
@@ -32,7 +37,7 @@ contract RBBRegistry is IRBBRegistry, Ownable() {
         uint256 dateTimeExpiration; //vai ser outro momento de expiração diferente do ECNPJ
     }
 
-    uint256 public defaultDateTimeExpiration = 365 days; 
+    uint256 public defaultDeltaDateTimeExpiration = 365 days; 
 
     /**
         Links Ethereum addresses to Registry
@@ -49,46 +54,69 @@ contract RBBRegistry is IRBBRegistry, Ownable() {
      */
     mapping (uint => uint) public CNPJ_RBBId;
 
+    //responsible is the msg.sender
     event AccountRegistration       (address addr, uint RBBId, uint CNPJ, string hashProof, uint256 dateTimeExpiration);
     event AccountValidation         (address addr, uint RBBId, uint CNPJ, address responsible);
-    event AccountInvalidation       (address addr, uint RBBId, uint CNPJ, address responsible);
-    event AccountPaused             (address addr, uint RBBId, uint CNPJ, address responsible);
-    event AccountUnpaused           (address addr, uint RBBId, uint CNPJ, address responsible);
+    event AccountInvalidation       (address addr, uint RBBId, uint CNPJ, address responsible, uint8 reason);
+    event AccountPaused             (address addr, uint RBBId, uint CNPJ, address responsible, uint8 reason);
+    event AccountUnpaused           (address addr, uint RBBId, uint CNPJ, address responsible, uint8 reason);
     event AccountRoleChange         (address addr, uint RBBId, uint CNPJ, address responsible, BlockchainAccountRole roleBefore, BlockchainAccountRole roleNew);
+    event AccountReactivation       (address addr, string hashProof, uint256 dateTimeExpiration);
+
     event RegistryExpirationChange  (address addr, uint256 dateTimeExpirationBefore, uint256 dateTimeExpirationNew);
 
-    /* The responsible for the System-Admin is the Owner. It could be or not be the same address (SUPADMIN=owner) */
-    constructor (uint CNPJSUPADMIN, string memory proofHashSUPADMIN, uint daysToExpire) public {                
-        address addrSUPADMIN = msg.sender;
-        string memory proofHash = proofHashSUPADMIN;
-        uint256 dateTimeExpiration = now + daysToExpire * 1 days; 
-        uint RBBId = calculaProximoRBBID(CNPJSUPADMIN);
-        legalEntitiesInfo[addrSUPADMIN] = Registry( RBBId, 
-                                                    CNPJSUPADMIN, 
-                                                    proofHash, 
-                                                    BlockchainAccountState.VALIDATED, 
-                                                    BlockchainAccountRole.SUPADMIN, 
-                                                    false, 
-                                                    dateTimeExpiration     );
-        RBBId_addresses[RBBId].push(addrSUPADMIN);
-        emit AccountRegistration(addrSUPADMIN, RBBId, CNPJSUPADMIN, proofHashSUPADMIN, dateTimeExpiration); 
-        
+    event RoleDefinitionRegistryValidation(address rs);
+    event RoleDefinitionActingAfterMonitoring(address rs);
+
+
+    constructor () public {                
+        responsibleForRegistryValidation = msg.sender;
+        responsibleForActingAfterMonitoring = msg.sender;         
+    }
+
+    function setResponsibleForRegistryValidation(address rs) onlyOwner public {
+        responsibleForRegistryValidation = rs;
+        emit RoleDefinitionRegistryValidation(rs);
+    }    
+    function setResponsibleForActingAfterMonitoring(address rs) onlyOwner public {
+        responsibleForActingAfterMonitoring = rs;
+        emit RoleDefinitionActingAfterMonitoring(rs);
+    }  
+
+    modifier onlyByResponsibleForRegistryValidation() { 
+        require( responsibleForRegistryValidation==msg.sender , "A ação só pode ser executada pela conta responsável pela validação" );
+        _;
+    }
+
+    modifier onlyByResponsibleForActingAfterMonitoring() { 
+        require( responsibleForActingAfterMonitoring==msg.sender , "A ação só pode ser executada pela conta responsável pela tomar ações decorrentes de monitoração" );
+        _;
+    }
+
+    modifier onlyIfSenderIsOk() { 
+        require( ! isPaused(msg.sender), "Apenas contas não pausadas podem executar esta operação" );
+        require( isExpired(msg.sender), "Apenas contas com declarações cujos certificados ainda são válidos podem executar esta operação" );
+        require( isValidatedAccount(msg.sender), "Apenas contas validadas podem executar esta operação" );
+        _;
     }
 
    /**
+    * Self Registering
     * Link blockchain address with CNPJ
     * @param CNPJ Brazilian identifier to legal entities
-    * @param CNPJProofHash The legal entities have to send BNDES a PDF where it assumes as responsible for an Ethereum account.
+    * @param proofHash The legal entities have to send BNDES a PDF where it assumes as responsible for an Ethereum account.
     *                   This PDF is signed with eCNPJ and send to BNDES.
     */
-    function registryLegalEntity(uint CNPJ, string memory CNPJProofHash) public {
+    function registryLegalEntity(uint CNPJ, string memory proofHash) public {
         
         address addr = msg.sender;
-        string memory proofHash = CNPJProofHash;
-        uint256 dateTimeExpiration = now + defaultDateTimeExpiration;
+
+        require (isValidHash(proofHash), "O hash da declaração é inválido");
+        require (isAvailableAccount(addr), "Endereço não pode ter sido cadastrado anteriormente");
+
+        uint256 dateTimeExpiration = now + defaultDeltaDateTimeExpiration;
         uint RBBId = calculaProximoRBBID(CNPJ);
 
-        require (isAvailableAccount(addr), "Endereço não pode ter sido cadastrado anteriormente");
 
         if ( keccak256(bytes(proofHash)) == keccak256(bytes("0")) ) { 
             legalEntitiesInfo[addr] = Registry( RBBId,
@@ -113,38 +141,30 @@ contract RBBRegistry is IRBBRegistry, Ownable() {
         emit AccountRegistration(addr, RBBId, CNPJ, proof, dateTimeExpiration);
     }
 
-    modifier onlyWhenNotPaused() { 
-        require( ! legalEntitiesInfo[msg.sender].paused , "Apenas quem não está pausada pode acessar" );
-        _;
-    }
-
-    modifier onlyWhenNotExpired() { 
-        require( legalEntitiesInfo[msg.sender].dateTimeExpiration > now , "Apenas contas com declarações cujos certificados ainda são válidos." );
-        _;
-    }
 
    /**
     * Validates the initial registry of your own LegalEntity
     * @param userAddr Ethereum address that needs to be validated
     */
-    function validateRegistrySameOrg(address userAddr) public onlyWhenNotPaused onlyWhenNotExpired {
+    function validateRegistrySameOrg(address userAddr) public onlyIfSenderIsOk {
 
         address responsible = msg.sender;
 
-        require ( responsible != userAddr, "O responsável pela validação não pode validar sua própria conta");
+        require ( isAdmin(responsible), "O responsável pela validação deve ter o papel ADMIN" );
 
-        require ( legalEntitiesInfo[responsible].role == BlockchainAccountRole.ADMIN , 
-                   "O responsável pela validação deve ter o papel ADMIN" );
+        require( legalEntitiesInfo[userAddr].state == BlockchainAccountState.WAITING_VALIDATION,
+                   "A conta a validar precisa estar no estado Aguardando Validação");
+
+        require (!isPaused(userAddr), "A conta não pode ser validada porque está pausada"); 
+
+        require (!isExpired(userAddr), "A conta não pode ser validada porque está expirada");
+
+        require ( legalEntitiesInfo[userAddr].role == BlockchainAccountRole.REGULAR, 
+                   "O usuário a ser validado deve ter o papel REGULAR" );
 
         require ( isTheSameID(responsible, userAddr) , 
                    "O responsável pela validação deve ser da mesma organização (mesmo CNPJ)" );
 
-        require ( legalEntitiesInfo[userAddr].role == BlockchainAccountRole.REGULAR , 
-                   "O usuário a ser validado deve ter o papel REGULAR" );
-
-
-        require( legalEntitiesInfo[userAddr].state == BlockchainAccountState.WAITING_VALIDATION,
-                   "A conta a validar precisa estar no estado Aguardando Validação");
 
         legalEntitiesInfo[userAddr].state = BlockchainAccountState.VALIDATED;
 
@@ -154,140 +174,209 @@ contract RBBRegistry is IRBBRegistry, Ownable() {
                                 responsible);
     }
 
-/**
+    /**
     * Validates the initial registry of others LegalEntities
     * @param userAddr Ethereum address that needs to be validated
     */
-    function validateRegistry(address userAddr) public onlyWhenNotPaused onlyWhenNotExpired {
+    function validateRegistry(address userAddr) public onlyByResponsibleForRegistryValidation {
 
         address responsible = msg.sender;
-        
-        require ( legalEntitiesInfo[responsible].role == BlockchainAccountRole.SUPADMIN 
-            , "O responsável pela validação deve ser SUPADMIN" );
-
-        require ( legalEntitiesInfo[userAddr].role == BlockchainAccountRole.ADMIN  
-            , "A conta a validar deve ter o papel de ADMIN" );
 
         require(legalEntitiesInfo[userAddr].state == BlockchainAccountState.WAITING_VALIDATION,
             "A conta precisa estar no estado Aguardando Validação");
 
+        require (!isPaused(userAddr), "A conta não pode ser validada porque está pausada"); 
+
+        require (!isExpired(userAddr), "A conta não pode ser validada porque está expirada");
+
+        require ( isAdmin(userAddr), "A conta a validar deve ter o papel de ADMIN" );
+        
         legalEntitiesInfo[userAddr].state = BlockchainAccountState.VALIDATED;
 
         emit AccountValidation( userAddr, 
                                 legalEntitiesInfo[userAddr].RBBId, 
                                 legalEntitiesInfo[userAddr].CNPJ, 
                                 responsible);
-    }    
+    }   
 
-/**
+
+     /**
     * Pause an account     
     * @param addr Ethereum address that needs to be paused
     */
-    function pauseAddress(address addr) public onlyWhenNotPaused {
+    function pauseAddress(address addr) public onlyIfSenderIsOk {
 
         address responsible = msg.sender;
 
-        require ( legalEntitiesInfo[addr].role != BlockchainAccountRole.SUPADMIN , "A conta SUPADMIN não pode ser pausada");
-        require( isTheSameID(responsible, addr) || legalEntitiesInfo[responsible].role == BlockchainAccountRole.SUPADMIN, "Somente pode pausar uma conta quem for da mesma organização ou System Administrator" );
-        require( isValidatedAccount(addr) , "Somente uma conta válida pode ser pausada");
-        require( legalEntitiesInfo[responsible].state == BlockchainAccountState.VALIDATED, "O responsável deve possuir uma conta Válida" );
+        require (!isInvalidated(addr), "Contas inválidas não podem ser pausadas");
+        require (!isPaused(addr), "Conta já está pausada");
+        require( isTheSameID(responsible, addr), "Somente conta de mesma organização pode executar esta ação" );
+
+        require ((addr==responsible || isAdmin(responsible)), "Não pode pausar conta de outro ADMIN");
+
+        pauseAddressInternal (addr, 1);
+
+    }
+
+    function pauseAddressAfterMonitoring(address addr) public onlyByResponsibleForActingAfterMonitoring {
+
+        require (!isInvalidated(addr), "Contas inválidas não podem ser pausadas");
+        require (!isPaused(addr), "Conta já está pausada");
+
+        pauseAddressInternal (addr, 2);
+    }
+
+    function pauseAddressInternal(address addr, uint8 reason) internal {
 
         legalEntitiesInfo[addr].paused = true;
         
         emit AccountPaused( addr, 
                             legalEntitiesInfo[addr].RBBId,
                             legalEntitiesInfo[addr].CNPJ, 
-                            responsible);
+                            msg.sender,
+                            reason);
     }
 
-    function pauseLegalEntity(uint RBBId) public onlyWhenNotPaused {
+
+    function pauseLegalEntity(uint RBBId) public onlyIfSenderIsOk {
 
         address responsible = msg.sender;
         address[] memory addresses  = RBBId_addresses[RBBId];
 
-        require( legalEntitiesInfo[responsible].state == BlockchainAccountState.VALIDATED, "O responsável deve possuir uma conta Válida" );
-        require( ( isSortOfAdmin(responsible) ), "O responsável deve possuir uma conta ADMIN ou SUPADMIN" );
-        require( isTheSameID(responsible, addresses[0]) 
-                    || legalEntitiesInfo[responsible].role == BlockchainAccountRole.SUPADMIN , "Somente pode pausar uma conta quem for da mesma organização ou SUPADMIN" );
+        require( isTheSameID(responsible, addresses[0]), 
+                "Somente conta de mesma organização pode executar esta ação" );
 
         for (uint i=0; i < addresses.length ; i++) {
             address candidate = addresses[i];
-            if( isValidatedAccount( candidate ) ) {
-                legalEntitiesInfo[candidate].paused = true;
-                emit AccountPaused( candidate, 
-                                    legalEntitiesInfo[candidate].RBBId,
-                                    legalEntitiesInfo[candidate].CNPJ, 
-                                    responsible );
+            if( !isInvalidated(candidate) &&
+                !isPaused(candidate) ) {
+                pauseAddressInternal (candidate, 3);
+            }
+        }
+    }
+
+
+    function pauseLegalEntityAfterMonitoring(uint RBBId) public onlyByResponsibleForActingAfterMonitoring {
+
+        address[] memory addresses  = RBBId_addresses[RBBId];
+
+        for (uint i=0; i < addresses.length ; i++) {
+            address candidate = addresses[i];
+            if( !isInvalidated(candidate) &&
+                !isPaused(candidate) ) {
+                pauseAddressInternal (candidate, 4);
             }
         }   
     }
 
-/**
+
+    /**
     * Unpause an account     
     * @param addr Ethereum address that needs to be validated
     */
-    function unpauseAddress(address addr) public onlyWhenNotPaused onlyWhenNotExpired {
+    function unpauseAddress(address addr) public onlyIfSenderIsOk {
 
         address responsible = msg.sender;
 
+        require( isAdmin(addr) , "Somente uma conta ADMIN pode executar esta ação" );
+
         require ( responsible != addr , "Uma pessoa não é capaz de retirar o pause de sua própria conta");
-        require( isSortOfAdmin(responsible) , "Somente uma conta responsável validadora pode despausar outras contas" );        
-        require( isTheSameID(responsible, addr) 
-                    || legalEntitiesInfo[responsible].role == BlockchainAccountRole.SUPADMIN , "Somente pode retirar pausa de uma conta quem for da mesma organização ou SUPADMIN" );
-        require( legalEntitiesInfo[addr].paused  , "Somente uma conta pausada pode ser despausada" ); 
+        require( isTheSameID(responsible, addr), 
+                    "Somente pode retirar pausa de uma conta quem for da mesma organização" );
+        
+        unpauseAddressInternal(addr, 1);        
+        
+    }
+
+    function unpauseAddressAfterMonitoring(address addr) public onlyByResponsibleForActingAfterMonitoring {
+        unpauseAddressInternal(addr,2);        
+    }
+
+    function unpauseAddressInternal(address addr, uint8 reason) internal {
+
+        require (!isInvalidated(addr), "Contas inválidas não podem ser retirar pausa");
+        require( isPaused(addr)  , "Somente uma conta pausada pode ser despausada" ); 
 
         legalEntitiesInfo[addr].paused = false;
         
         emit AccountUnpaused(   addr, 
                                 legalEntitiesInfo[addr].RBBId,
                                 legalEntitiesInfo[addr].CNPJ, 
-                                responsible);
+                                msg.sender,
+                                reason);
     }
+
 
    /**
     * Invalidates the initial registry of a legal entity or the change of its registry
     * The invalidation can be called at any time in the lifecycle of the address (not only when it is WAITING_VALIDATION)
     * @param addr Ethereum address that needs to be validated
     */
-    function invalidateRegistrySameOrg(address addr) public onlyWhenNotPaused onlyWhenNotExpired {
+    function invalidateRegistrySameOrg(address addr) public onlyIfSenderIsOk {
 
         address responsible = msg.sender;
 
-        require( legalEntitiesInfo[responsible].role == BlockchainAccountRole.ADMIN, "Apenas conta ADMIN pode invalidar contas. ");
-        require( isTheSameID(responsible, addr) , "Apenas contas da mesma organizacao podem ser validadas. ");
-        require( legalEntitiesInfo[addr].role != BlockchainAccountRole.SUPADMIN , "A conta SUPADMIN não pode ser invalidada");
-        require( legalEntitiesInfo[addr].state != BlockchainAccountState.INVALIDATED, "A conta foi invalidada previamente." );
+        require( isAdmin(responsible), "Apenas conta ADMIN pode invalidar contas. ");
+
+        require( !isInvalidated(addr), "A conta foi invalidada previamente." );
+
+        require( isTheSameID(responsible, addr) , "Apenas contas da mesma organizacao podem ser invalidadas. ");
+
+        invalidateRegistryInternal(addr, 1);
+
+    }
+
+    function invalidateRegistry(address addr) public onlyByResponsibleForRegistryValidation {
+
+        require(legalEntitiesInfo[addr].state == BlockchainAccountState.WAITING_VALIDATION,
+            "A conta precisa estar no estado Aguardando Validação");
+
+        require( isAdmin(addr), "Invalida apenas conta ADMIN");
+
+        invalidateRegistryInternal(addr, 2);
+
+    }
+
+
+    function invalidateRegistryAfterMonitoring(address addr) public onlyByResponsibleForActingAfterMonitoring {
+
+        require( !isInvalidated(addr), "A conta foi invalidada previamente." );
+        
+        invalidateRegistryInternal(addr, 3);
+    }
+
+    function invalidateRegistryInternal(address addr, uint8 reason) internal {
 
         legalEntitiesInfo[addr].state = BlockchainAccountState.INVALIDATED;
         
         emit AccountInvalidation(   addr, 
                                     legalEntitiesInfo[addr].RBBId, 
                                     legalEntitiesInfo[addr].CNPJ, 
-                                    responsible );
+                                    msg.sender,
+                                    reason );
+    
     }
 
-    /*
-    * @param addr Ethereum address that needs to be validated
-    */
-    function invalidateRegistry(address addr) public onlyWhenNotPaused onlyWhenNotExpired {
-
-        address responsible = msg.sender;
-
-        require( legalEntitiesInfo[responsible].role == BlockchainAccountRole.SUPADMIN, "Apenas SUPADMIN pode invalidar a conta. ");
-        require( legalEntitiesInfo[addr].role != BlockchainAccountRole.SUPADMIN , "A conta SUPADMIN não pode ser invalidada");
-        require( legalEntitiesInfo[addr].state != BlockchainAccountState.INVALIDATED, "A conta foi invalidada previamente." );
-
-        legalEntitiesInfo[addr].state = BlockchainAccountState.INVALIDATED;
+    function reactiveLegalEntity(string memory hashProof) public {
         
-        emit AccountInvalidation(   addr, 
-                                    legalEntitiesInfo[addr].RBBId, 
-                                    legalEntitiesInfo[addr].CNPJ, 
-                                    responsible );
+        address addr = msg.sender;
+
+        require (isValidHash(hashProof), "O hash da declaração é inválido");
+        require (!isAvailableAccount(addr), "Endereço deve pode ter sido cadastrado anteriormente");
+        require (!isInvalidated(addr), "Endereço não pode ter sido invalidado");
+
+        uint256 dateTimeExpiration = now + defaultDeltaDateTimeExpiration;
+
+        legalEntitiesInfo[addr].hashProof = hashProof;
+        legalEntitiesInfo[addr].state = BlockchainAccountState.WAITING_VALIDATION;
+        legalEntitiesInfo[addr].dateTimeExpiration = dateTimeExpiration;
+        legalEntitiesInfo[addr].paused = false;
+
+        emit AccountReactivation(addr, hashProof, dateTimeExpiration);
     }
 
-    function isSortOfAdmin(address addr) public view returns (bool) {
-        return ( legalEntitiesInfo[addr].role == BlockchainAccountRole.ADMIN || 
-                 legalEntitiesInfo[addr].role == BlockchainAccountRole.SUPADMIN   );
+    function isExpired (address addr) internal returns (bool) {
+        return (legalEntitiesInfo[addr].dateTimeExpiration > now);
     }
 
     function isOwner(address addr) public view returns (bool) {
@@ -322,11 +411,15 @@ contract RBBRegistry is IRBBRegistry, Ownable() {
         return isValidatedAccount(addr) && !isPaused(addr);
     }
 
+    function isAdmin(address addr) public view returns (bool) { 
+        return legalEntitiesInfo[addr].role == BlockchainAccountRole.ADMIN;
+    }
+
     function isRegistryOperational(uint RBBId) public view override returns (bool) {
         address[] memory addresses  = RBBId_addresses[RBBId];
 
         for (uint i=0; i < addresses.length ; i++) {
-            if ( isOperational( addresses[i] ) && isSortOfAdmin(addresses[i]) ) {
+            if ( isOperational( addresses[i] ) && isAdmin(addresses[i]) ) {
                     return true;
             }
         }
@@ -334,7 +427,7 @@ contract RBBRegistry is IRBBRegistry, Ownable() {
 
     function getId (address addr) public view override returns (uint) {
         uint RBBId = getRBBIdRaw(addr);
-        require ( isRegistryOperational( RBBId ) , "A organizacao nao esta operacional" );
+        require ( isRegistryOperational( RBBId ) , "A organizacao não está operacional" );
         return RBBId;
     }
 
@@ -374,39 +467,19 @@ contract RBBRegistry is IRBBRegistry, Ownable() {
     function getIdFromCNPJ(uint cnpj) public view override returns (uint) {
         return CNPJ_RBBId[cnpj];
     }
-    
-   /**
-    * The Owner can assign role SUPADMIN to anyone in the same LegalEntity
-    * @param addr Ethereum address to be assigned the new role
-    */
-    function setRoleSupAdmin(address addr) public onlyOwner {
-        require ( isTheSameID( owner(), addr ), "Owner só poderá atribuir o papel de SUPADMIN para contas do mesmo CNPJ" );
-
-        BlockchainAccountRole roleBefore = legalEntitiesInfo[addr].role;
-        legalEntitiesInfo[addr].role     = BlockchainAccountRole.SUPADMIN;                
-
-        emit AccountRoleChange(   addr, 
-                                  legalEntitiesInfo[addr].RBBId, 
-                                  legalEntitiesInfo[addr].CNPJ, 
-                                  msg.sender,
-                                  roleBefore, 
-                                  legalEntitiesInfo[addr].role  );
-    }
 
     /**
     * The Owner can assign new default expiration time for future registries
-    * @param dateTimeExpirationNew the new default expiration time 
+    * @param deltaDateTimeExpirationNew the new default expiration time 
     */
-    function setDefaultDateTimeExpiration(uint256 dateTimeExpirationNew) public {
+    function setDefaultDeltaDateTimeExpiration(uint256 deltaDateTimeExpirationNew) onlyOwner public {
 
-        require( legalEntitiesInfo[msg.sender].role == BlockchainAccountRole.SUPADMIN, "Apenas o SUPADMIN pode definir novo tempo de expiração de novos registros");
-
-        uint256 dateTimeExpirationOld = defaultDateTimeExpiration;
-        defaultDateTimeExpiration = dateTimeExpirationNew;
+        uint256 defaultDeltaDateTimeExpirationOld = defaultDeltaDateTimeExpiration;
+        defaultDeltaDateTimeExpiration = deltaDateTimeExpirationNew;
         
         emit RegistryExpirationChange(   msg.sender, 
-                                         dateTimeExpirationOld, 
-                                         defaultDateTimeExpiration );        
+                                         defaultDeltaDateTimeExpirationOld, 
+                                         defaultDeltaDateTimeExpiration );        
     }
 
     function calculaProximoRBBID(uint CNPJ) private returns (uint) {
@@ -416,11 +489,24 @@ contract RBBRegistry is IRBBRegistry, Ownable() {
 
         return CNPJ_RBBId[CNPJ];
     } 
+
     function getCNPJbyID(uint Id) public view override returns (uint ) {
-        address addr =RBBId_addresses[Id][0];
-        
+        address addr =RBBId_addresses[Id][0];    
         return legalEntitiesInfo[addr].CNPJ;
     }
  
+   function isValidHash(string memory str) pure public returns (bool)  {
+
+    bytes memory b = bytes(str);
+    if(b.length != 64) return false;
+
+    for (uint i=0; i<64; i++) {
+        if (b[i] < "0") return false;
+        if (b[i] > "9" && b[i] <"a") return false;
+        if (b[i] > "f") return false;
+    }
+        
+    return true;
+ }
 
 }
