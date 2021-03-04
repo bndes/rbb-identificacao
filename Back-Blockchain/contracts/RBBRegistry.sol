@@ -534,7 +534,7 @@ contract RBBRegistry is IRBBRegistry, Ownable() {
         return CNPJ_RBBId[cnpj];
     }
 
-    function getCNPJbyID(uint Id) public view override returns (uint ) {
+    function getCNPJbyID(uint Id) public view override returns (uint64 ) {
         address addr =RBBId_addresses[Id][0];    
         return legalEntitiesInfo[addr].CNPJ;
     }
