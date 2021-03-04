@@ -161,6 +161,13 @@ app.get('/api/hash/:filename', async function (req, res) {
 	return res.json(hashedResult);
 })
 
+app.get('/api/processaURLDeclaracao/:url/:cnpjEsperado', async function (req, res) {
+	const url 			= req.params.url;		
+	const cnpjEsperado  = req.params.cnpjEsperado;		
+	const resultado 	= await SERVER_FUNCTIONS.processaURLDeclaracao(url, cnpjEsperado);
+	return res.json(resultado);
+})
+
 //recupera constantes front
 app.post('/api/constantesFront', function (req, res) {
 	res.json({ 

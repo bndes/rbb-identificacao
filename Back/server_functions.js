@@ -13,6 +13,7 @@ module.exports = {  validateDocumentSignature,
                     buscaDadosCNPJ,
                     buscaTipoArquivo,
                     calculaHash,
+                    processaURLDeclaracao,
                     montaNomeArquivoDeclaracao,
                     montaNomeArquivoComprovanteDoacao,
                     montaNomeArquivoComprovanteLiquidacao
@@ -201,11 +202,14 @@ function validateDocumentSignature(fileReadStream, cnpjEsperado, mock) {
     
 }
 
+function processaURLDeclaracao(urlDeclaracao, cnpjEsperado) {
+    let fileReadStream = fs.createReadStream(urlDeclaracao);
+    return processaDeclaracao(fileReadStream, cnpjEsperado);
+}
+
 function processaDeclaracao(declaracaoReadStream, cnpjEsperado) {
-    //TODO: parametrizar
     const form = new FormData();
-    //form.append('my_field', 'my value');
-    //form.append('my_buffer', new Buffer(10));
+    
     form.append('', declaracaoReadStream );
     
     axios.post(URLVRA, form, { headers: form.getHeaders() })
