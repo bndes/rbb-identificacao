@@ -68,10 +68,17 @@
         <ng-container matColumnDef="status">
           <th mat-header-cell *matHeaderCellDef mat-sort-header> Situação </th>
           <td style="text-align: center; font-weight: 550; font-size: 16px; " mat-cell *matCellDef="let row"> 
-            {{row.status}} <span *ngIf='row.pausada'>e Pausada</span>
+            <a href="http://web.bndes.net/vra/#/validador" target="_blank">{{row.status}} <span *ngIf='row.pausada'>e Pausada</span></a>
           </td>
         </ng-container>
 
+        <ng-container matColumnDef="declaracao">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Declaração </th>
+          <td style="text-align: center; font-weight: 550; font-size: 16px; " mat-cell *matCellDef="let row"> 
+            <span *ngIf='row.filePathAndName'><a href="{{row.filePathAndName}}" target="_blank">Arquivo</a></span>
+            <span *ngIf='!row.filePathAndName'>-</span>
+          </td>
+        </ng-container>        
        
 
         <ng-container matColumnDef="explorer">

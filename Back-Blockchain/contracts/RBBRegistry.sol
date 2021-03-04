@@ -5,7 +5,7 @@ import "./IRBBRegistry.sol";
 
 contract RBBRegistry is IRBBRegistry, Ownable() {
 
-    enum BlockchainAccountState {AVAILABLE,WAITING_VALIDATION,VALIDATED,INVALIDATED}
+    enum BlockchainAccountState {AVAILABLE,WAITING_VALIDATION,WAITING_APPROVAL,WAITING_REJECTION,VALIDATED,INVALIDATED}
     BlockchainAccountState blockchainState; /* Variable not used, only defined to create the enum type. */
       
     /**
@@ -29,7 +29,7 @@ contract RBBRegistry is IRBBRegistry, Ownable() {
      */    
     struct Registry {
         uint RBBId; //uma proxy para o CNPJ
-        uint CNPJ; //Brazilian identification of legal entity
+        uint64 CNPJ; //Brazilian identification of legal entity
         string hashProof; //hash of declaration
         BlockchainAccountState state;
         BlockchainAccountRole role;
@@ -52,15 +52,17 @@ contract RBBRegistry is IRBBRegistry, Ownable() {
     /**
      * Links CNPJ to its RBBID
      */
-    mapping (uint => uint) public CNPJ_RBBId;
+    mapping (uint64 => uint) public CNPJ_RBBId;
 
     //responsible is the msg.sender
-    event AccountRegistration       (address addr, uint RBBId, uint CNPJ, string hashProof, uint256 dateTimeExpiration);
-    event AccountValidation         (address addr, uint RBBId, uint CNPJ, address responsible);
-    event AccountInvalidation       (address addr, uint RBBId, uint CNPJ, address responsible, uint8 reason);
-    event AccountPaused             (address addr, uint RBBId, uint CNPJ, address responsible, uint8 reason);
-    event AccountUnpaused           (address addr, uint RBBId, uint CNPJ, address responsible, uint8 reason);
-    event AccountRoleChange         (address addr, uint RBBId, uint CNPJ, address responsible, BlockchainAccountRole roleBefore, BlockchainAccountRole roleNew);
+    event AccountRegistration       (address addr, uint RBBId, uint64 CNPJ, string hashProof, uint256 dateTimeExpiration);
+    event AccountWaitingApproval    (address addr, uint RBBId, uint64 CNPJ, address responsible);
+    event AccountWaitingRejection   (address addr, uint RBBId, uint64 CNPJ, address responsible);
+    event AccountValidation         (address addr, uint RBBId, uint64 CNPJ, address responsible);
+    event AccountInvalidation       (address addr, uint RBBId, uint64 CNPJ, address responsible, uint8 reason);
+    event AccountPaused             (address addr, uint RBBId, uint64 CNPJ, address responsible, uint8 reason);
+    event AccountUnpaused           (address addr, uint RBBId, uint64 CNPJ, address responsible, uint8 reason);
+    event AccountRoleChange         (address addr, uint RBBId, uint64 CNPJ, address responsible, BlockchainAccountRole roleBefore, BlockchainAccountRole roleNew);
     event AccountReactivation       (address addr, string hashProof, uint256 dateTimeExpiration);
 
     event RegistryExpirationChange  (address addr, uint256 dateTimeExpirationBefore, uint256 dateTimeExpirationNew);
@@ -107,7 +109,7 @@ contract RBBRegistry is IRBBRegistry, Ownable() {
     * @param proofHash The legal entities have to send BNDES a PDF where it assumes as responsible for an Ethereum account.
     *                   This PDF is signed with eCNPJ and send to BNDES.
     */
-    function registryLegalEntity(uint CNPJ, string memory proofHash) public {
+    function registryLegalEntity(uint64 CNPJ, string memory proofHash) public {
         
         address addr = msg.sender;
 
@@ -141,6 +143,35 @@ contract RBBRegistry is IRBBRegistry, Ownable() {
         emit AccountRegistration(addr, RBBId, CNPJ, proof, dateTimeExpiration);
     }
 
+    /**
+    * Validates the initial registry of others LegalEntities
+    * @param userAddr Ethereum address that needs to be validated
+    */
+    function preValidateRegistry(address userAddr, bool approval) public onlyByResponsibleForRegistryValidation {
+
+        address responsible = msg.sender;
+        
+        require( legalEntitiesInfo[userAddr].state == BlockchainAccountState.WAITING_VALIDATION, 
+                "A conta precisa estar em estado Aguardando Validação");
+
+        require ( isAdmin(userAddr), "A conta a validar deve ter o papel de ADMIN" );
+
+        if ( approval ) {
+            legalEntitiesInfo[userAddr].state = BlockchainAccountState.WAITING_APPROVAL;
+            emit AccountWaitingApproval(    userAddr, 
+                                            legalEntitiesInfo[userAddr].RBBId, 
+                                            legalEntitiesInfo[userAddr].CNPJ, 
+                                            responsible );
+        }
+        else {
+            legalEntitiesInfo[userAddr].state = BlockchainAccountState.WAITING_REJECTION;
+            emit AccountWaitingRejection(   userAddr, 
+                                            legalEntitiesInfo[userAddr].RBBId, 
+                                            legalEntitiesInfo[userAddr].CNPJ, 
+                                            responsible );
+        }
+    }
+    
 
    /**
     * Validates the initial registry of your own LegalEntity
@@ -152,8 +183,7 @@ contract RBBRegistry is IRBBRegistry, Ownable() {
 
         require ( isAdmin(responsible), "O responsável pela validação deve ter o papel ADMIN" );
 
-        require( legalEntitiesInfo[userAddr].state == BlockchainAccountState.WAITING_VALIDATION,
-                   "A conta a validar precisa estar no estado Aguardando Validação");
+        require( isWaitingAccount(userAddr), "A conta a validar precisa estar em estado Aguardando");
 
         require (!isPaused(userAddr), "A conta não pode ser validada porque está pausada"); 
 
@@ -163,8 +193,7 @@ contract RBBRegistry is IRBBRegistry, Ownable() {
                    "O usuário a ser validado deve ter o papel REGULAR" );
 
         require ( isTheSameID(responsible, userAddr) , 
-                   "O responsável pela validação deve ser da mesma organização (mesmo CNPJ)" );
-
+                   "O responsável pela validação deve ser da mesma organização (mesmo CNPJ)" );                   
 
         legalEntitiesInfo[userAddr].state = BlockchainAccountState.VALIDATED;
 
@@ -182,8 +211,7 @@ contract RBBRegistry is IRBBRegistry, Ownable() {
 
         address responsible = msg.sender;
 
-        require(legalEntitiesInfo[userAddr].state == BlockchainAccountState.WAITING_VALIDATION,
-            "A conta precisa estar no estado Aguardando Validação");
+        require( isWaitingAccount(userAddr), "A conta precisa estar em estado Aguardando");
 
         require (!isPaused(userAddr), "A conta não pode ser validada porque está pausada"); 
 
@@ -328,8 +356,7 @@ contract RBBRegistry is IRBBRegistry, Ownable() {
 
     function invalidateRegistry(address addr) public onlyByResponsibleForRegistryValidation {
 
-        require(legalEntitiesInfo[addr].state == BlockchainAccountState.WAITING_VALIDATION,
-            "A conta precisa estar no estado Aguardando Validação");
+        require(isWaitingAccount(addr), "A conta precisa estar no estado Aguardando Validação");
 
         require( isAdmin(addr), "Invalida apenas conta ADMIN");
 
@@ -375,7 +402,64 @@ contract RBBRegistry is IRBBRegistry, Ownable() {
         emit AccountReactivation(addr, hashProof, dateTimeExpiration);
     }
 
-    function isExpired (address addr) internal returns (bool) {
+    /**
+    * The Owner can assign new default expiration time for future registries
+    * @param deltaDateTimeExpirationNew the new default expiration time 
+    */
+    function setDefaultDeltaDateTimeExpiration(uint256 deltaDateTimeExpirationNew) onlyOwner public {
+
+        uint256 defaultDeltaDateTimeExpirationOld = defaultDeltaDateTimeExpiration;
+        defaultDeltaDateTimeExpiration = deltaDateTimeExpirationNew;
+        
+        emit RegistryExpirationChange(   msg.sender, 
+                                         defaultDeltaDateTimeExpirationOld, 
+                                         defaultDeltaDateTimeExpiration );        
+    }
+
+    function calculaProximoRBBID(uint64 CNPJ) private returns (uint) {
+
+        if ( CNPJ_RBBId[CNPJ] == 0 ) //se nao existir rbbid para este CNPJ
+            CNPJ_RBBId[CNPJ] = ++currentRBBId;
+
+        return CNPJ_RBBId[CNPJ];
+    } 
+
+   function isValidHash(string memory str) pure public returns (bool)  {
+
+        bytes memory b = bytes(str);
+        if(b.length != 64) return false;
+
+        for (uint i=0; i<64; i++) {
+            if (b[i] < "0") return false;
+            if (b[i] > "9" && b[i] <"a") return false;
+            if (b[i] > "f") return false;
+        }
+            
+        return true;
+    }
+
+
+    function isOperational(address addr) public view returns (bool) {
+        return isValidatedAccount(addr) && !isPaused(addr) && !isExpired(addr);
+    }
+
+    function isRegistryOperational(uint RBBId) public view override returns (bool) {
+        address[] memory addresses  = RBBId_addresses[RBBId];
+
+        for (uint i=0; i < addresses.length ; i++) {
+            if ( isOperational( addresses[i] ) && isAdmin(addresses[i]) ) {
+                    return true;
+            }
+        }
+    }
+
+    function getId (address addr) public view override returns (uint) {
+        uint RBBId = getRBBIdRaw(addr);
+        require ( isRegistryOperational( RBBId ) , "A organização não está operacional" );
+        return RBBId;
+    }    
+
+    function isExpired (address addr) internal view returns (bool) {
         return (legalEntitiesInfo[addr].dateTimeExpiration > now);
     }
 
@@ -387,8 +471,10 @@ contract RBBRegistry is IRBBRegistry, Ownable() {
         return legalEntitiesInfo[addr].state == BlockchainAccountState.AVAILABLE;
     }
 
-    function isWaitingValidationAccount(address addr) public view returns (bool) {
-        return legalEntitiesInfo[addr].state == BlockchainAccountState.WAITING_VALIDATION;
+    function isWaitingAccount(address addr) public view returns (bool) {
+        return legalEntitiesInfo[addr].state == BlockchainAccountState.WAITING_VALIDATION
+            || legalEntitiesInfo[addr].state == BlockchainAccountState.WAITING_APPROVAL
+            || legalEntitiesInfo[addr].state == BlockchainAccountState.WAITING_REJECTION ;
     }
 
     function isValidatedAccount(address addr) public view returns (bool) {
@@ -407,39 +493,19 @@ contract RBBRegistry is IRBBRegistry, Ownable() {
         return legalEntitiesInfo[addr].paused;
     }
 
-    function isOperational(address addr) public view returns (bool) {
-        return isValidatedAccount(addr) && !isPaused(addr);
-    }
-
     function isAdmin(address addr) public view returns (bool) { 
         return legalEntitiesInfo[addr].role == BlockchainAccountRole.ADMIN;
-    }
-
-    function isRegistryOperational(uint RBBId) public view override returns (bool) {
-        address[] memory addresses  = RBBId_addresses[RBBId];
-
-        for (uint i=0; i < addresses.length ; i++) {
-            if ( isOperational( addresses[i] ) && isAdmin(addresses[i]) ) {
-                    return true;
-            }
-        }
-    }
-
-    function getId (address addr) public view override returns (uint) {
-        uint RBBId = getRBBIdRaw(addr);
-        require ( isRegistryOperational( RBBId ) , "A organizacao não está operacional" );
-        return RBBId;
     }
 
     function getRBBIdRaw (address addr) public view returns (uint) {
         return legalEntitiesInfo[addr].RBBId;
     }
 
-    function getCNPJ (address addr) public view returns (uint) {
+    function getCNPJ (address addr) public view returns (uint64) {
         return legalEntitiesInfo[addr].CNPJ;
     }    
     
-    function getRegistry (address addr) public view override returns (uint, uint, string memory, uint, uint, bool, uint256) {
+    function getRegistry (address addr) public view override returns (uint, uint64, string memory, uint, uint, bool, uint256) {
         Registry memory reg = legalEntitiesInfo[addr];
         string memory proof = reg.hashProof;
         return (  reg.RBBId,
@@ -464,49 +530,15 @@ contract RBBRegistry is IRBBRegistry, Ownable() {
         return ((int) (legalEntitiesInfo[addr].role));
     }
 
-    function getIdFromCNPJ(uint cnpj) public view override returns (uint) {
+    function getIdFromCNPJ(uint64 cnpj) public view override returns (uint) {
         return CNPJ_RBBId[cnpj];
     }
-
-    /**
-    * The Owner can assign new default expiration time for future registries
-    * @param deltaDateTimeExpirationNew the new default expiration time 
-    */
-    function setDefaultDeltaDateTimeExpiration(uint256 deltaDateTimeExpirationNew) onlyOwner public {
-
-        uint256 defaultDeltaDateTimeExpirationOld = defaultDeltaDateTimeExpiration;
-        defaultDeltaDateTimeExpiration = deltaDateTimeExpirationNew;
-        
-        emit RegistryExpirationChange(   msg.sender, 
-                                         defaultDeltaDateTimeExpirationOld, 
-                                         defaultDeltaDateTimeExpiration );        
-    }
-
-    function calculaProximoRBBID(uint CNPJ) private returns (uint) {
-
-        if ( CNPJ_RBBId[CNPJ] == 0 ) //se nao existir rbbid para este CNPJ
-            CNPJ_RBBId[CNPJ] = ++currentRBBId;
-
-        return CNPJ_RBBId[CNPJ];
-    } 
 
     function getCNPJbyID(uint Id) public view override returns (uint ) {
         address addr =RBBId_addresses[Id][0];    
         return legalEntitiesInfo[addr].CNPJ;
     }
  
-   function isValidHash(string memory str) pure public returns (bool)  {
 
-    bytes memory b = bytes(str);
-    if(b.length != 64) return false;
-
-    for (uint i=0; i<64; i++) {
-        if (b[i] < "0") return false;
-        if (b[i] > "9" && b[i] <"a") return false;
-        if (b[i] > "f") return false;
-    }
-        
-    return true;
- }
 
 }

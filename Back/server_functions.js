@@ -18,10 +18,11 @@ module.exports = {  validateDocumentSignature,
                     montaNomeArquivoComprovanteLiquidacao
                 };
 
-const DIR_CAMINHO_DECLARACAO = config.infra.caminhoArquivos + config.infra.caminhoDeclaracao;
-const DIR_CAMINHO_COMPROVANTE_DOACAO = config.infra.caminhoArquivos + config.infra.caminhoComprovanteDoacao;
+const DIR_CAMINHO_DECLARACAO             = config.infra.caminhoArquivos + config.infra.caminhoDeclaracao;
+const DIR_CAMINHO_COMPROVANTE_DOACAO     = config.infra.caminhoArquivos + config.infra.caminhoComprovanteDoacao;
 const DIR_CAMINHO_COMPROVANTE_LIQUIDACAO = config.infra.caminhoArquivos + config.infra.caminhoComprovanteLiquidacao;
-const CNPJ_EMPRESA_URL =  config.infra.cnpjEmpresaURL;
+const CNPJ_EMPRESA_URL                   =  config.infra.cnpjEmpresaURL;
+const URLVRA                             = config.infra.vraURL;
 
 //Configuracao de acesso ao BD
 let configAcessoBDPJ = config.infra.acesso_BD_PJ;
@@ -201,7 +202,7 @@ function validateDocumentSignature(fileReadStream, cnpjEsperado, mock) {
 }
 
 function processaDeclaracao(declaracaoReadStream, cnpjEsperado) {
-    const URLVRA = "http://web.dsv.bndes.net/vra/rest/validar-assinatura?verificacaoSimplificada=true";
+    //TODO: parametrizar
     const form = new FormData();
     //form.append('my_field', 'my value');
     //form.append('my_buffer', new Buffer(10));
