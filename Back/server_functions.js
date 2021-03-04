@@ -13,6 +13,7 @@ module.exports = {  validateDocumentSignature,
                     buscaDadosCNPJ,
                     buscaTipoArquivo,
                     calculaHash,
+                    processaURLDeclaracao,
                     montaNomeArquivoDeclaracao,
                     montaNomeArquivoComprovanteDoacao,
                     montaNomeArquivoComprovanteLiquidacao
@@ -21,8 +22,9 @@ module.exports = {  validateDocumentSignature,
 const DIR_CAMINHO_DECLARACAO             = config.infra.caminhoArquivos + config.infra.caminhoDeclaracao;
 const DIR_CAMINHO_COMPROVANTE_DOACAO     = config.infra.caminhoArquivos + config.infra.caminhoComprovanteDoacao;
 const DIR_CAMINHO_COMPROVANTE_LIQUIDACAO = config.infra.caminhoArquivos + config.infra.caminhoComprovanteLiquidacao;
-const CNPJ_EMPRESA_URL                   =  config.infra.cnpjEmpresaURL;
+const CNPJ_EMPRESA_URL                   = config.infra.cnpjEmpresaURL;
 const URLVRA                             = config.infra.vraURL;
+const MOCK_VALIDACAO_CERTIFICADO         = config.negocio.mockValidacaoCert;
 
 //Configuracao de acesso ao BD
 let configAcessoBDPJ = config.infra.acesso_BD_PJ;
@@ -183,10 +185,11 @@ async function processaRetornoBuscaDadosCNPJ(cnpj, address, pj, CAMINHO_MODELO_D
     return preencheDeclaracao(cnpj, address, pj, CAMINHO_MODELO_DECLARACAO_CONTA_DIGITAL, mockPJ,res);
 }
 
-function validateDocumentSignature(fileReadStream, cnpjEsperado, mock) {
+async function validateDocumentSignature(fileReadStream, cnpjEsperado) {
     console.log("validateDocumentSignature");
+    console.log("MOCK_VALIDACAO_CERTIFICADO: " + MOCK_VALIDACAO_CERTIFICADO);
 
-    if ( mock ) {
+    if ( MOCK_VALIDACAO_CERTIFICADO == 1 ) {
         /*
         let grauConformidade         = mock_vra.grauConformidade;
         let certificadoVigente       = mock_vra.informacaoAssinaturas[0].estaVigente;
@@ -196,60 +199,63 @@ function validateDocumentSignature(fileReadStream, cnpjEsperado, mock) {
         return 0; 
     } else {
         //fileReadStream = fs.createReadStream('teste.pdf');//cnpjEsperado="31986741000117"
-        return processaDeclaracao(fileReadStream, cnpjEsperado);
+        return await processaDeclaracao(fileReadStream, cnpjEsperado);
     }
     
 }
 
-function processaDeclaracao(declaracaoReadStream, cnpjEsperado) {
-    //TODO: parametrizar
+async function processaDeclaracao(declaracaoReadStream, cnpjEsperado) {
     const form = new FormData();
-    //form.append('my_field', 'my value');
-    //form.append('my_buffer', new Buffer(10));
     form.append('', declaracaoReadStream );
+
+    console.log("URL: " + URLVRA);
+
+    const sendPostRequest = async () => {
+        try {
+            const resposta = await axios.post(URLVRA, form, { headers: form.getHeaders() });
+            console.log("VRA - Analisando resposta...")
+            let grauConformidade    = resposta.data.grauConformidade;
+            let certificadoVigente  = resposta.data.informacaoAssinaturas[0].estaVigente;
+            let informacoesCertificado = resposta.data.informacaoAssinaturas[0].informacoesCertificadoIcpBrasil.informacoesCertificado;
+            let cnpj = informacoesCertificado.cnpj;
+            let cpf  = informacoesCertificado.cpfresponsavel;
+            return await declaracaoEstaValida(grauConformidade, certificadoVigente, cnpj, cnpjEsperado );
+        } catch (err) {
+            console.error("VRA - Não conseguiu processar a resposta");
+            console.error(err);
+            throw -4; //error4
+        }
+    };
     
-    axios.post(URLVRA, form, { headers: form.getHeaders() })
-    .then(function (response) {
-        let grauConformidade    = response.data.grauConformidade;
-        let certificadoVigente  = response.data.informacaoAssinaturas[0].estaVigente;
-        let informacoesCertificado = response.data.informacaoAssinaturas[0].informacoesCertificadoIcpBrasil.informacoesCertificado;
-        let cnpj = informacoesCertificado.cnpj;
-        let cpf  = informacoesCertificado.cpfresponsavel;
+    await sendPostRequest();
 
-        return declaracaoEstaValida(grauConformidade, certificadoVigente, cnpj, cnpjEsperado );
-        
-        // if ( situacaoDeclaracao == 0) {
-        //     console.log("Declaração OK! (" + situacaoDeclaracao + ")");
-        // } else {
-        //     console.log("Declaração com problema! (" + situacaoDeclaracao + ")");
-        // }
-
-        // console.log(grauConformidade);
-        // console.log(certificadoVigente);
-        // console.log(cnpj);
-        // console.log(cpf);
-
-        // console.log(response.status);
-        // console.log(response.statusText);
-        // console.log(response.headers);
-        // console.log(response.config);
-    });
 }
 
-function declaracaoEstaValida(grauConformidade, certificadoVigente, cnpjCertificado, cnpjEsperado ) {
+async function declaracaoEstaValida(grauConformidade, certificadoVigente, cnpjCertificado, cnpjEsperado ) {
+    let excecao = 0;
     if ( grauConformidade != "Alta") {
         console.log("grauConformidade != 'Alta' => grauConformidade = " + grauConformidade);
-        return -1;
+        excecao = -1;
     }
     if ( certificadoVigente == false) {
         console.log("certificadoVigente == false" );
-        return -2;
+        excecao = -2;
     }
     if ( cnpjCertificado != cnpjEsperado ) {
         console.log("cnpjCertificado != cnpjEsperado" + cnpjCertificado + " != " + cnpjEsperado );
-        return -3;
+        excecao = -3;
     }
+
+    if ( MOCK_VALIDACAO_CERTIFICADO == 0 && excecao > 0) {
+        throw excecao;
+    } 
+
     return 0; //OK
+}
+
+async function processaURLDeclaracao(urlDeclaracao, cnpjEsperado) {
+    let fileReadStream = fs.createReadStream(urlDeclaracao);
+    return processaDeclaracao(fileReadStream, cnpjEsperado);
 }
 
 async function buscaTipoArquivo(cnpj, contrato, blockchainAccount, tipo, hashFile) {

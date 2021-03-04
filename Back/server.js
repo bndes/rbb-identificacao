@@ -29,7 +29,6 @@ const CAMINHO_ROTEIRO_ASSINATURA_DIGITAL = config.infra.caminhoRoteiroAssinatura
 const MAX_FILE_SIZE = Number( config.negocio.maxFileSize );
 
 const mockPJ 			= config.negocio.mockPJ;
-const mockValidacaoCert = config.negocio.mockValidacaoCert;
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -161,6 +160,13 @@ app.get('/api/hash/:filename', async function (req, res) {
 	return res.json(hashedResult);
 })
 
+app.get('/api/processaURLDeclaracao/:url/:cnpjEsperado', async function (req, res) {
+	const url 			= req.params.url;		
+	const cnpjEsperado  = req.params.cnpjEsperado;		
+	const resultado 	= await SERVER_FUNCTIONS.processaURLDeclaracao(url, cnpjEsperado);
+	return res.json(resultado);
+})
+
 //recupera constantes front
 app.post('/api/constantesFront', function (req, res) {
 	res.json({ 
@@ -174,7 +180,6 @@ app.post('/api/constantesFront', function (req, res) {
 });
 
 console.log("operationAPIURL=" + config.infra.operationAPIURL);
-console.log("mockValidacaoCert=" + mockValidacaoCert);
 
 app.post('/api/constantesFrontPJ', function (req, res) {
 	console.log("operationAPIURL=" + config.infra.operationAPIURL);
@@ -331,7 +336,7 @@ async function preencheDoc(req, res, next) {
 //upload.single('arquivo')
 app.post('/api/upload', trataUpload);
 
-function trataUpload(req, res, next) {
+async function trataUpload(req, res, next) {
 
 	console.log("trataUpload - uploadMiddleware ")
 	console.log(uploadMiddleware);
@@ -377,9 +382,17 @@ function trataUpload(req, res, next) {
 				// A better way to copy the uploaded file. 
 				const src  = fs.createReadStream(tmp_path);
 				const cnpjEsperado = cnpj;
-				
-				let retornoValidacaoCert = SERVER_FUNCTIONS.validateDocumentSignature(src, cnpjEsperado, mockValidacaoCert);
-				if ( retornoValidacaoCert == 0 ) {
+				console.log("Chamando validação de certificado...")		
+				try {
+					await SERVER_FUNCTIONS.validateDocumentSignature(src, cnpjEsperado);
+				}
+				catch (err) {
+					let msg = " Certificado não está OK!";
+					console.log(msg); 
+					res.json(msg);
+				}
+
+				try {
 					const dest = fs.createWriteStream(target_path);
 					src.pipe(dest);
 					src.on('end', function ()
@@ -391,12 +404,12 @@ function trataUpload(req, res, next) {
 						console.log("Upload ERROR! from "+ tmp_path + ", original name " + req.file.originalname + ", copied to " + target_path); 
 					});	
 					res.json(hashedResult);
-				} else {
-					let msg = " Certificado não está OK! Erro: " + retornoValidacaoCert;
+				}
+				catch (err) {
+					let msg = " Erro ao processar o upload da declaração";
 					console.log(msg); 
 					res.json(msg);
-				}
-
+				}				
 				
 			}
 		}
@@ -486,7 +499,7 @@ async function listenEvent() {
         console.log(dateTimeExpiration);
 
         if ( hashProof == "0" ) {
-            console.log("** ORACLE ** - Conta Regular nao eh validada automaticamente. Ficara aguardando validacao manual.")
+            console.log("** ORACLE ** - Conta Regular nao eh analisada automaticamente. Ficara aguardando validacao manual.")
         } else {
             CNPJ = completarCnpjComZero(CNPJ);
 
