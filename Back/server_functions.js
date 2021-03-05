@@ -196,17 +196,20 @@ async function validateDocumentSignature(fileReadStream, cnpjEsperado) {
     console.log("validateDocumentSignature");
     console.log("MOCK_VALIDACAO_CERTIFICADO: " + MOCK_VALIDACAO_CERTIFICADO);
 
-    if ( MOCK_VALIDACAO_CERTIFICADO == 1 ) {
-        /*
+    if ( MOCK_VALIDACAO_CERTIFICADO == 0 ) {  //crítica desligada
+        return 0; 
+    }
+    if ( MOCK_VALIDACAO_CERTIFICADO == 1 ) { //crítica ligada porém usando arquivo de resposta configurável (mock)
         let grauConformidade         = mock_vra.grauConformidade;
         let certificadoVigente       = mock_vra.informacaoAssinaturas[0].estaVigente;
         let cnpjCertificado          = mock_vra.informacaoAssinaturas[0].informacoesCertificadoIcpBrasil.informacoesCertificado.cnpj;
-        return declaracaoEstaValida(grauConformidade, certificadoVigente, cnpjCertificado, cnpjEsperado );
-        */
-        return 0; 
-    } else {
-        //fileReadStream = fs.createReadStream('teste.pdf');//cnpjEsperado="31986741000117"
+        return declaracaoEstaValida(grauConformidade, certificadoVigente, cnpjCertificado, cnpjEsperado ); 
+    }   
+    if ( MOCK_VALIDACAO_CERTIFICADO == 2 || MOCK_VALIDACAO_CERTIFICADO == 3 ) {
         return await processaDeclaracao(fileReadStream, cnpjEsperado);
+    }
+    else {
+        return 0 ; //crítica desligada por default
     }
     
 }
@@ -253,11 +256,24 @@ async function declaracaoEstaValida(grauConformidade, certificadoVigente, cnpjCe
         excecao = -3;
     }
 
-    if ( MOCK_VALIDACAO_CERTIFICADO == 0 && excecao > 0) {
-        throw excecao;
+    //crítica ligada mas não impede o upload da declaração (passa a funcionar como warning)
+    if ( MOCK_VALIDACAO_CERTIFICADO == 2 ) {
+        return 0; 
+    }
+    
+    //crítica ligada e impede o upload da declaração caso haja excecao (configuração desejável para PRODUÇÃO)
+    if ( MOCK_VALIDACAO_CERTIFICADO == 3 ) {
+        if ( excecao > 0  )
+            throw excecao;
+        else
+            return 0;
     } 
+    
+}
 
-    return 0; //OK
+async function processaURLDeclaracao(urlDeclaracao, cnpjEsperado) {
+    let fileReadStream = fs.createReadStream(urlDeclaracao);
+    return processaDeclaracao(fileReadStream, cnpjEsperado);
 }
 
 async function processaURLDeclaracao(urlDeclaracao, cnpjEsperado) {
@@ -325,6 +341,6 @@ async function calculaHash(filename) {
 
 function signDocument() {
     //TODO: verify whether this functionality is available through a REST API
-    //https://gitlab.bndes.net/sist-smd/smd_spa/blob/develop/smd-back/src/main/java/br/gov/bndes/smd/feature/tramite/laudopericial/LaudoPericialServico.java 
-    //  private File assinarDocumentoFinal(DocumentoTramite documentoTramite, long paginaInclusaoAssinaturaVisual, File arquivo, boolean apagarArquivoOrigem)10:39:17
+    //https://gitlab.bndes.net/sist-smd/smd_spa/blob/develop/smd-back/src/main/java/br/gov/bndes/smd/feature/tramite/laudopericial/LaudoPericialServico.java 
+    //  private File assinarDocumentoFinal(DocumentoTramite documentoTramite, long paginaInclusaoAssinaturaVisual, File arquivo, boolean apagarArquivoOrigem)10:39:17
 }
