@@ -204,10 +204,12 @@ async function validateDocumentSignature(fileReadStream, cnpjEsperado) {
         let certificadoVigente       = mock_vra.informacaoAssinaturas[0].estaVigente;
         let cnpjCertificado          = mock_vra.informacaoAssinaturas[0].informacoesCertificadoIcpBrasil.informacoesCertificado.cnpj;
         return declaracaoEstaValida(grauConformidade, certificadoVigente, cnpjCertificado, cnpjEsperado ); 
-    }
-    
+    }   
     if ( MOCK_VALIDACAO_CERTIFICADO == 2 || MOCK_VALIDACAO_CERTIFICADO == 3 ) {
         return await processaDeclaracao(fileReadStream, cnpjEsperado);
+    }
+    else {
+        return 0; //crítica desligada por default
     }
     
 }
