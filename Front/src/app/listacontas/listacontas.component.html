@@ -68,7 +68,7 @@
         <ng-container matColumnDef="status">
           <th mat-header-cell *matHeaderCellDef mat-sort-header> Situação </th>
           <td style="text-align: center; font-weight: 550; font-size: 16px; " mat-cell *matCellDef="let row"> 
-            <a href="http://web.bndes.net/vra/#/validador" target="_blank">{{row.status}} <span *ngIf='row.pausada'>e Pausada</span></a>
+            {{row.status}} <span *ngIf='row.pausada'>e Pausada</span>
           </td>
         </ng-container>
 

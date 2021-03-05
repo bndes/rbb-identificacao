@@ -198,7 +198,8 @@ contract RBBRegistry is IRBBRegistry, Ownable() {
 
         require ( isAdmin(responsible), "O responsável pela validação deve ter o papel ADMIN" );
 
-        require( isWaitingAccount(userAddr), "A conta a validar precisa estar em estado Aguardando");
+        require( legalEntitiesInfo[userAddr].state == BlockchainAccountState.WAITING_VALIDATION, 
+                "A conta precisa estar em estado Aguardando Validação");
 
         require (!isPaused(userAddr), "A conta não pode ser validada porque está pausada"); 
 

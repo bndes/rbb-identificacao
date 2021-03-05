@@ -35,18 +35,18 @@ async function preencheDeclaracao(cnpj, address, pj, modelo, mockPJ,res) {
     const arquivoModelo = require ( config.infra.modeloDeclaracao ); 
 
     var stringified = JSON.stringify(arquivoModelo);
-    stringified = stringified.replace('##CNPJ##', cnpj );
-    stringified = stringified.replace('##ADDRESS##', address );
-    stringified = stringified.replace('##RAZAOSOCIAL##', pj.dadosCadastrais.razaoSocial );
-    stringified = stringified.replace('##LOGRADOURO##', pj.dadosCadastrais.logradouro );
-    stringified = stringified.replace('##NUMERO##', pj.dadosCadastrais.numero );
-    stringified = stringified.replace('##BAIRRO##', pj.dadosCadastrais.bairro );
-    stringified = stringified.replace('##MUNICIPIO##', pj.dadosCadastrais.municipio );
-    stringified = stringified.replace('##UF##', pj.dadosCadastrais.uf );
+    stringified = stringified.replace('##CNPJ##', preencheLacuna(cnpj,14) );
+    stringified = stringified.replace('##ADDRESS##', preencheLacuna(address,42) );
+    stringified = stringified.replace('##RAZAOSOCIAL##', preencheLacuna(pj.dadosCadastrais.razaoSocial,50) );
+    stringified = stringified.replace('##LOGRADOURO##', preencheLacuna(pj.dadosCadastrais.logradouro,30) );
+    stringified = stringified.replace('##NUMERO##', preencheLacuna(pj.dadosCadastrais.numero ,15) );
+    stringified = stringified.replace('##BAIRRO##', preencheLacuna(pj.dadosCadastrais.bairro ,20) );
+    stringified = stringified.replace('##MUNICIPIO##', preencheLacuna(pj.dadosCadastrais.municipio ,10) );
+    stringified = stringified.replace('##UF##', preencheLacuna(pj.dadosCadastrais.uf ,2) );
     stringified = stringified.replace('##PAIS##', "BRASIL" );
-    stringified = stringified.replace('##CNPJ##', cnpj );
-    stringified = stringified.replace('##ADDRESS##', address );
-    stringified = stringified.replace('##RAZAOSOCIAL##', pj.dadosCadastrais.razaoSocial );
+    stringified = stringified.replace('##CNPJ##', preencheLacuna(cnpj ,14) );
+    stringified = stringified.replace('##ADDRESS##', preencheLacuna(address ,42) );
+    stringified = stringified.replace('##RAZAOSOCIAL##', preencheLacuna(pj.dadosCadastrais.razaoSocial ,50) );
     
     console.log(pj)    
 
@@ -55,6 +55,13 @@ async function preencheDeclaracao(cnpj, address, pj, modelo, mockPJ,res) {
     fs.writeFileSync(caminho, stringified);
 
     res.download(caminho);
+}
+
+function preencheLacuna(campo, tamanho) {
+    if ( campo != undefined && campo.length > 1 )
+        return campo;
+    else 
+        return "".padEnd(tamanho,"_");
 }
 
 async function buscaDadosCNPJ (cnpj, address, CAMINHO_MODELO_DECLARACAO_CONTA_DIGITAL, mockPJ, res) {
