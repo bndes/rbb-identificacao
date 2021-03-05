@@ -92,7 +92,7 @@
       "inputs": [
         {
           "internalType": "uint256",
-          "name": "Id",
+          "name": "id",
           "type": "uint256"
         }
       ],
@@ -127,13 +127,13 @@
       "type": "function"
     }
   ],
-  "metadata": "{\"compiler\":{\"version\":\"0.6.12+commit.27d51765\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"Id\",\"type\":\"uint256\"}],\"name\":\"getCNPJbyID\",\"outputs\":[{\"internalType\":\"uint64\",\"name\":\"\",\"type\":\"uint64\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"addr\",\"type\":\"address\"}],\"name\":\"getId\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint64\",\"name\":\"cnpj\",\"type\":\"uint64\"}],\"name\":\"getIdFromCNPJ\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"addr\",\"type\":\"address\"}],\"name\":\"getRegistry\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"},{\"internalType\":\"uint64\",\"name\":\"\",\"type\":\"uint64\"},{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"},{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"},{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"RBBId\",\"type\":\"uint256\"}],\"name\":\"isRegistryOperational\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"/Users/suzana.moreno/workspace/rbb-identificacao/Back-Blockchain/contracts/IRBBRegistry.sol\":\"IRBBRegistry\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"/Users/suzana.moreno/workspace/rbb-identificacao/Back-Blockchain/contracts/IRBBRegistry.sol\":{\"keccak256\":\"0xe8c6a732f17c0e902e14bf84e3af8f3e181659665202279b43d049b33595ba6c\",\"urls\":[\"bzz-raw://74243c706902a9dc226c3f21ba25ebe979cef2e64d72331fe9729943f409c12d\",\"dweb:/ipfs/QmWqUedppAMQmy1bpEVCbrwtueL61T14nPAJjK5FXuLv1y\"]}},\"version\":1}",
+  "metadata": "{\"compiler\":{\"version\":\"0.6.12+commit.27d51765\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\"}],\"name\":\"getCNPJbyID\",\"outputs\":[{\"internalType\":\"uint64\",\"name\":\"\",\"type\":\"uint64\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"addr\",\"type\":\"address\"}],\"name\":\"getId\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint64\",\"name\":\"cnpj\",\"type\":\"uint64\"}],\"name\":\"getIdFromCNPJ\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"addr\",\"type\":\"address\"}],\"name\":\"getRegistry\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"},{\"internalType\":\"uint64\",\"name\":\"\",\"type\":\"uint64\"},{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"},{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"},{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"RBBId\",\"type\":\"uint256\"}],\"name\":\"isRegistryOperational\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"/Users/suzana.moreno/workspace/rbb-identificacao/Back-Blockchain/contracts/IRBBRegistry.sol\":\"IRBBRegistry\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"/Users/suzana.moreno/workspace/rbb-identificacao/Back-Blockchain/contracts/IRBBRegistry.sol\":{\"keccak256\":\"0x2e382fa9c6e3e5f30950d8afc7a9c236e1dc3cd312ab080cf76a7dcca19fd21b\",\"urls\":[\"bzz-raw://f930324294b4dd9c5c1debff429ab0fc57b87190535c339f861460123c76e4bf\",\"dweb:/ipfs/QmeoAzEz1P6GgehMDS84Pem9YmLRhVoQQAA3YtXTv5Xd9F\"]}},\"version\":1}",
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "immutableReferences": {},
   "sourceMap": "",
   "deployedSourceMap": "",
-  "source": "pragma solidity ^0.6.0;\n\ninterface IRBBRegistry {\n\n    //Verifica se estah operacional antes de retornar\n    function getId (address addr) external view returns (uint);\n\n    //retorna toda estrutura. Não verifica se estah operacional\n    function getRegistry (address addr) external view  returns (uint, uint64, string memory, uint, uint, bool, uint256); \n\n    //Não verifica se estah operacional antes de retornar\n    function getIdFromCNPJ(uint64 cnpj) external view  returns (uint); \n  \n    //Não verifica se estah operacional antes de retornar\n    function getCNPJbyID(uint Id) external view  returns (uint64);\n\n    function isRegistryOperational(uint RBBId) external view  returns (bool); \n\n\n}",
+  "source": "pragma solidity ^0.6.0;\n\ninterface IRBBRegistry {\n\n    //Verifica se estah operacional antes de retornar\n    function getId (address addr) external view returns (uint);\n\n    //retorna toda estrutura. Não verifica se estah operacional\n    function getRegistry (address addr) external view  returns (uint, uint64, string memory, uint, uint, bool, uint256); \n\n    //Não verifica se estah operacional antes de retornar\n    function getIdFromCNPJ(uint64 cnpj) external view  returns (uint); \n  \n    //Não verifica se estah operacional antes de retornar\n    function getCNPJbyID(uint id) external view  returns (uint64);\n\n    function isRegistryOperational(uint RBBId) external view  returns (bool); \n\n\n}",
   "sourcePath": "/Users/suzana.moreno/workspace/rbb-identificacao/Back-Blockchain/contracts/IRBBRegistry.sol",
   "ast": {
     "absolutePath": "/Users/suzana.moreno/workspace/rbb-identificacao/Back-Blockchain/contracts/IRBBRegistry.sol",
@@ -621,7 +621,7 @@
                   "constant": false,
                   "id": 36,
                   "mutability": "mutable",
-                  "name": "Id",
+                  "name": "id",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
                   "scope": 41,
@@ -1269,7 +1269,7 @@
                   "constant": false,
                   "id": 36,
                   "mutability": "mutable",
-                  "name": "Id",
+                  "name": "id",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
                   "scope": 41,
@@ -1437,7 +1437,7 @@
   },
   "networks": {},
   "schemaVersion": "3.2.5",
-  "updatedAt": "2021-03-04T16:18:49.512Z",
+  "updatedAt": "2021-03-05T17:18:29.480Z",
   "devdoc": {
     "kind": "dev",
     "methods": {},

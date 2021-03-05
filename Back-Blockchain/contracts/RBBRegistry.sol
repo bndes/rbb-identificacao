@@ -16,6 +16,7 @@ contract RBBRegistry is IRBBRegistry, Ownable() {
     BlockchainAccountRole blockchainRole;  /* Variable not used, only defined to create the enum type. */
 
     //Ativação/inativação de Registries no processo usual (pode ser via um processo automatizado) 
+    address public responsibleForRegistryPreValidation;
     address public responsibleForRegistryValidation;
 
     //Inativação e pause/unpause decorrente de eventos não previstos (por exemplo, um comportamento inadequado de um Registry) 
@@ -67,6 +68,7 @@ contract RBBRegistry is IRBBRegistry, Ownable() {
 
     event RegistryExpirationChange  (address addr, uint256 dateTimeExpirationBefore, uint256 dateTimeExpirationNew);
 
+    event RoleDefinitionRegistryPreValidation(address rs);
     event RoleDefinitionRegistryValidation(address rs);
     event RoleDefinitionActingAfterMonitoring(address rs);
 
@@ -76,6 +78,10 @@ contract RBBRegistry is IRBBRegistry, Ownable() {
         responsibleForActingAfterMonitoring = msg.sender;         
     }
 
+    function setResponsibleForRegistryPreValidation(address rs) onlyOwner public {
+        responsibleForRegistryPreValidation = rs;
+        emit RoleDefinitionRegistryPreValidation(rs);
+    }    
     function setResponsibleForRegistryValidation(address rs) onlyOwner public {
         responsibleForRegistryValidation = rs;
         emit RoleDefinitionRegistryValidation(rs);
@@ -84,6 +90,11 @@ contract RBBRegistry is IRBBRegistry, Ownable() {
         responsibleForActingAfterMonitoring = rs;
         emit RoleDefinitionActingAfterMonitoring(rs);
     }  
+    
+    modifier onlyByResponsibleForRegistryPreValidation() { 
+        require( responsibleForRegistryPreValidation==msg.sender , "A ação só pode ser executada pela conta responsável pela pré-validação" );
+        _;
+    }
 
     modifier onlyByResponsibleForRegistryValidation() { 
         require( responsibleForRegistryValidation==msg.sender , "A ação só pode ser executada pela conta responsável pela validação" );
@@ -147,7 +158,7 @@ contract RBBRegistry is IRBBRegistry, Ownable() {
     * Validates the initial registry of others LegalEntities
     * @param userAddr Ethereum address that needs to be validated
     */
-    function preValidateRegistry(address userAddr, bool approval) public onlyByResponsibleForRegistryValidation {
+    function preValidateRegistry(address userAddr, bool approval) public onlyByResponsibleForRegistryPreValidation {
 
         address responsible = msg.sender;
         
@@ -155,6 +166,10 @@ contract RBBRegistry is IRBBRegistry, Ownable() {
                 "A conta precisa estar em estado Aguardando Validação");
 
         require ( isAdmin(userAddr), "A conta a validar deve ter o papel de ADMIN" );
+
+        require (!isPaused(userAddr), "A conta não pode ser validada porque está pausada"); 
+
+        require (!isExpired(userAddr), "A conta não pode ser validada porque está expirada");
 
         if ( approval ) {
             legalEntitiesInfo[userAddr].state = BlockchainAccountState.WAITING_APPROVAL;
@@ -232,7 +247,7 @@ contract RBBRegistry is IRBBRegistry, Ownable() {
     * Pause an account     
     * @param addr Ethereum address that needs to be paused
     */
-    function pauseAddress(address addr) public onlyIfSenderIsOk {
+    function pauseAddressSameOrg(address addr) public onlyIfSenderIsOk {
 
         address responsible = msg.sender;
 
@@ -266,7 +281,7 @@ contract RBBRegistry is IRBBRegistry, Ownable() {
     }
 
 
-    function pauseLegalEntity(uint RBBId) public onlyIfSenderIsOk {
+    function pauseLegalEntitySameOrg(uint RBBId) public onlyIfSenderIsOk {
 
         address responsible = msg.sender;
         address[] memory addresses  = RBBId_addresses[RBBId];
@@ -302,7 +317,7 @@ contract RBBRegistry is IRBBRegistry, Ownable() {
     * Unpause an account     
     * @param addr Ethereum address that needs to be validated
     */
-    function unpauseAddress(address addr) public onlyIfSenderIsOk {
+    function unpauseAddressSameOrg(address addr) public onlyIfSenderIsOk {
 
         address responsible = msg.sender;
 
@@ -344,11 +359,11 @@ contract RBBRegistry is IRBBRegistry, Ownable() {
 
         address responsible = msg.sender;
 
-        require( isAdmin(responsible), "Apenas conta ADMIN pode invalidar contas. ");
-
         require( !isInvalidated(addr), "A conta foi invalidada previamente." );
 
         require( isTheSameID(responsible, addr) , "Apenas contas da mesma organizacao podem ser invalidadas. ");
+
+        require ((addr==responsible || isAdmin(responsible)), "Não pode invalidar conta de outro ADMIN");
 
         invalidateRegistryInternal(addr, 1);
 
@@ -534,7 +549,7 @@ contract RBBRegistry is IRBBRegistry, Ownable() {
         return CNPJ_RBBId[cnpj];
     }
 
-    function getCNPJbyID(uint Id) public view override returns (uint ) {
+    function getCNPJbyID(uint Id) public view override returns (uint64 ) {
         address addr =RBBId_addresses[Id][0];    
         return legalEntitiesInfo[addr].CNPJ;
     }

@@ -12,7 +12,7 @@ interface IRBBRegistry {
     function getIdFromCNPJ(uint64 cnpj) external view  returns (uint); 
   
     //Não verifica se estah operacional antes de retornar
-    function getCNPJbyID(uint Id) external view  returns (uint64);
+    function getCNPJbyID(uint id) external view  returns (uint64);
 
     function isRegistryOperational(uint RBBId) external view  returns (bool); 
 
