@@ -209,7 +209,7 @@ async function validateDocumentSignature(fileReadStream, cnpjEsperado) {
         return await processaDeclaracao(fileReadStream, cnpjEsperado);
     }
     else {
-        return 0; //crítica desligada por default
+        return 0 ; //crítica desligada por default
     }
     
 }
