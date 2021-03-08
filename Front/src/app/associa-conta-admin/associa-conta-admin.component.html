@@ -47,7 +47,7 @@
                         <label>5. Clique no botão abaixo para <b>fazer upload do PDF</b> da Declaração assinado digitalmente. </label>
                         <br>
                     <div class="br-upload" style="margin-bottom: 10px !important;margin-top: 30px; margin-right: 1000px;" >
-                        <button id="btArquivo"  (click)="fileInput.click()" class=" br-button upload-button"><i class="fas fa-upload"></i>Upload</button>
+                        <button id="btArquivo"  (click)="hashdeclaracao='';fileInput.click()" class=" br-button upload-button"><i class="fas fa-upload"></i>Upload</button>
 
                         <input type="file" id="arquivo"  accept=".pdf" #fileInput ng2FileSelect [uploader]="this.fileHandleService.uploader" (change)="this.fileHandleService.chamaUpload()"/>
 
@@ -65,7 +65,7 @@
                     </div>
                 </div>    -->
               <div style="height: 100px;" class="footer">
-                <button class="br-button primary" type="button" (click)="associarContaCliente()" *ngIf='cliente.dadosCadastrais'>Associar
+                <button class="br-button primary" type="button" (click)="associarContaCliente()" *ngIf='cliente.dadosCadastrais && hashdeclaracao!=undefined && hashdeclaracao!="" && !hashdeclaracao.includes("ERRO")'>Associar
                 </button>
             </div>
                 </div>

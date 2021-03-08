@@ -382,35 +382,31 @@ async function trataUpload(req, res, next) {
 				// A better way to copy the uploaded file. 
 				const src  = fs.createReadStream(tmp_path);
 				const cnpjEsperado = cnpj;
-				console.log("Chamando validação de certificado...")		
-				try {
-					await SERVER_FUNCTIONS.validateDocumentSignature(src, cnpjEsperado);
-				}
-				catch (err) {
-					let msg = " Certificado não está OK!";
-					console.log(msg); 
-					res.json(msg);
-				}
-
-				try {
-					const dest = fs.createWriteStream(target_path);
-					src.pipe(dest);
-					src.on('end', function ()
-					{
-						console.log("Upload Completed from "+ tmp_path + ", original name " + req.file.originalname + ", copied to " + target_path); 
-					});
-					src.on('error', function (err)
-					{
-						console.log("Upload ERROR! from "+ tmp_path + ", original name " + req.file.originalname + ", copied to " + target_path); 
-					});	
-					res.json(hashedResult);
-				}
-				catch (err) {
-					let msg = " Erro ao processar o upload da declaração";
-					console.log(msg); 
-					res.json(msg);
-				}				
 				
+				try {
+					let retornoValidacaoCert = await SERVER_FUNCTIONS.validateDocumentSignature(src, cnpjEsperado, mockValidacaoCert);
+					if ( retornoValidacaoCert == 0 ) {
+						const dest = fs.createWriteStream(target_path);
+						src.pipe(dest);
+						src.on('end', function ()
+						{
+							console.log("Upload Completed from "+ tmp_path + ", original name " + req.file.originalname + ", copied to " + target_path); 
+						});
+						src.on('error', function (err)
+						{
+							console.log("Upload ERROR! from "+ tmp_path + ", original name " + req.file.originalname + ", copied to " + target_path); 
+						});	
+						res.json(hashedResult);
+					} else {
+						let msg = " ERRO: " + retornoValidacaoCert;
+						console.log(msg); 
+						res.json(msg);
+					}
+				} catch (err) {
+					let msg = " ERRO: Certificado não está no formato adequado. ";
+					console.log(msg); 
+					res.json(msg);
+				}
 			}
 		}
 	);

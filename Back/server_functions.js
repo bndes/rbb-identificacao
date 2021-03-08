@@ -206,7 +206,9 @@ async function validateDocumentSignature(fileReadStream, cnpjEsperado) {
         return declaracaoEstaValida(grauConformidade, certificadoVigente, cnpjCertificado, cnpjEsperado ); 
     }   
     if ( MOCK_VALIDACAO_CERTIFICADO == 2 || MOCK_VALIDACAO_CERTIFICADO == 3 ) {
-        return await processaDeclaracao(fileReadStream, cnpjEsperado);
+        let retorno = await processaDeclaracao(fileReadStream, cnpjEsperado);
+        console.log("processaDeclaracao::retorno = " + retorno);
+        return retorno;
     }
     else {
         return 0 ; //crítica desligada por default
@@ -220,54 +222,54 @@ async function processaDeclaracao(declaracaoReadStream, cnpjEsperado) {
 
     console.log("URL: " + URLVRA);
 
-    const sendPostRequest = async () => {
-        try {
-            const resposta = await axios.post(URLVRA, form, { headers: form.getHeaders() });
-            console.log("VRA - Analisando resposta...")
-            let grauConformidade    = resposta.data.grauConformidade;
-            let certificadoVigente  = resposta.data.informacaoAssinaturas[0].estaVigente;
-            let informacoesCertificado = resposta.data.informacaoAssinaturas[0].informacoesCertificadoIcpBrasil.informacoesCertificado;
-            let cnpj = informacoesCertificado.cnpj;
-            let cpf  = informacoesCertificado.cpfresponsavel;
-            return await declaracaoEstaValida(grauConformidade, certificadoVigente, cnpj, cnpjEsperado );
-        } catch (err) {
-            console.error("VRA - Não conseguiu processar a resposta");
-            console.error(err);
-            throw -4; //error4
-        }
-    };
-    
-    await sendPostRequest();
+    try {
+        const resposta = await axios.post(URLVRA, form, { headers: form.getHeaders() });
+        console.log("VRA - Analisando resposta...")
+        let grauConformidade    = resposta.data.grauConformidade;
+        let certificadoVigente  = resposta.data.informacaoAssinaturas[0].estaVigente;
+        let informacoesCertificado = resposta.data.informacaoAssinaturas[0].informacoesCertificadoIcpBrasil.informacoesCertificado;
+        let cnpj = informacoesCertificado.cnpj;
+        let cpf  = informacoesCertificado.cpfresponsavel;
+        return await declaracaoEstaValida(grauConformidade, certificadoVigente, cnpj, cnpjEsperado );
+    } catch (err) {
+        console.info("VRA - Não conseguiu processar a resposta");
+        console.info(err);
+        if ( MOCK_VALIDACAO_CERTIFICADO == 2 ) {
+            console.info("crítica ligada mas não impede o upload da declaração (warning)");
+            return 0; 
+        } 
+        else {
+            console.info("impede o upload de declaracao invalida");
+            throw err; 
+        }                
+    }
 
 }
 
 async function declaracaoEstaValida(grauConformidade, certificadoVigente, cnpjCertificado, cnpjEsperado ) {
-    let excecao = 0;
+    let retorno = 0;
     if ( grauConformidade != "Alta") {
         console.log("grauConformidade != 'Alta' => grauConformidade = " + grauConformidade);
-        excecao = -1;
+        retorno = "Grau de conformidade inadequado";
     }
     if ( certificadoVigente == false) {
         console.log("certificadoVigente == false" );
-        excecao = -2;
+        retorno = "Certificado não está vigente";
     }
     if ( cnpjCertificado != cnpjEsperado ) {
         console.log("cnpjCertificado != cnpjEsperado" + cnpjCertificado + " != " + cnpjEsperado );
-        excecao = -3;
+        retorno = "CNPJ do certificado diferente do informado";
     }
 
-    //crítica ligada mas não impede o upload da declaração (passa a funcionar como warning)
+    if ( MOCK_VALIDACAO_CERTIFICADO == 3 ) {
+        console.info("crítica ligada e impede o upload da declaração caso haja problema (configuração desejável para PRODUÇÃO)");
+        return retorno;
+    } 
+
     if ( MOCK_VALIDACAO_CERTIFICADO == 2 ) {
+        console.info("crítica ligada mas não impede o upload da declaração (warning)");
         return 0; 
     }
-    
-    //crítica ligada e impede o upload da declaração caso haja excecao (configuração desejável para PRODUÇÃO)
-    if ( MOCK_VALIDACAO_CERTIFICADO == 3 ) {
-        if ( excecao > 0  )
-            throw excecao;
-        else
-            return 0;
-    } 
     
 }
 
