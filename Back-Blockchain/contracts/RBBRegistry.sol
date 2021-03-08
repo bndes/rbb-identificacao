@@ -113,7 +113,11 @@ contract RBBRegistry is IRBBRegistry, Ownable() {
         require( isValidatedAccount(msg.sender), "Apenas contas validadas podem executar esta operação" );
         _;
     }
-
+    
+    function registryLegalEntityForRegularAccounts(uint64 CNPJ_RBBId) public {
+        registryLegalEntity(CNPJ_RBBId, "0");
+    }
+    
    /**
     * Self Registering
     * Link blockchain address with CNPJ
@@ -125,7 +129,6 @@ contract RBBRegistry is IRBBRegistry, Ownable() {
         
         address addr = msg.sender;
 
-        require (isValidHash(proofHash), "O hash da declaração é inválido");
         require (isAvailableAccount(addr), "Endereço não pode ter sido cadastrado anteriormente");
 
         uint256 dateTimeExpiration = now + defaultDeltaDateTimeExpiration;
@@ -141,6 +144,9 @@ contract RBBRegistry is IRBBRegistry, Ownable() {
                                                 false,
                                                 dateTimeExpiration );
         } else {
+    
+            require (isValidHash(proofHash), "O hash da declaração é inválido");
+
             legalEntitiesInfo[addr] = Registry( RBBId,
                                                 CNPJ, 
                                                 proofHash, 
