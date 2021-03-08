@@ -109,7 +109,7 @@ contract RBBRegistry is IRBBRegistry, Ownable() {
 
     modifier onlyIfSenderIsOk() { 
         require( ! isPaused(msg.sender), "Apenas contas não pausadas podem executar esta operação" );
-        require( isExpired(msg.sender), "Apenas contas com declarações cujos certificados ainda são válidos podem executar esta operação" );
+        require( ! isExpired(msg.sender), "Apenas contas com declarações cujos certificados ainda são válidos podem executar esta operação" );
         require( isValidatedAccount(msg.sender), "Apenas contas validadas podem executar esta operação" );
         _;
     }
