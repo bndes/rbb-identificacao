@@ -74,6 +74,7 @@ contract RBBRegistry is IRBBRegistry, Ownable() {
 
 
     constructor () public {                
+        responsibleForRegistryPreValidation = msg.sender;
         responsibleForRegistryValidation = msg.sender;
         responsibleForActingAfterMonitoring = msg.sender;         
     }
@@ -475,8 +476,8 @@ contract RBBRegistry is IRBBRegistry, Ownable() {
         return RBBId;
     }    
 
-    function isExpired (address addr) internal view returns (bool) {
-        return (legalEntitiesInfo[addr].dateTimeExpiration > now);
+    function isExpired (address addr) public view returns (bool) {
+        return (legalEntitiesInfo[addr].dateTimeExpiration < now);
     }
 
     function isOwner(address addr) public view returns (bool) {
