@@ -107,7 +107,7 @@ contract RBBRegistry_v2 is IRBBRegistry_v2, Ownable() {
         _;
     }
 
-    modifier onlyIfSenderIsOk() { 
+    modifier onlyIfSenderIsOperational() { 
         require( ! isPaused(msg.sender), "Apenas contas não pausadas podem executar esta operação" );
         require( ! isExpired(msg.sender), "Apenas contas com declarações cujos certificados ainda são válidos podem executar esta operação" );
         require( isValidatedAccount(msg.sender), "Apenas contas validadas podem executar esta operação" );
@@ -199,7 +199,7 @@ contract RBBRegistry_v2 is IRBBRegistry_v2, Ownable() {
     * Validates the initial registry of your own LegalEntity
     * @param userAddr Ethereum address that needs to be validated
     */
-    function validateRegistrySameOrg(address userAddr) public onlyIfSenderIsOk {
+    function validateRegistrySameOrg(address userAddr) public onlyIfSenderIsOperational {
 
         address responsible = msg.sender;
 
@@ -255,7 +255,7 @@ contract RBBRegistry_v2 is IRBBRegistry_v2, Ownable() {
     * Pause an account     
     * @param addr Ethereum address that needs to be paused
     */
-    function pauseAddressSameOrg(address addr) public onlyIfSenderIsOk {
+    function pauseAddressSameOrg(address addr) public onlyIfSenderIsOperational {
 
         address responsible = msg.sender;
 
@@ -263,7 +263,7 @@ contract RBBRegistry_v2 is IRBBRegistry_v2, Ownable() {
         require (!isPaused(addr), "Conta já está pausada");
         require( isTheSameID(responsible, addr), "Somente conta de mesma organização pode executar esta ação" );
 
-        require ((addr==responsible || isAdmin(addr)), "Não pode pausar conta de outro ADMIN");
+        require ((addr==responsible || !isAdmin(addr)), "Não pode pausar conta de outro ADMIN");
 
         pauseAddressInternal (addr, 1);
 
@@ -289,7 +289,7 @@ contract RBBRegistry_v2 is IRBBRegistry_v2, Ownable() {
     }
 
 
-    function pauseLegalEntitySameOrg() public onlyIfSenderIsOk {
+    function pauseLegalEntitySameOrg() public onlyIfSenderIsOperational {
 
         address responsible = msg.sender;
         uint rbbId = getIdRaw(responsible);
@@ -324,7 +324,7 @@ contract RBBRegistry_v2 is IRBBRegistry_v2, Ownable() {
     * Unpause an account     
     * @param addr Ethereum address that needs to be validated
     */
-    function unpauseAddressSameOrg(address addr) public onlyIfSenderIsOk {
+    function unpauseAddressSameOrg(address addr) public onlyIfSenderIsOperational {
 
         address responsible = msg.sender;
 
@@ -370,7 +370,7 @@ contract RBBRegistry_v2 is IRBBRegistry_v2, Ownable() {
     * Invalidates the initial registry of a legal entity or the change of its registry
     * @param addr Ethereum address that needs to be invalidated
     */
-    function invalidateAddressSameOrg(address addr) public onlyIfSenderIsOk {
+    function invalidateAddressSameOrg(address addr) public onlyIfSenderIsOperational {
 
         address responsible = msg.sender;
 
@@ -378,7 +378,7 @@ contract RBBRegistry_v2 is IRBBRegistry_v2, Ownable() {
 
         require( isTheSameID(responsible, addr) , "Apenas contas da mesma organizacao podem ser invalidadas. ");
 
-        require ((addr==responsible || isAdmin(addr)), "Não pode invalidar conta de outro ADMIN");
+        require ((addr==responsible || !isAdmin(addr)), "Não pode invalidar conta de outro ADMIN");
 
         invalidateAddressInternal(addr, 2);
 
@@ -388,7 +388,7 @@ contract RBBRegistry_v2 is IRBBRegistry_v2, Ownable() {
 
         require(isWaitingAccount(addr), "A conta precisa estar no estado Aguardando Validação");
 
-        require( isAdmin(addr), "Só é possível invalidar conta de ADMIN");
+        require( isAdmin(addr), "Só é possível invalidar conta de ADMIN no processo de validação");
 
         invalidateAddressInternal(addr, 3);
 
