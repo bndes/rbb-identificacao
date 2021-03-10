@@ -328,7 +328,7 @@ contract RBBRegistry_v2 is IRBBRegistry_v2, Ownable() {
 
         address responsible = msg.sender;
 
-        require( isAdmin(addr), "Somente uma conta ADMIN pode executar esta ação" );
+        require( isAdmin(responsible), "Somente uma conta ADMIN pode executar esta ação" );
 
         require ( responsible != addr , "Uma pessoa não é capaz de retirar o pause de sua própria conta");
         require( isTheSameID(responsible, addr), 
