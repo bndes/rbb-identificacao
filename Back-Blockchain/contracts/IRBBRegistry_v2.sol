@@ -1,6 +1,6 @@
 pragma solidity ^0.6.0;
 
-interface IRBBRegistry {
+interface IRBBRegistry_v2 {
 
     //Verifica se estah operacional antes de retornar
     function getId (address addr) external view returns (uint);

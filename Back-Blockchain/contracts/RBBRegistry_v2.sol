@@ -3,7 +3,7 @@ pragma solidity ^0.6.0;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./IRBBRegistry_v2.sol";
 
-contract RBBRegistry is IRBBRegistry, Ownable() {
+contract RBBRegistry_v2 is IRBBRegistry_v2, Ownable() {
 
     enum BlockchainAccountState {AVAILABLE,WAITING_VALIDATION,WAITING_APPROVAL,WAITING_REJECTION,VALIDATED,INVALIDATED}
     BlockchainAccountState blockchainState; /* Variable not used, only defined to create the enum type. */
