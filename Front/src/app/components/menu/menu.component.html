@@ -1,54 +1,90 @@
-<div style="height: 100px;" class="br-header" compact>
+<div style="height: 110px;" class="rbb-menu" >
   <div class="container-lg">
-    <div class="flex-container">
+    <div style="padding-top: 25px;" class="flex-container">
+
       <div class="logo">
         <img src="https://www.gov.br/++theme++padrao_govbr/img/govbr-colorido-b.png" alt="logo">
       </div>
-      <div class="actions">
-        <div class="links">
-          <button class="br-button" type="button" circle mini><i class="fas fa-ellipsis-v"></i>
-          </button>
-          <ul>
-            <li class="title">Acesso Rápido</li>
-            <li><a class="content" class="nav-link" [routerLink]="['home']" routerLinkActive="active"
-              [routerLinkActiveOptions]="{exact: true}" style="font-size: 20px;"> Identificação</a></li>
-              <div *ngIf="this.selectedAccount != undefined && this.selectedAccount != 0 ">
-                Conta Blockchain: {{this.selectedAccount}}
-                <div *ngIf="this.usuario != undefined && this.usuario.cnpj != 0 ">
-                  CNPJ:     {{this.usuario.cnpj | mask: '00.000.000/0000-00'}} |
-                  Situação: {{this.usuario.statusAsString}} |
-                  Papel:    {{this.usuario.roleAsString}}
-                </div>
-                <div *ngIf="this.usuario == undefined || this.usuario.cnpj == 0 ">
-                  (não-identificada)
-                </div>
-              </div>
 
-          </ul>
-        </div>
+      <!-- TODO - Refazer menu de navegação -->
+
+      <!-- Menu esquerdo -->
+      <div class="menu">
+        <button mat-button class="br-button" type="button" circle mini  ><i class="fas fa-bars"  ></i>
+        </button>
+        <div class="title">Rede Brasileira de Blockchain</div>
+        <a class="nav-link" [routerLink]="['home']" routerLinkActive="active"
+          [routerLinkActiveOptions]="{exact: true}" style="font-size: 16px; padding-top: 5px; margin-left:17px;">RBB - Identificação</a>
       </div>
 
-  <div class="menu">
-    <button class="br-button" type="button" circle mini  (click)="sidenav.toggle()" ><i class="fas fa-bars"></i>
+      <!-- Detalhes da conta -->
+      <div class="info">
+        <div style="margin-right: 80px;" class="header-id">
+          <div class="header-camp">
+            Conta Blockchain :
+          </div>
 
-    </button>
-    <div class="title">Rede Brasileira de Blockchain</div>
-    <div class="subtitle">RBB - Identificação</div>
-  </div>
-  <div class="search">
-    <div class="br-input has-icon">
-      <label></label>
-      <input class="has-icon" type="text" placeholder="O que você procura?">
-      <button class="icon" type="button"><span class="icon"><i class="fas fa-search"></i></span></button>
+          <div class="header-content" >{{this.selectedAccount}}</div>
+          <div class="header-content" *ngIf="this.selectedAccount == undefined " >Conta não selecionada</div>
+
+          <!-- TODO - Botao do metamask -->
+
+          <span style="margin: 0px;" class="br-divider"></span>
+
+          <div style="flex-direction: row;">
+            <button style="float: left;margin-top: 5px;" mat-button class="br-button" type="button" circle mini >
+                <i style="color: #4c73f5;float: left; margin-left: 4px;" [ngxTippy]="htmlTemplate" type="button"class="fas fa-id-card" [tippyProps]="templateRef"></i>
+            </button>
+
+            <!-- Conta nao selecionada -->
+            <div style="color: #4c73f5;" class="status-conta"
+                *ngIf="this.selectedAccount == undefined ">
+                Selecione uma conta no Metamask
+            </div>
+
+            <!-- Conta nao associada -->
+            <div style="color: #ff9100;" class="status-conta"
+                *ngIf="this.usuario == undefined && this.selectedAccount != undefined">
+                Essa conta ainda não foi associada
+            </div>
+
+            <!-- Conta valida e associada -->
+            <div style="color: #09a709;" class="status-conta"
+                *ngIf="this.usuario != undefined && this.usuario.cnpj != 0 ">
+                Conta associada
+            </div>
+
+            <!-- Supadmin -->
+            <div style="color: #cebb11;" class="status-conta"
+                *ngIf="this.usuario.roleAsString == 'Supadmin && this.usuario.roleAsString != undefined'">
+              SUPADMIN
+            </div>
+
+          </div>
+        </div>
+
+          <!-- Template da tooltip das informaçoes -->
+          <template #htmlTemplate>
+            <div>
+              <h1>CNPJ:</h1>
+              <h2>{{this.usuario.cnpj | mask: '00.000.000/0000-00'}}</h2>
+
+              <h1>Situação:</h1>
+              <h2>{{this.usuario.statusAsString}}</h2>
+
+              <h1>Papel:</h1>
+              <h2>{{this.usuario.roleAsString}}</h2>
+            </div>
+          </template>
+
+      </div>
     </div>
-    <button class="br-button search-close" type="button" circle mini><i class="fas fa-times"></i>
-    </button>
   </div>
 </div>
-</div>
-</div>
 
-<mat-sidenav style="height: max-content; position: absolute; margin-top: 100px; margin-left: 50px;"  #sidenav mode="side" [(opened)]="opened" (opened)="events.push('open!')"
+<!--
+
+<mat-sidenav style="height: max-content; position: absolute; margin-top: 110px; margin-left: 50px;"  #sidenav mode="side" [(opened)]="opened" (opened)="events.push('open!')"
                (closed)="events.push('close!')">
 
 <mat-sidenav-container style="height: max-content; " class="example-container" class="br-menu">
@@ -66,11 +102,11 @@
       <a class="item content nav-link" [routerLink]="['home/validar']" routerLinkActive="active"
         [routerLinkActiveOptions]="{exact: true}"(click)="sidenav.toggle()">
           Gerenciar Contas</a>
-
-
     </div>
-
   </mat-sidenav-content>
 </mat-sidenav-container>
 </mat-sidenav>
+-->
+
+
 

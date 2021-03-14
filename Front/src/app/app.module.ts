@@ -19,7 +19,7 @@ import { HomeComponent } from './home/home.component';
 import { CallComponent } from './call/call.component';
 import { AlertModule } from './_alert';
 import { NgxMaskModule, IConfig } from 'ngx-mask'
- 
+import { NgxTippyModule } from 'ngx-tippy-wrapper';
 
 /* Services */
 import { Web3Service } from './Web3Service';
@@ -30,8 +30,9 @@ import { GoogleMapsService } from './shared/google-maps.service';
 
 import { FileUploadModule } from 'ng2-file-upload';
 
+
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
- 
+
 
 
 @NgModule({
@@ -47,8 +48,7 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
     PauseClienteComponent,
     PauseAdminComponent,
     HomeComponent,
-    CallComponent,
-   
+    CallComponent
   ],
   imports: [
     BrowserModule,
@@ -61,7 +61,7 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
     FileUploadModule,
     AlertModule,
     NgxMaskModule.forRoot(),
-    
+    NgxTippyModule
   ],
   providers: [PessoaJuridicaService, Web3Service, ConstantesService, GoogleMapsService, FileHandleService ],
   bootstrap: [AppComponent]
