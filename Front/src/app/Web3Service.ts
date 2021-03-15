@@ -203,6 +203,9 @@ export class Web3Service {
             ", hashdeclaracao: " + hashdeclaracao 
             )
 
+        hashdeclaracao = hashdeclaracao.replace("0x","").toLowerCase(); //ICF_V2
+        console.log("hashdeclaracao alterado:" + hashdeclaracao);
+
         const signer = this.accountProvider.getSigner();
         const contWithSigner = this.RBBRegistrySmartContract.connect(signer);
         return (await contWithSigner.registryLegalEntity(cnpj, hashdeclaracao));
