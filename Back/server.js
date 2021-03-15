@@ -384,7 +384,7 @@ async function trataUpload(req, res, next) {
 				const cnpjEsperado = cnpj;
 				
 				try {
-					let retornoValidacaoCert = await SERVER_FUNCTIONS.validateDocumentSignature(src, cnpjEsperado, mockValidacaoCert);
+					let retornoValidacaoCert = await SERVER_FUNCTIONS.validateDocumentSignature(src, cnpjEsperado);
 					if ( retornoValidacaoCert == 0 ) {
 						const dest = fs.createWriteStream(target_path);
 						src.pipe(dest);
