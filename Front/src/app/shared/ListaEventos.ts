@@ -11,7 +11,7 @@ export class ListaEventos {
         web3Service.recuperaEventosCadastro().then(async function (eventos) {
             console.log("recuperaEventosCadastro().then");
             for (let i = 0; i < eventos.length; i++) {
-                await ListaEventos.processaEventoCadastro(eventos[i], caller);
+                ListaEventos.processaEventoCadastro(eventos[i], caller);
             }
         });
     }
