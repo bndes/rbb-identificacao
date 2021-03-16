@@ -15,11 +15,13 @@ const multer 			= require('multer');
 const request 			= require('request');
 
 const SERVER_FUNCTIONS     = require('./server_functions.js');
+const mock_pj		       = require('./mock_pj.json');
 
 const DIR_UPLOAD = config.infra.caminhoArquivos + config.infra.caminhoUpload;
 const DIR_CAMINHO_DECLARACAO = config.infra.caminhoArquivos + config.infra.caminhoDeclaracao;
 const DIR_CAMINHO_COMPROVANTE_DOACAO = config.infra.caminhoArquivos + config.infra.caminhoComprovanteDoacao;
 const DIR_CAMINHO_COMPROVANTE_LIQUIDACAO = config.infra.caminhoArquivos + config.infra.caminhoComprovanteLiquidacao;
+const CNPJ_EMPRESA_URL = config.infra.cnpjEmpresaURL;
 
 const CAMINHO_MODELO_DECLARACAO_CONTA_DIGITAL = config.infra.caminhoModeloDeclaracaoContaBlockchain;
 const CAMINHO_ROTEIRO_ASSINATURA_DIGITAL = config.infra.caminhoRoteiroAssinaturaDigital;
@@ -27,7 +29,6 @@ const CAMINHO_ROTEIRO_ASSINATURA_DIGITAL = config.infra.caminhoRoteiroAssinatura
 const MAX_FILE_SIZE = Number( config.negocio.maxFileSize );
 
 const mockPJ 			= config.negocio.mockPJ;
-const mockValidacaoCert = config.negocio.mockValidacaoCert;
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -122,7 +123,7 @@ console.log("config.infra.rede_blockchain (1=Main|4=Rinkeby|4447=local) = " + co
 
 //let addrContratoBNDESToken;
 let addrContratoBNDESRegistry;
-if (config.infra.rede_blockchain < 10) {  
+if (config.infra.rede_blockchain < 10 || config.infra.rede_blockchain == 648629 ) {  
 	console.log ("config.infra.rede_blockchain=" + config.infra.rede_blockchain);
 	//addrContratoBNDESToken = config.infra.endereco_BNDESToken;
 	addrContratoBNDESRegistry = config.infra.endereco_BNDESRegistry;
@@ -159,6 +160,13 @@ app.get('/api/hash/:filename', async function (req, res) {
 	return res.json(hashedResult);
 })
 
+app.get('/api/processaURLDeclaracao/:url/:cnpjEsperado', async function (req, res) {
+	const url 			= req.params.url;		
+	const cnpjEsperado  = req.params.cnpjEsperado;		
+	const resultado 	= await SERVER_FUNCTIONS.processaURLDeclaracao(url, cnpjEsperado);
+	return res.json(resultado);
+})
+
 //recupera constantes front
 app.post('/api/constantesFront', function (req, res) {
 	res.json({ 
@@ -166,12 +174,12 @@ app.post('/api/constantesFront', function (req, res) {
 		addrContratoBNDESRegistry: addrContratoBNDESRegistry,
 		blockchainNetwork: config.infra.rede_blockchain,
 		//abiBNDESToken: contrato_json_BNDESToken['abi'],
-		abiBNDESRegistry: contrato_json_BNDESRegistry['abi']
+		abiBNDESRegistry: contrato_json_BNDESRegistry['abi'],
+		URLBlockchainProvider: config.infra.URL_blockchain_provider
 	 });
 });
 
 console.log("operationAPIURL=" + config.infra.operationAPIURL);
-console.log("mockValidacaoCert=" + mockValidacaoCert);
 
 app.post('/api/constantesFrontPJ', function (req, res) {
 	console.log("operationAPIURL=" + config.infra.operationAPIURL);
@@ -213,7 +221,7 @@ console.log('/api/pj-por-cnpj::mockPJ=' + mockPJ);
 			if ( cnpjRecebido == undefined || cnpjRecebido == '00000undefined' || cnpjRecebido == '00000000000000')	
 				return;
 
-			https.get('https://www.receitaws.com.br/v1/cnpj/' + cnpjRecebido, (resp) => {
+			https.get(CNPJ_EMPRESA_URL + cnpjRecebido, (resp) => {
 				let data = '';
 
 				resp.on('data', (chunk) => {
@@ -328,7 +336,7 @@ async function preencheDoc(req, res, next) {
 //upload.single('arquivo')
 app.post('/api/upload', trataUpload);
 
-function trataUpload(req, res, next) {
+async function trataUpload(req, res, next) {
 
 	console.log("trataUpload - uploadMiddleware ")
 	console.log(uploadMiddleware);
@@ -375,26 +383,30 @@ function trataUpload(req, res, next) {
 				const src  = fs.createReadStream(tmp_path);
 				const cnpjEsperado = cnpj;
 				
-				let retornoValidacaoCert = SERVER_FUNCTIONS.validateDocumentSignature(src, cnpjEsperado, mockValidacaoCert);
-				if ( retornoValidacaoCert == 0 ) {
-					const dest = fs.createWriteStream(target_path);
-					src.pipe(dest);
-					src.on('end', function ()
-					{
-						console.log("Upload Completed from "+ tmp_path + ", original name " + req.file.originalname + ", copied to " + target_path); 
-					});
-					src.on('error', function (err)
-					{
-						console.log("Upload ERROR! from "+ tmp_path + ", original name " + req.file.originalname + ", copied to " + target_path); 
-					});	
-					res.json(hashedResult);
-				} else {
-					let msg = " Certificado não está OK! Erro: " + retornoValidacaoCert;
+				try {
+					let retornoValidacaoCert = await SERVER_FUNCTIONS.validateDocumentSignature(src, cnpjEsperado);
+					if ( retornoValidacaoCert == 0 ) {
+						const dest = fs.createWriteStream(target_path);
+						src.pipe(dest);
+						src.on('end', function ()
+						{
+							console.log("Upload Completed from "+ tmp_path + ", original name " + req.file.originalname + ", copied to " + target_path); 
+						});
+						src.on('error', function (err)
+						{
+							console.log("Upload ERROR! from "+ tmp_path + ", original name " + req.file.originalname + ", copied to " + target_path); 
+						});	
+						res.json(hashedResult);
+					} else {
+						let msg = " ERRO: " + retornoValidacaoCert;
+						console.log(msg); 
+						res.json(msg);
+					}
+				} catch (err) {
+					let msg = " ERRO: Certificado não está no formato adequado. ";
 					console.log(msg); 
 					res.json(msg);
 				}
-
-				
 			}
 		}
 	);
@@ -415,7 +427,7 @@ async function buscaFileInfo(req, res) {
 		let hashFile 		  = req.body.hashFile;		
 
 		let filePathAndNameToFront = await SERVER_FUNCTIONS.buscaTipoArquivo(cnpj, contrato, blockchainAccount, tipo, hashFile);
-
+console.log("filePathAndNameToFront = " + filePathAndNameToFront);
 		let respJson = {
 			pathAndName: filePathAndNameToFront
 		};
@@ -433,8 +445,112 @@ async function buscaFileInfo(req, res) {
 
 }
 
+
+const ethers  = require('ethers');
+var v_wallet  = require('./wallet.json');
+
+const privateKey      = v_wallet.privkey;
+const provider        = new ethers.providers.JsonRpcProvider(config.infra.URL_blockchain_provider);
+const wallet          = new ethers.Wallet(privateKey, provider);
+const contractAddress = contrato_json_BNDESRegistry.networks[config.infra.rede_blockchain].address;
+
+console.log("Oracle Validator at " + v_wallet.address);
+
+let RBBRegistry;
+
+initContract();
+listenEvent();
+
 // listen (start app with node server.js) ======================================
 app.listen(8080, "0.0.0.0");
 
 let data = "\n" + new Date() + "\nApp listening on port 8080 ";
 console.log(data);
+
+
+
+async function initContract() {
+            
+    let abi = contrato_json_BNDESRegistry['abi'];
+    RBBRegistry = new ethers.Contract(contractAddress, abi, provider);
+    console.log("Contract RBBRegistry at " + contractAddress);
+
+}
+
+function completarCnpjComZero(cnpj){
+    return ("00000000000000" + cnpj).slice(-14)
+ }
+
+
+async function listenEvent() {
+    console.log("** ORACLE ** - ");
+    console.log("** ORACLE ** - Listening to event AccountRegistration ...");
+    console.log("** ORACLE ** - ");
+    RBBRegistry.on("AccountRegistration", async (addr, RBBId, CNPJ, hashProof, dateTimeExpiration) => {
+    
+        console.log(addr);    
+        console.log(RBBId);    
+        console.log(CNPJ);     
+        console.log(hashProof);
+        console.log(dateTimeExpiration);
+
+        if ( hashProof == "0" ) {
+            console.log("** ORACLE ** - Conta Regular nao eh analisada automaticamente. Ficara aguardando validacao manual.")
+        } else {
+            CNPJ = completarCnpjComZero(CNPJ);
+
+            let RBBRegistryWithSigner = RBBRegistry.connect(wallet);
+			let encontrouArquivo = false;
+    
+			try {
+                let contrato = 0;
+                let tipo = 'declaracao';
+                let filePathAndNameToFront = await SERVER_FUNCTIONS.buscaTipoArquivo(CNPJ, contrato, addr, tipo, hashProof);
+                console.log(filePathAndNameToFront);
+				encontrouArquivo = true;     
+            } catch(err) {                
+                console.log("** ORACLE ** - Nao conseguiu encontrar o arquivo da declaracao.");
+				encontrouArquivo = false;
+            }			
+			if (encontrouArquivo) {
+				try {
+					console.log("** ORACLE ** - Faz chamada da pré-validação do registro.");
+					let tx = await RBBRegistryWithSigner.preValidateRegistry(addr, true);
+					console.log(tx.hash);
+					await tx.wait();
+					console.log("** ORACLE ** - O cadastro foi pré-validado.");
+
+					return ; //processamento concluido com sucesso. pode sair da rotina
+
+				} catch(err) {                
+					console.log("** ORACLE ** - Erro ao pré-validar o registro.");					
+				}
+			} else {
+				try {
+					console.log("** ORACLE ** - Faz chamada da pré-invalidação do registro.");
+					let tx = await RBBRegistryWithSigner.preValidateRegistry(addr, false);
+					console.log(tx.hash);
+					await tx.wait();
+					console.log("** ORACLE ** - O cadastro foi pré-invalidado.");
+				} catch(err) {                
+					console.log("** ORACLE ** - Erro ao pré-invalidar o registro.");	
+				}
+			}
+        }
+    });
+}
+
+async function checkIDStatus(id) {
+
+let blockchainAccount = await RBBRegistry.getBlockchainAccounts (id);
+let blockchainAccountStatus = await RBBRegistry.getAccountState(blockchainAccount[0]);
+
+    console.log( { "id"      : id,
+                 "address" : blockchainAccount, 
+                 "status"  : blockchainAccountStatus
+               } );
+    
+}
+
+
+

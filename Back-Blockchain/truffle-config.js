@@ -1,7 +1,10 @@
 //const HDWalletProvider = require("@truffle/hdwallet-provider");
-//const privateKey = "0xsenha";
-//const privateKeyProvider = new HDWalletProvider(privateKey, "http://IP:9545"); //WRITER
-
+const privateKey = "0x0000000000000000000000000000000000000000000000000000000000000000";
+const writerIP = "127.0.0.1";
+const writerPort = "4545";
+const netID = "648629";
+const privateKeyProvider = undefined;
+//const privateKeyProvider = new HDWalletProvider(privateKey, "http://" + writerIP + ":" + writerPort); 
 
 module.exports = {
 
@@ -14,7 +17,7 @@ module.exports = {
   networks: {
     development: {
       host: "localhost",
-      port: 8545,
+      port: 9545,
       network_id: "*" // Match any network id
     },
     rinkeby: {
@@ -38,23 +41,22 @@ module.exports = {
       network_id: 0x7e2,
       gas:   4612388
     }
-    /*
     ,
     bid:  {
-      host: "IP",  
-      port:  9545,
+      host: writerIP,  
+      port:  writerPort,
       provider: privateKeyProvider,
-      network_id: 99999999,
+      network_id: netID,
       gasPrice: 0
     },     
     bndes:  {
-      host: "IP",  
-      port:  9545,
+      host: writerIP,  
+      port:  writerPort,
       provider: privateKeyProvider,
-      network_id: 99999999,
+      network_id: netID,
       gasPrice: 0
     }     
-*/
+/**/
     
   }
 

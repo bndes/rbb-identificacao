@@ -1,0 +1,42 @@
+{
+	"infra": {
+		"contrato_json_BNDESRegistry": "./../Back-Blockchain/build/contracts/RBBRegistry.json",
+		"rede_blockchain": "5777",
+		"URL_blockchain_provider" : "http://localhost:9545",
+		"endereco_BNDESRegistry": "0x8c2C102789917590d58c2F9bA2FE568ECE990cc7",
+		"addr_bd": "mongodb://localhost/",
+		"name_bd": "rbbid",		
+		"acesso_BD_PJ": {
+			"user": ""**********************",
+			"server": ""**********************", 
+			"database": ""**********************"
+		},
+		"vraURL" : ""**********************",
+		"cnpjEmpresaURL" : "https://www.receitaws.com.br/v1/cnpj/",
+		"operationAPIURL": "https://apis-gateway.bndes.gov.br/transparencia/v2/cliente/",
+		"caminhoArquivos"    : "arquivos/",
+		"caminhoPastaPublica": "arquivos",		
+		"caminhoUpload"    : "upload/",
+		"caminhoDeclaracao" : "declaracao/",
+		"caminhoComprovanteDoacao" : "comprovante_doacao/",
+		"caminhoComprovanteLiquidacao" : "comprovante_liquidacao/",
+		"modeloDeclaracao" : "./arquivos/modelo_declaracao/MODELO_CADASTRO.json",
+		"caminhoModeloDeclaracaoContaBlockchain": "https://github.com/bndes/bndestoken-captacao/blob/master/Docs-Declaracao/Modelo/ModeloContaBlockchain.docx?raw=true",
+		"caminhoRoteiroAssinaturaDigital": "https://github.com/bndes/bndestoken-captacao/blob/master/Docs-Declaracao/Modelo/RoteiroAssinaturaDigital.pdf?raw=true"
+	},
+	"negocio": {
+		"query_cnpj": "**********************",
+		 "mockMongoClient": false,
+		 "mockPJ": false,
+		 "mockValidacaoCert" : 2,
+		/* instrucao de preenchimento:
+			0 - crítica desligada
+			1 - crítica ligada porém usando arquivo de resposta configurável (mock)
+			2 - crítica ligada mas não impede o upload da declaração (passa a funcionar como warning)
+			3 - crítica ligada e impede o upload da declaração (configuração desejável para PRODUÇÃO)
+			NRA - crítica desligada
+		*/
+		 "maxFileSize": ""**********************"
+	}
+
+}

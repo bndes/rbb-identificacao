@@ -1,5 +1,5 @@
 { 
-    "address"     : "0x840629315b87406fFB85b56A2EF4A3db57A94AC7",
-    "description" : "truffle::account[0]",    
-    "privkey"     : "0x2ffcab1497f58a887c21129756627c9a4fcc2c09b8d6279f20a28e872607b2bc" 
+    "address"     : "0x7dcf18733b8c31dbc8f13021e98381ad3c372785",
+    "description" : "precisa ser supadmin do rbbid - truffle::account[0] para testes locais ou account do truffle-config para testes na RBB",    
+    "privkey"     : "c1e2c54b4c74a71c19461b981b4cb22614dfe8a428b65926e425b2031b90b5a7" 
 }
