@@ -129,7 +129,7 @@ export class ValidarContaAdminComponent implements OnInit {
         this.listaTransacoesPJ = [];   
       }
       this.monitoraEventos();  
-    }, 1500)
+    }, 60000)
 
     setInterval(() => {
       this.estadoLista = this.estadoLista === "undefined" ? "vazia" : "cheia"          
@@ -141,7 +141,7 @@ export class ValidarContaAdminComponent implements OnInit {
         this.dataSource.sort = this.sort;
         this.ref.detectChanges()
       }
-    }, 6300)
+    }, 63)
   
     
     //const users = Array.from({length: 1}, (_, k) => createNewUser(k + 1));
