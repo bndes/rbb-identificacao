@@ -25,7 +25,6 @@
     "@angular/router": "~10.0.8",
     "@fortawesome/fontawesome-free": "^5.14.0",
     "@govbr/design-system": "file:dsgov-latest.tgz",
-    "@govbr/dsgov": "file:dsgov-latest.tgz",
     "@ng-bootstrap/ng-bootstrap": "^8.0.0",
     "@popperjs/core": "^2.9.1",
     "@truffle/contract": "^4.2.20",
