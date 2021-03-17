@@ -112,7 +112,7 @@ export class Web3Service {
         if (this.accountProvider.getSigner() != undefined)
             return this.accountProvider.getSigner().getAddress();
         else {
-            console.log("getCurrentAccountSync waiting for getSigner");
+            //console.log("getCurrentAccountSync waiting for getSigner");
             return undefined;
         }
     }
@@ -285,11 +285,14 @@ export class Web3Service {
             const signer = this.accountProvider.getSigner();
             const contWithSigner = this.RBBRegistrySmartContract.connect(signer);
 
-            if ( usuario.roleAsString == "Admin" )
+            if ( usuario.roleAsString == "Admin" ) {
                 (await contWithSigner.validateRegistrySameOrg(address));          
-
-            if ( this.isResponsibleForRegistryValidation( usuarioEndereco ) )
+                return true;
+            }
+            if ( this.isResponsibleForRegistryValidation( usuarioEndereco ) ) {
                 (await contWithSigner.validateRegistry(address));    
+                return true;
+            }
                 
             throw "Usuário não tem permissão para validar conta";
 
@@ -303,11 +306,37 @@ export class Web3Service {
     async invalidarCadastro(address: string) {
         console.log("Web3Service - invalidarCadastro");
         console.log("address: " + address );
-
+        let usuarioVetor = await this.identificaUsuario();
+        let usuario = usuarioVetor[0];
+        let usuarioEndereco = usuarioVetor[1];
+        console.log("usuarioEndereco: " + usuarioEndereco );
         try {
             const signer = this.accountProvider.getSigner();
             const contWithSigner = this.RBBRegistrySmartContract.connect(signer);
-            (await contWithSigner.invalidateRegistrySameOrg(address));
+
+            if ( usuarioEndereco === address ) {
+                (await contWithSigner.invalidateYourOwnAddress());          
+                return true;
+            }   
+            console.log("Web3Service - invalidarCadastro - Nao eh invalidateYourOwnAddress");
+            if ( usuario.roleAsString == "Admin" ) {
+                (await contWithSigner.invalidateAddressSameOrg(address));          
+                return true;
+            }
+            console.log("Web3Service - invalidarCadastro - Nao eh invalidateAddressSameOrg");
+            if ( this.isResponsibleForRegistryValidation( usuarioEndereco ) ) {
+                (await contWithSigner.invalidateAddress(address));    
+                return true;
+            }   
+            console.log("Web3Service - invalidarCadastro - Nao eh invalidateAddress");
+            if ( this.isResponsibleForMonitoring( usuarioEndereco ) ) {
+                (await contWithSigner.invalidateAddressAfterMonitoring(address));    
+                return true;
+            }
+            console.log("Web3Service - invalidarCadastro - Nao eh invalidateAddressAfterMonitoring");
+
+            throw "Usuário não tem permissão para invalidar conta";
+
         } catch (error) {
             console.log("invalidarCadastro:" )
             console.log( error);
@@ -347,6 +376,19 @@ export class Web3Service {
         
         return comparacao;
     }  
+
+    async isResponsibleForMonitoring(address: string): Promise<boolean> {
+
+        let enderecoDoResponsavelPelaMonitoracao = await this.RBBRegistrySmartContract.responsibleForActingAfterMonitoring();
+        console.log("isResponsibleForMonitoring");
+        console.log("enderecoDoResponsavelPelaMonitoracao= " +enderecoDoResponsavelPelaMonitoracao);
+        console.log("address= " +address);
+        let comparacao =  ( enderecoDoResponsavelPelaMonitoracao == address );
+        console.log("comparacao= " +comparacao);
+        
+        return comparacao;
+    }  
+
 
     async isContaDisponivel(address: string): Promise<boolean> {
         let result = await this.RBBRegistrySmartContract.isAvailableAccount(address);
@@ -388,8 +430,8 @@ export class Web3Service {
     montaPJInfo(result): any {
         let pjInfo: any;
 
-        console.log("montaPJInfo");
-        console.log(result);
+        //console.log("montaPJInfo");
+        //console.log(result);
 
         pjInfo  = {};
 

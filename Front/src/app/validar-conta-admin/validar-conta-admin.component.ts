@@ -284,18 +284,6 @@ export class ValidarContaAdminComponent implements OnInit {
         console.log("error", "Erro", s, 2);
         return;
       }    
-console.log("validarCadsatro::this.selectedAccount" + this.selectedAccount)
-      let retorno = await this.web3Service.isResponsibleForRegistryValidation(this.selectedAccount);
-      console.log("retorno = " + retorno );
-      let bRV = <boolean> (retorno);
-      if (!bRV) 
-      {
-          let s = "Conta selecionada no Metamask não pode executar uma validação.";
-          console.log("error", "Erro", s, 5);
-          this.alertService.error(s, this.alertOptions); 
-          return;
-      }
-    
 
       let booleano = <boolean> (await this.web3Service.validarCadastro(contaBlockchainValidar)); 
           
@@ -324,15 +312,6 @@ console.log("validarCadsatro::this.selectedAccount" + this.selectedAccount)
         console.log("error", "Erro", s, 2)
         return;
       }
-  
-      let bRV = <boolean> (await this.web3Service.isResponsibleForRegistryValidation(this.selectedAccount));
-      if (!bRV) 
-      {
-          let s = "Conta selecionada no Metamask não pode executar a ação de invalidar.";
-          console.log("error", "Erro", s, 5);
-          this.alertService.error(s, this.alertOptions); 
-          return;
-      }
 
       let booleano = <boolean> (await this.web3Service.invalidarCadastro(contaBlockchainInvalidar)); 
           
@@ -343,7 +322,7 @@ console.log("validarCadsatro::this.selectedAccount" + this.selectedAccount)
             self.router.navigate(['home/validar']);
       } 
       else {
-        let texto = "Erro ao invalidar cadastro na blockchain";
+        let texto = "Não foi possível invalidar cadastro na blockchain. Usuário tem essa permissão?";
         this.alertService.error(texto, this.alertOptions);                
         return;
       }
