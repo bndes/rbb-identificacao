@@ -13,8 +13,17 @@
         <button mat-button class="br-button" type="button" circle mini  ><i class="fas fa-bars"  ></i>
         </button>
         <div class="title">Rede Brasileira de Blockchain</div>
-        <a class="nav-link" [routerLink]="['home']" routerLinkActive="active"
-          [routerLinkActiveOptions]="{exact: true}" style="font-size: 16px; padding-top: 5px; margin-left:17px;">RBB - Identificação</a>
+
+          <button class="nav-link br-button secondary" [routerLink]="['home']" routerLinkActive="active"
+             [routerLinkActiveOptions]="{exact: true}"
+             style="height: 30px;
+                    line-height: 0px;
+                    font-size: 12px;
+                    padding-top: 5px;
+                    margin-left:12px;
+                    margin-top: 5px;
+                    border: 0px !important;">
+            <i class="fas fa-home"></i>RBB - Identificação</button>
       </div>
 
       <!-- Detalhes da conta -->
