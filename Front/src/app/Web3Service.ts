@@ -268,14 +268,31 @@ export class Web3Service {
         }
     }
 
-    async validarCadastro(address: string) {
+    async identificaUsuario() {          
+        let usuarioEndereco = await this.getCurrentAccountSync();
+        let usuario = await this.getPJInfo(usuarioEndereco);
+        return [usuario, usuarioEndereco];
+    }
+
+    async validarCadastro(address: string) {          
         console.log("Web3Service - validarCadastro");
         console.log("address: " + address );
+        let usuarioVetor = await this.identificaUsuario();
+        let usuario = usuarioVetor[0];
+        let usuarioEndereco = usuarioVetor[1];
 
         try {
             const signer = this.accountProvider.getSigner();
             const contWithSigner = this.RBBRegistrySmartContract.connect(signer);
-            (await contWithSigner.validateRegistrySameOrg(address));
+
+            if ( usuario.roleAsString == "Admin" )
+                (await contWithSigner.validateRegistrySameOrg(address));          
+
+            if ( this.isResponsibleForRegistryValidation( usuarioEndereco ) )
+                (await contWithSigner.validateRegistry(address));    
+                
+            throw "Usuário não tem permissão para validar conta";
+
         } catch (error) {
             console.log("validarCadastro:" )
             console.log( error);
@@ -320,8 +337,16 @@ export class Web3Service {
     }
 
     async isResponsibleForRegistryValidation(address: string): Promise<boolean> {
-        return await this.RBBRegistrySmartContract.isSortOfAdmin(address);
-    }
+
+        let enderecoDoResponsavelPelaValidacao = await this.RBBRegistrySmartContract.responsibleForRegistryValidation();
+        console.log("isResponsibleForRegistryValidation");
+        console.log("enderecoDoResponsavelPelaValidacao= " +enderecoDoResponsavelPelaValidacao);
+        console.log("address= " +address);
+        let comparacao =  ( enderecoDoResponsavelPelaValidacao == address );
+        console.log("comparacao= " +comparacao);
+        
+        return comparacao;
+    }  
 
     async isContaDisponivel(address: string): Promise<boolean> {
         let result = await this.RBBRegistrySmartContract.isAvailableAccount(address);

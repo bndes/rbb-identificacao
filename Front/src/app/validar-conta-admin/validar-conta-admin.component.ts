@@ -285,7 +285,9 @@ export class ValidarContaAdminComponent implements OnInit {
         return;
       }    
 console.log("validarCadsatro::this.selectedAccount" + this.selectedAccount)
-      let bRV = <boolean> (await this.web3Service.isResponsibleForRegistryValidation(this.selectedAccount));
+      let retorno = await this.web3Service.isResponsibleForRegistryValidation(this.selectedAccount);
+      console.log("retorno = " + retorno );
+      let bRV = <boolean> (retorno);
       if (!bRV) 
       {
           let s = "Conta selecionada no Metamask não pode executar uma validação.";
@@ -304,7 +306,7 @@ console.log("validarCadsatro::this.selectedAccount" + this.selectedAccount)
             this.router.navigate(['home/validar']);
       } 
       else {
-        let texto = "Erro ao validar cadastro na blockchain";
+        let texto = "Não foi possível validar cadastro na blockchain. Usuário tem essa permissão?";
         this.alertService.error(texto, this.alertOptions);  
         return;              
       }
