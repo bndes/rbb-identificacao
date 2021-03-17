@@ -1,8 +1,11 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
 import { NgxTippyProps } from 'ngx-tippy-wrapper';
 import { Web3Service } from '../../Web3Service';
 import 'tippy.js/animations/perspective-extreme.css';
+import MetaMaskOnboarding from "@metamask/onboarding"
 
+
+const onboarding = new MetaMaskOnboarding();
 
 @Component({
   selector: 'app-menu',
@@ -10,7 +13,10 @@ import 'tippy.js/animations/perspective-extreme.css';
   styleUrls: ['./menu.component.scss']
 })
 
+
+
 export class MenuComponent implements OnInit {
+  @ViewChild('connectButton') connectButton: ElementRef;
   @Output() toggleSideBarForMe: EventEmitter<any> = new EventEmitter();
 
   public baseProps: NgxTippyProps = {
@@ -35,12 +41,12 @@ export class MenuComponent implements OnInit {
   events: string[] = [];
   opened: boolean;
 
+
   constructor(private web3Service: Web3Service) {
 
   }
 
   ngOnInit():void {
-
     setInterval(async () => {
       this.selectedAccount = await this.web3Service.getCurrentAccountSync();
       console.log(this.selectedAccount);
@@ -50,6 +56,15 @@ export class MenuComponent implements OnInit {
 
   toggleSideBar(){
     this.toggleSideBarForMe.emit();
+    onboarding.startOnboarding();
+  }
+
+  metamaskClick(){
+    if (!MetaMaskOnboarding.isMetaMaskInstalled()) {
+      this.web3Service.onClickInstall();
+    } else {
+      this.web3Service.onClickConnect();
+    }
   }
 
   async recuperaRegistroBlockchain(enderecoBlockchain) : Promise<any> {

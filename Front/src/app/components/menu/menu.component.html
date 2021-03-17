@@ -1,4 +1,4 @@
-<div style="height: 110px;" class="rbb-menu" >
+<div style="height: 120px;" class="rbb-menu" >
   <div class="container-lg">
     <div style="padding-top: 25px;" class="flex-container">
 
@@ -32,14 +32,19 @@
           <span style="margin: 0px;" class="br-divider"></span>
 
           <div style="flex-direction: row;">
-            <button style="float: left;margin-top: 5px;" mat-button class="br-button" type="button" circle mini >
+            <button style="float: left;margin-top: 13px;" mat-button class="br-button" type="button" circle mini >
                 <i style="color: #4c73f5;float: left; margin-left: 4px;" [ngxTippy]="htmlTemplate" type="button"class="fas fa-id-card" [tippyProps]="templateRef"></i>
             </button>
 
             <!-- Conta nao selecionada -->
-            <div style="color: #4c73f5;" class="status-conta"
+            <div style="color: #4c73f5;" class="status-conta-metamask"
                 *ngIf="this.selectedAccount == undefined ">
                 Selecione uma conta no Metamask
+                <button class="br-button" circle small  (click)="this.metamaskClick()" >
+                  <img mat-button  style="height: 30px;width: 30px;"
+                      (click)="this.metamaskClick()"
+                       src="../../../assets/metamask.png" alt="logo">
+                </button>
             </div>
 
             <!-- Conta nao associada -->
