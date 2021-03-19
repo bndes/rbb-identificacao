@@ -63,25 +63,35 @@
               </td>
             </ng-container>
     
+            <!-- Mantenha em sincronia com os estados do RBBRegistry smartcontract
+            *acao* pode ser ...
+            0 = AVAILABLE
+            1 = WAITING_VALIDATION 
+            2 = WAITING_APPROVAL
+            3 = WAITING_REJECTION
+            4 = VALIDATED 
+            5 = INVALIDATED -->
+            
             <ng-container matColumnDef="validacao">
               <th mat-header-cell *matHeaderCellDef mat-sort-header> Validar/Invalidar </th>
               <td  style="text-align: center;" mat-cell *matCellDef="let row" > 
-                <span *ngIf='row.acao==1' >
+                <!-- {{row.acao}} -->
+                <span *ngIf='row.acao==1 || row.acao==2 || row.acao==3 ' >
                   <button (click)='validarCadastro(row.contaBlockchain)' class="br-button search-trigger is-circle is-terciary" type="button">
                     <i class="fas fa-check-circle"></i>
                   </button> 
                 </span> 
-                <span *ngIf='row.acao==2' >
+                <span *ngIf='row.acao==4' >
                   <button (click)='validarCadastro(row.contaBlockchain)' class="br-button search-trigger is-circle is-terciary" type="button" disabled>
                     <i class="fas fa-check-circle"></i>
                   </button> 
                 </span>             
-                <span *ngIf='row.acao==1 || row.acao==2' >
+                <span *ngIf='row.acao==1 || row.acao==2 || row.acao==3 || row.acao==4' >
                   <button (click)='invalidarCadastro(row.contaBlockchain)' class="br-button search-trigger is-circle is-terciary" type="button">
                     <i class="fas fa-times-circle"></i>
                   </button>
                 </span> 
-                <span *ngIf='row.acao == 0 || row.acao == 3' >
+                <span *ngIf='row.acao == 5' >
                   <button (click)='validarCadastro(row.contaBlockchain)' class="br-button search-trigger is-circle is-terciary" type="button" disabled>
                     <i class="fas fa-check-circle"></i>
                   </button> 
@@ -97,7 +107,7 @@
               <td  style="text-align: center;" mat-cell *matCellDef="let row" > 
                 <span *ngIf='true' >
     
-                  <span *ngIf='row.acao == 2' >
+                  <span *ngIf='row.acao == 4' >
                     <span *ngIf='row.pausada'>
                       <button (click)='pause(row.contaBlockchain)' class="br-button search-trigger is-circle is-terciary" type="button" disabled>
                         <i class="fas fa-pause-circle"></i>
@@ -121,7 +131,7 @@
     
                   </span>
     
-                  <span *ngIf='row.acao == 0 || row.acao == 1 || row.acao == 3' >
+                  <span *ngIf='row.acao == 1 || row.acao == 2 || row.acao == 3 || row.acao == 5' >
                     <button (click)='pause(row.contaBlockchain)' class="br-button search-trigger is-circle is-terciary" type="button" disabled>
                       <i class="fas fa-pause-circle"></i>
                     </button> 
@@ -139,13 +149,13 @@
                 <td  style="text-align: center;" mat-cell *matCellDef="let row" > 
                   <span *ngIf='true' >
       
-                    <span *ngIf='row.acao == 2' >
+                    <span *ngIf='true' >
                       <button (click)='pauseCNPJ(row.RBBId)' class="br-button search-trigger is-circle is-terciary" type="button">
                         <i class="fas fa-pause-circle"></i>
                       </button> 
                     </span>
       
-                    <span *ngIf='row.acao == 0 || row.acao == 1 || row.acao == 3' >
+                    <span *ngIf='false' >
                       <button (click)='pauseCNPJ(row.RBBId)' class="br-button search-trigger is-circle is-terciary" type="button" disabled>
                         <i class="fas fa-pause-circle"></i>
                       </button>   
