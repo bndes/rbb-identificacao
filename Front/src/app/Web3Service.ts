@@ -220,11 +220,23 @@ export class Web3Service {
 
         console.log("Web3Service - Pause");
         console.log("Conta Blockchain: " + contaBlockchain );
+        let usuarioVetor = await this.identificaUsuario();
+        let usuario = usuarioVetor[0];
+        let usuarioEndereco = usuarioVetor[1];
 
         try {
             const signer = this.accountProvider.getSigner();
             const contWithSigner = this.RBBRegistrySmartContract.connect(signer);
-            (await contWithSigner.pauseAddress(contaBlockchain));
+            
+            if ( usuario.roleAsString == "Admin" ) {
+                (await contWithSigner.pauseAddressSameOrg(contaBlockchain));          
+                return true;
+            }
+            if ( this.isResponsibleForMonitoring( usuarioEndereco ) ) {
+                (await contWithSigner.pauseAddressAfterMonitoring(contaBlockchain));          
+                return true;
+            }
+            
         } catch (error) {
             console.log("pause:" )
             console.log( error);
@@ -234,15 +246,26 @@ export class Web3Service {
     }
 
     async unpause(contaBlockchain: string) {
-        let responsavel = await this.getCurrentAccountSync();
+        let usuarioVetor = await this.identificaUsuario();
+        let usuario = usuarioVetor[0];
+        let usuarioEndereco = usuarioVetor[1];
 
         console.log("Web3Service - Unpause");
         console.log("Conta Blockchain: " + contaBlockchain );
 
         try {
             const signer = this.accountProvider.getSigner();
-            const contWithSigner = this.RBBRegistrySmartContract.connect(signer);
-            (await contWithSigner.unpauseAddress(contaBlockchain));
+            const contWithSigner = this.RBBRegistrySmartContract.connect(signer);           
+
+            if ( usuario.roleAsString == "Admin" ) {
+                (await contWithSigner.unpauseAddressSameOrg(contaBlockchain));          
+                return true;
+            }
+            if ( this.isResponsibleForMonitoring( usuarioEndereco ) ) {
+                (await contWithSigner.unpauseAddressAfterMonitoring(contaBlockchain));          
+                return true;
+            }
+
         } catch (error) {
             console.log("unpause:" )
             console.log( error);
@@ -252,15 +275,26 @@ export class Web3Service {
     }
 
     async pauseLegalEntity(rbbid: number) {
-        let responsavel = await this.getCurrentAccountSync();
+        let usuarioVetor = await this.identificaUsuario();
+        let usuario = usuarioVetor[0];
+        let usuarioEndereco = usuarioVetor[1];        
 
         console.log("Web3Service - pauseLegalEntity");
         console.log("RBBId: " + rbbid );
 
         try {
             const signer = this.accountProvider.getSigner();
-            const contWithSigner = this.RBBRegistrySmartContract.connect(signer);
-            (await contWithSigner.pauseLegalEntity(rbbid));
+            const contWithSigner = this.RBBRegistrySmartContract.connect(signer); 
+
+            if ( rbbid == usuario.rbbid ) {
+                (await contWithSigner.pauseLegalEntitySameOrg(rbbid));
+                return true;
+            }
+            if ( this.isResponsibleForMonitoring( usuarioEndereco ) ) {
+                (await contWithSigner.pauseLegalEntityAfterMonitoring(rbbid));          
+                return true;
+            }
+
         } catch (error) {
             console.log("pauseLegalEntity:" )
             console.log( error);
