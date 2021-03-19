@@ -6,10 +6,10 @@ export class ListaEventos {
     static async registraEventosCadastro(web3Service, caller) {
         let self = this;
 
-        console.log("*** ListaContas: Executou o metodo de registrar eventos CADASTRO ");
+        //console.log("*** ListaContas: Executou o metodo de registrar eventos CADASTRO ");
 
         web3Service.recuperaEventosCadastro().then(async function (eventos) {
-            console.log("recuperaEventosCadastro().then");
+            //console.log("recuperaEventosCadastro().then");
             for (let i = 0; i < eventos.length; i++) {
                 await ListaEventos.processaEventoCadastro(eventos[i], caller);
             }
@@ -20,8 +20,8 @@ export class ListaEventos {
         let transacaoPJ: DashboardPessoaJuridica;
         let eventoCadastro = event;
 
-        console.log("Evento Cadastro");
-        console.log(eventoCadastro);
+        //console.log("Evento Cadastro");
+        //console.log(eventoCadastro);
 
         transacaoPJ = {
             RBBId: eventoCadastro.args.RBBId,
@@ -55,12 +55,12 @@ export class ListaEventos {
 
     static async registraEventosTroca(web3Service, caller) {
 
-        console.log("*** Executou o metodo de registrar eventos upgrade para Admin");
+        //console.log("*** Executou o metodo de registrar eventos upgrade para Admin");
 
         let self = this;
 
         web3Service.recuperaEventosTroca().then(async function (eventos) {
-            console.log("recuperaEventosTroca().then");
+            //console.log("recuperaEventosTroca().then");
             for (let i = 0; i < eventos.length; i++) {
                 await ListaEventos.processaEventoTroca(eventos[i], caller);
             }
@@ -71,8 +71,8 @@ export class ListaEventos {
         let transacaoPJ: DashboardPessoaJuridica
         let eventoTroca = event;
 
-        console.log("Evento upgrade Admin");
-        console.log(eventoTroca);
+        //console.log("Evento upgrade Admin");
+        //console.log(eventoTroca);
 
         let transacaoPJContaInativada = {
             cnpj: Utils.completarCnpjComZero(eventoTroca.args.CNPJ),
@@ -133,12 +133,12 @@ export class ListaEventos {
 
     static async registraEventosValidacao(web3Service, caller) {
 
-        console.log("*** Executou o metodo de registrar eventos VALIDACAO");
+        //console.log("*** Executou o metodo de registrar eventos VALIDACAO");
 
         let self = this;
 
         web3Service.recuperaEventosValidacao().then(async function (eventos) {
-            console.log("recuperaEventosValidacao().then");
+            //console.log("recuperaEventosValidacao().then");
             for (let i = 0; i < eventos.length; i++) {
                 await ListaEventos.processaEventoGenerico(eventos[i], "Validação", caller);
             }
@@ -148,10 +148,10 @@ export class ListaEventos {
 
     static async registraEventosInvalidacao(web3Service, caller) {
 
-        console.log("*** Executou o metodo de registrar eventos INVALIDACAO");
+        //console.log("*** Executou o metodo de registrar eventos INVALIDACAO");
 
         web3Service.recuperaEventosInvalidacao().then(async function (eventos) {
-            console.log("recuperaEventosInvalidacao().then");
+            //console.log("recuperaEventosInvalidacao().then");
             for (let i = 0; i < eventos.length; i++) {
                 await ListaEventos.processaEventoGenerico(eventos[i], "Invalidação", caller);
             }
@@ -161,12 +161,12 @@ export class ListaEventos {
 
     static async registraEventosPausa(web3Service, caller) {
 
-        console.log("*** Executou o metodo de registrar eventos Pausa");
+        //console.log("*** Executou o metodo de registrar eventos Pausa");
 
         let self = this;
 
         web3Service.recuperaEventosPausa().then(async function (eventos) {
-            console.log("recuperaEventosPausa().then");
+            //console.log("recuperaEventosPausa().then");
             for (let i = 0; i < eventos.length; i++) {
                 await ListaEventos.processaEventoGenerico(eventos[i], "Pausa", caller);
             }
@@ -176,12 +176,12 @@ export class ListaEventos {
 
     static async registraEventosDespausa(web3Service, caller) {
 
-        console.log("*** Executou o metodo de registrar eventos Despausa");
+        //console.log("*** Executou o metodo de registrar eventos Despausa");
 
         let self = this;
 
         web3Service.recuperaEventosDespausa().then(async function (eventos) {
-            console.log("recuperaEventosDespausa().then");
+            //console.log("recuperaEventosDespausa().then");
             for (let i = 0; i < eventos.length; i++) {
                 await ListaEventos.processaEventoGenerico(eventos[i], "Despausa", caller);
             }
@@ -192,8 +192,8 @@ export class ListaEventos {
     static async processaEventoGenerico(event, nomeEvento, self) {
         let transacaoPJ: DashboardPessoaJuridica;
 
-        console.log("Evento " + nomeEvento);
-        console.log(event);
+        //console.log("Evento " + nomeEvento);
+        //console.log(event);
 
         transacaoPJ = {
             RBBId: event.args.RBBId,
