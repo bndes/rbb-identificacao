@@ -120,6 +120,24 @@ export class Web3Service {
     conectar () {
         this.ethereum.enable();
     }
+    async recuperaEventos(){
+        let filter =[ this.RBBRegistrySmartContract.filters.AccountRegistration(null),
+         this.RBBRegistrySmartContract.filters.AccountValidation(null),
+         this.RBBRegistrySmartContract.filters.AccountInvalidation(null),
+         this.RBBRegistrySmartContract.filters.AccountRoleChange(null),
+        this.RBBRegistrySmartContract.filters.AccountPaused(null),
+         this.RBBRegistrySmartContract.filters.AccountUnpaused(null)];
+        
+        return await this.RBBRegistrySmartContract.queryFilter(filter);
+    }
+    async recuperaNovosEventos(caller, func){
+        this.RBBRegistrySmartContract.on("*", (event) => {
+            
+            //ListaEventos.registraNovoEvento(event,this, caller);
+            func(event,this, caller);
+          });
+
+    }
 
     async recuperaEventosCadastro() {
         let filter = this.RBBRegistrySmartContract.filters.AccountRegistration(null);

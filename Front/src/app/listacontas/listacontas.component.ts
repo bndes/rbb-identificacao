@@ -123,13 +123,16 @@ export class ListacontasComponent implements OnInit {
     ngOnInit() {
         let users;
 
-        setInterval(() => {         
+        setTimeout(() => {    
+            
             if (users == undefined || users.length != Array.from(this.listaTransacoesPJ).length) {
               console.log("ngOnInit :: Inicializa lista de transacoes");
               this.listaTransacoesPJ = [];   
             }
-            this.monitoraEventos();  
-          }, 60000)
+            
+            this.monitoraEventos();
+            
+          }, 3030)
       
           setInterval(() => {
             this.estadoLista = this.estadoLista === "undefined" ? "vazia" : "cheia"          
@@ -141,7 +144,7 @@ export class ListacontasComponent implements OnInit {
               this.dataSource.sort = this.sort;
               this.ref.detectChanges()
             }
-          }, 63)        
+          }, 330)         
 
 
 
@@ -186,13 +189,14 @@ export class ListacontasComponent implements OnInit {
         //        this.estadoLista = "vazia"
 
         console.log("*** Executou o metodo de registrar exibicao eventos");
-
-        ListaEventos.registraEventosCadastro(this.web3Service, this);
-        ListaEventos.registraEventosTroca(this.web3Service, this);
-        ListaEventos.registraEventosValidacao(this.web3Service, this);
-        ListaEventos.registraEventosInvalidacao(this.web3Service, this);
-        ListaEventos.registraEventosPausa(this.web3Service, this);
-        ListaEventos.registraEventosDespausa(this.web3Service, this);
+        ListaEventos.registraEventos(this.web3Service,this);
+        this.web3Service.recuperaNovosEventos(this,ListaEventos.registraNovoEvento);
+        //ListaEventos.registraEventosCadastro(this.web3Service, this);
+        //ListaEventos.registraEventosTroca(this.web3Service, this);
+        //ListaEventos.registraEventosValidacao(this.web3Service, this);
+        //ListaEventos.registraEventosInvalidacao(this.web3Service, this);
+        //ListaEventos.registraEventosPausa(this.web3Service, this);
+        //ListaEventos.registraEventosDespausa(this.web3Service, this);
     }
 
 

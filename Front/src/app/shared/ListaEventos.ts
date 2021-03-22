@@ -15,6 +15,34 @@ export class ListaEventos {
             }
         });
     }
+    static async registraEventos(web3Service, caller) {
+        let self = this;
+
+        
+        web3Service.recuperaEventos().then(async function (eventos) {
+            console.log("recuperaEventosCadastro().then");
+            for (let i = 0; i < eventos.length; i++) {
+                if(eventos[i].event==="AccountValidation") ListaEventos.processaEventoGenerico(eventos[i], "Validação", caller);
+                if(eventos[i].event==="AccountRegistration") ListaEventos.processaEventoCadastro(eventos[i], caller);
+                if(eventos[i].event==="AccountRoleChange") ListaEventos.processaEventoTroca(eventos[i], caller);
+                if(eventos[i].event==="AccountInvalidation") ListaEventos.processaEventoGenerico(eventos[i], "Invalidação", caller);
+                if(eventos[i].event==="AccountPaused")  ListaEventos.processaEventoGenerico(eventos[i], "Pausa", caller);
+                if(eventos[i].event==="AccountUnpaused") ListaEventos.processaEventoGenerico(eventos[i], "Despausa", caller);
+            }
+        });
+    }
+
+    static async registraNovoEvento(evento,web3Service ,caller) {
+        let self = this;
+
+        if(evento.event==="AccountValidation") ListaEventos.processaEventoGenerico(evento, "Validação", caller);
+        if(evento.event==="AccountRegistration") ListaEventos.processaEventoCadastro(evento, caller);
+        if(evento.event==="AccountRoleChange") ListaEventos.processaEventoTroca(evento, caller);
+        if(evento.event==="AccountInvalidation") ListaEventos.processaEventoGenerico(evento, "Invalidação", caller);
+        if(evento.event==="AccountPaused")  ListaEventos.processaEventoGenerico(evento, "Pausa", caller);
+        if(evento.event==="AccountUnpaused") ListaEventos.processaEventoGenerico(evento, "Despausa", caller);
+        
+    }
 
     static async processaEventoCadastro(event, self) {
         let transacaoPJ: DashboardPessoaJuridica;
