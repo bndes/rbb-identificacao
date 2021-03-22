@@ -13,11 +13,11 @@ const provider  = new ethers.providers.JsonRpcProvider("http://35.239.231.134:45
 
 ownerWallet = ownerWallet.connect(provider);
 
-/*
-ownerWallet.getChainId().then( (chainId) => {
-    console.log(chainId);
-}); 
-*/
+if ( true ) {
+    ownerWallet.getChainId().then( (chainId) => {
+        console.log(chainId);
+    }); 
+}
 
 const constractDoc = require('../Back-Blockchain/build/contracts/RBBRegistry.json');
 const abiAsJson = constractDoc.abi;
@@ -26,18 +26,19 @@ const bytecode = constractDoc.bytecode;
 
 const factory = new ethers.ContractFactory(abi, bytecode, ownerWallet);
 
-factory.deploy().then( async (rbbRegistrySmartContract) =>   {
+if ( false ) {
+    factory.deploy().then( async (rbbRegistrySmartContract) =>   {
 
-    console.log("Endereço do contrato: ", rbbRegistrySmartContract.address);
-    rbbRegistrySmartContract.setResponsibleForRegistryPreValidation(preValidationAddress);
-
-    //não adianta conferir resultado logo depois, mesmo se colocar await pq soh significa que a transacao foi enviada.
-    //Por isso é necessário ter o timeout
-
-    setTimeout(function(){ confereResultado(rbbRegistrySmartContract); }, 10000);
-
-});
-
+        console.log("Endereço do contrato: ", rbbRegistrySmartContract.address);
+        rbbRegistrySmartContract.setResponsibleForRegistryPreValidation(preValidationAddress);
+    
+        //não adianta conferir resultado logo depois, mesmo se colocar await pq soh significa que a transacao foi enviada.
+        //Por isso é necessário ter o timeout
+    
+        setTimeout(function(){ confereResultado(rbbRegistrySmartContract); }, 10000);
+    
+    });     
+}
 
 function getWallet(walletFileName, password) {
 
