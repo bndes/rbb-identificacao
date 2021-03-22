@@ -2,8 +2,12 @@ const ethers  = require('ethers');
 require("dotenv").config();
 
 let ownerWallet = getWallet('./ownerWallet.json', process.env.PASSWORD_OWNER_WALLET);
-const preValidationWallet = getWallet('./prevalidationWallet.json', process.env.PASSWORD_PREVALIDATION_WALLET);
-console.log("addr do PreValidador: ", preValidationWallet.address);
+console.log("owner: " + ownerWallet.address);
+
+//const preValidationWallet = getWallet('./prevalidationWallet.json', process.env.PASSWORD_PREVALIDATION_WALLET);
+//console.log("addr do PreValidador: ", preValidationWallet.address);
+//const preValidationAddress = preValidationWallet.address;
+const preValidationAddress = "0x5C6fC3b1241f5609752B1C94752aDe399BEEEB95";
 
 const provider  = new ethers.providers.JsonRpcProvider("http://35.239.231.134:4545/");
 
@@ -22,28 +26,16 @@ const bytecode = constractDoc.bytecode;
 
 const factory = new ethers.ContractFactory(abi, bytecode, ownerWallet);
 
-//console.log(factory);
+factory.deploy().then( async (rbbRegistrySmartContract) =>   {
 
-factory.deploy().then( async (deployedContractAddr) =>   {
+    console.log("Endereço do contrato: ", rbbRegistrySmartContract.address);
+    rbbRegistrySmartContract.setResponsibleForRegistryPreValidation(preValidationAddress);
 
-    console.log("owner=" + ownerWallet.address);
-    console.log("Endereço do contrato: ",deployedContractAddr.address);
-//    console.log(deployedContractAddr.deployTransaction);
-//    console.log(deployedContractAddr);
-   
-    let rbbRegistrySmartContract = new ethers.Contract(deployedContractAddr.address, abi, provider);
-    rbbRegistrySmartContract = rbbRegistrySmartContract.connect(ownerWallet);
+    //não adianta conferir resultado logo depois, mesmo se colocar await pq soh significa que a transacao foi enviada.
+    //Por isso é necessário ter o timeout
 
-    rbbRegistrySmartContract.on("*", (event) => {
-        console.log("event: ", event);
-    });
-    console.log("depois do on");
-    
-    await rbbRegistrySmartContract.setResponsibleForRegistryPreValidation(preValidationWallet.address);
-    console.log("setou setResponsibleForRegistryPreValidation");
+    setTimeout(function(){ confereResultado(rbbRegistrySmartContract); }, 10000);
 
-    //não adianta conferir resultado aqui, pois o await soh significa que a transacao foi enviada.
-    //TODO: incluir timeout
 });
 
 
@@ -51,20 +43,18 @@ function getWallet(walletFileName, password) {
 
     const encyptedWallet = require (walletFileName);
     const wallet = ethers.Wallet.fromEncryptedJsonSync(JSON.stringify(encyptedWallet), password);
-
-//    console.log(wallet.address);
-//    console.log(wallet.privateKey);
-//    console.log(wallet.publicKey);
-
     return wallet;
 
 }
 
 async function confereResultado(rbbRegistrySmartContract) {
     const resp = (await rbbRegistrySmartContract.responsibleForRegistryPreValidation());
-    console.log(preValidationWallet.address);
-    console.log("Responsavel pela prevalidacao no contrato = " + resp);
-
+    if (resp == preValidationAddress) {
+        console.log("Responsavel pela prevalidacao no contrato corretamente configurado");
+    }
+    else {
+        console.log("ERRO - Responsavel pela prevalidacao no contrato NÃO FOI corretamente configurado");
+    }
 }
 
 
