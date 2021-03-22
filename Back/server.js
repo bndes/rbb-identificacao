@@ -446,15 +446,16 @@ console.log("filePathAndNameToFront = " + filePathAndNameToFront);
 }
 
 
-const ethers  = require('ethers');
-var v_wallet  = require('./wallet.json');
+const ethers  		= require('ethers');
+var encyptedWallet  = require('./wallet.json');
+const password 		= process.env.PASSWORD_WALLET;
 
-const privateKey      = v_wallet.privkey;
+let preWallet 		  = ethers.Wallet.fromEncryptedJsonSync(JSON.stringify(encyptedWallet), password);
 const provider        = new ethers.providers.JsonRpcProvider(config.infra.URL_blockchain_provider);
-const wallet          = new ethers.Wallet(privateKey, provider);
+const wallet          = preWallet.connect(provider);
 const contractAddress = contrato_json_BNDESRegistry.networks[config.infra.rede_blockchain].address;
 
-console.log("Oracle Validator at " + v_wallet.address);
+console.log("Oracle Validator at " + encyptedWallet.address);
 
 let RBBRegistry;
 
@@ -524,6 +525,7 @@ async function listenEvent() {
 
 				} catch(err) {                
 					console.log("** ORACLE ** - Erro ao pré-validar o registro.");					
+					console.log(err);
 				}
 			} else {
 				try {
