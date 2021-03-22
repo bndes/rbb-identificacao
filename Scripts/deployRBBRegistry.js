@@ -26,6 +26,7 @@ const factory = new ethers.ContractFactory(abi, bytecode, ownerWallet);
 
 factory.deploy().then( async (deployedContractAddr) =>   {
 
+    console.log("owner=" + ownerWallet.address);
     console.log("Endereço do contrato: ",deployedContractAddr.address);
 //    console.log(deployedContractAddr.deployTransaction);
 //    console.log(deployedContractAddr);
@@ -36,8 +37,10 @@ factory.deploy().then( async (deployedContractAddr) =>   {
     rbbRegistrySmartContract.on("*", (event) => {
         console.log("event: ", event);
     });
+    console.log("depois do on");
     
     await rbbRegistrySmartContract.setResponsibleForRegistryPreValidation(preValidationWallet.address);
+    console.log("setou setResponsibleForRegistryPreValidation");
 
     //não adianta conferir resultado aqui, pois o await soh significa que a transacao foi enviada.
     //TODO: incluir timeout
