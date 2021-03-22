@@ -19,7 +19,7 @@ ownerWallet.getChainId().then( (chainId) => {
 }); 
 */
 
-const constractDoc = require('../Back-Blockchain/build/contracts/RBBRegistry_v2.json');
+const constractDoc = require('../Back-Blockchain/build/contracts/RBBRegistry.json');
 const abiAsJson = constractDoc.abi;
 const abi = JSON.stringify(abiAsJson);
 const bytecode = constractDoc.bytecode;
