@@ -54595,10 +54595,409 @@
       "links": {},
       "address": "0x02c55bE4896fA422504Fdb08FC12bA8cCfFacA71",
       "transactionHash": "0x8156b839463667cdddb77de9a2039a9396b7b81716f84b1c7e3751c7e5a8b1ed"
+    },
+    "1616528062860": {
+      "events": {
+        "0xf21c6489d7501ed8680a8057bde75d0b1a96ed72c4e7fb66dab5500b247f573b": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "addr",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "RBBId",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint64",
+              "name": "CNPJ",
+              "type": "uint64"
+            },
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "responsible",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint8",
+              "name": "reason",
+              "type": "uint8"
+            }
+          ],
+          "name": "AccountInvalidation",
+          "type": "event"
+        },
+        "0xca968621fb765ebc0063732949287ab2f87e93949cbb9adea1cc88bba7576dea": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "addr",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "RBBId",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint64",
+              "name": "CNPJ",
+              "type": "uint64"
+            },
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "responsible",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint8",
+              "name": "reason",
+              "type": "uint8"
+            }
+          ],
+          "name": "AccountPaused",
+          "type": "event"
+        },
+        "0xf492947317cd8bacaf07d8d493aa37edfc267531f5c311a42eaf0b68d332f38b": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "addr",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "string",
+              "name": "hashProof",
+              "type": "string"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "dateTimeExpiration",
+              "type": "uint256"
+            }
+          ],
+          "name": "AccountReactivation",
+          "type": "event"
+        },
+        "0xdf705ffb67f3c12f456a843de9785cb8435e6819b1974e5df6de4557ae2f52f6": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "addr",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "RBBId",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint64",
+              "name": "CNPJ",
+              "type": "uint64"
+            },
+            {
+              "indexed": false,
+              "internalType": "string",
+              "name": "hashProof",
+              "type": "string"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "dateTimeExpiration",
+              "type": "uint256"
+            }
+          ],
+          "name": "AccountRegistration",
+          "type": "event"
+        },
+        "0x88cebc155ea8ba8817e645e0a5b1b3b0b8df2fa2ba43085214291c34f1eebb30": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "addr",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "RBBId",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint64",
+              "name": "CNPJ",
+              "type": "uint64"
+            },
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "responsible",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "enum RBBRegistry.BlockchainAccountRole",
+              "name": "roleBefore",
+              "type": "uint8"
+            },
+            {
+              "indexed": false,
+              "internalType": "enum RBBRegistry.BlockchainAccountRole",
+              "name": "roleNew",
+              "type": "uint8"
+            }
+          ],
+          "name": "AccountRoleChange",
+          "type": "event"
+        },
+        "0x227cbae91e983df06bd1200d744f04513fee47cfd847092fa7f5c8c1ad622081": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "addr",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "RBBId",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint64",
+              "name": "CNPJ",
+              "type": "uint64"
+            },
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "responsible",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint8",
+              "name": "reason",
+              "type": "uint8"
+            }
+          ],
+          "name": "AccountUnpaused",
+          "type": "event"
+        },
+        "0x90e796ddecc580ca3db3277073bdbf5d9c3eac364c19683d78a0bb129021360b": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "addr",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "RBBId",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint64",
+              "name": "CNPJ",
+              "type": "uint64"
+            },
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "responsible",
+              "type": "address"
+            }
+          ],
+          "name": "AccountValidation",
+          "type": "event"
+        },
+        "0x88a401630afd2c730097d0a0f3a014c6e7cc6db68bb1b13d4e1a37622b445181": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "addr",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "RBBId",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint64",
+              "name": "CNPJ",
+              "type": "uint64"
+            },
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "responsible",
+              "type": "address"
+            }
+          ],
+          "name": "AccountWaitingApproval",
+          "type": "event"
+        },
+        "0x59567b1124b6234e30f0a452574ad973b93bff3b825fb38e284fb8bc9b0c104b": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "addr",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "RBBId",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint64",
+              "name": "CNPJ",
+              "type": "uint64"
+            },
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "responsible",
+              "type": "address"
+            }
+          ],
+          "name": "AccountWaitingRejection",
+          "type": "event"
+        },
+        "0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "previousOwner",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "newOwner",
+              "type": "address"
+            }
+          ],
+          "name": "OwnershipTransferred",
+          "type": "event"
+        },
+        "0x33e73778e90a0a7d35d5d4332f4668b1fcff659529950c30f760a39ba49fafec": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "addr",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "dateTimeExpirationBefore",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "dateTimeExpirationNew",
+              "type": "uint256"
+            }
+          ],
+          "name": "RegistryExpirationChange",
+          "type": "event"
+        },
+        "0xe8940ba94a1b862af0a845755bbe38516264b7937dc69ffdb00fa16bb9c2c85f": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "rs",
+              "type": "address"
+            }
+          ],
+          "name": "RoleDefinitionActingAfterMonitoring",
+          "type": "event"
+        },
+        "0xb4b21447ed122203af852ed9cc9406dfcf15215ca2a22c6e2adca1156bccea91": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "rs",
+              "type": "address"
+            }
+          ],
+          "name": "RoleDefinitionRegistryPreValidation",
+          "type": "event"
+        },
+        "0xab616eba0b7070d2d87e12d5c2d05868da9a14a38db4c54abb148faa879bdf62": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "rs",
+              "type": "address"
+            }
+          ],
+          "name": "RoleDefinitionRegistryValidation",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x17Be42D2Cf0e721C154E61aD9940d8bA2590dB70",
+      "transactionHash": "0x53df331c3fc1efdcf0f6094f8020033416a96537591e124084635b42d8ede692"
     }
   },
   "schemaVersion": "3.3.3",
-  "updatedAt": "2021-03-23T15:16:52.239Z",
+  "updatedAt": "2021-03-23T19:50:49.130Z",
   "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",
