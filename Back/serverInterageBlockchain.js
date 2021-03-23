@@ -10,7 +10,7 @@ main();
         console.log("inicio serverblockchain.js");
 
         // Connect to the network
-        let provider = new ethers.providers.JsonRpcProvider("http://127.0.0.1:9545/");        
+        let provider = new ethers.providers.JsonRpcProvider("http://127.0.0.1:8545/");        
         //let provider = ethers.getDefaultProvider('rinkeby');
         
         provider.getBlockNumber().then((blockNumber) => {
