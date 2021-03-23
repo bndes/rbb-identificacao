@@ -7,9 +7,9 @@ console.log("owner: " + ownerWallet.address);
 //const preValidationWallet = getWallet('./prevalidationWallet.json', process.env.PASSWORD_PREVALIDATION_WALLET);
 //console.log("addr do PreValidador: ", preValidationWallet.address);
 //const preValidationAddress = preValidationWallet.address;
-const preValidationAddress = "0x5C6fC3b1241f5609752B1C94752aDe399BEEEB95";
+const preValidationAddress = "0x1baafa8a6ecab2b1d6c3683d480966233704e30c";
 
-const provider  = new ethers.providers.JsonRpcProvider("http://35.239.231.134:4545/");
+const provider  = new ethers.providers.JsonRpcProvider("http://localhost:9545/");
 
 ownerWallet = ownerWallet.connect(provider);
 

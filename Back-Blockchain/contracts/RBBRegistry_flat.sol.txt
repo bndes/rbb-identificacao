@@ -95,11 +95,11 @@ contract Ownable is Context {
     }
 }
 
-// File: contracts/IRBBRegistry_v2.sol
+// File: contracts/IRBBRegistry.sol
 
 pragma solidity ^0.6.0;
 
-interface IRBBRegistry_v2 {
+interface IRBBRegistry {
 
     //Verifica se estah operacional antes de retornar
     function getId (address addr) external view returns (uint);
@@ -126,13 +126,13 @@ interface IRBBRegistry_v2 {
 
 }
 
-// File: contracts/RBBRegistry_v2.sol
+// File: contracts/RBBRegistry.sol
 
 pragma solidity ^0.6.0;
 
 
 
-contract RBBRegistry_v2 is IRBBRegistry_v2, Ownable() {
+contract RBBRegistry is IRBBRegistry, Ownable() {
 
     enum BlockchainAccountState {AVAILABLE,WAITING_VALIDATION,WAITING_APPROVAL,WAITING_REJECTION,VALIDATED,INVALIDATED}
     BlockchainAccountState blockchainState; /* Variable not used, only defined to create the enum type. */
