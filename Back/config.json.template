@@ -2,7 +2,7 @@
 	"infra": {
 		"contrato_json_BNDESRegistry": "./../Back-Blockchain/build/contracts/RBBRegistry.json",
 		"rede_blockchain": "5777",
-		"URL_blockchain_provider" : "http://localhost:9545",
+		"URL_blockchain_provider" : "http://localhost:8545",
 		"endereco_BNDESRegistry": "0x8c2C102789917590d58c2F9bA2FE568ECE990cc7",
 		"addr_bd": "mongodb://localhost/",
 		"name_bd": "rbbid",		
