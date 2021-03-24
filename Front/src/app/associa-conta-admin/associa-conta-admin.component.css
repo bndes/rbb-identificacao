@@ -147,7 +147,25 @@ p {
   padding-left: 5px;
 }
 
+.disabledButton{
+  background: #ffffff00;
+  border-color: #1351b460;
+  color: #1351b460;
+  cursor:not-allowed !important;
+  pointer-events: none;
+}
 
+.color-danger{
+  background-color: #e600001f !important;
+  border-color: #e60000 !important;
+  color:  #e60000 !important;
+}
+
+.color-success{
+  background-color:  #1688211f !important;
+  border-color: #168821 !important;
+  color:#168821 !important;
+}
 
 .container .leftbox {
     float: left;

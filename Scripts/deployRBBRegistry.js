@@ -7,37 +7,38 @@ console.log("owner: " + ownerWallet.address);
 //const preValidationWallet = getWallet('./prevalidationWallet.json', process.env.PASSWORD_PREVALIDATION_WALLET);
 //console.log("addr do PreValidador: ", preValidationWallet.address);
 //const preValidationAddress = preValidationWallet.address;
-const preValidationAddress = "0x5C6fC3b1241f5609752B1C94752aDe399BEEEB95";
+const preValidationAddress = "0x1baafa8a6ecab2b1d6c3683d480966233704e30c";
 
-const provider  = new ethers.providers.JsonRpcProvider("http://35.239.231.134:4545/");
+const provider  = new ethers.providers.JsonRpcProvider("http://localhost:8545/");
 
 ownerWallet = ownerWallet.connect(provider);
 
-/*
-ownerWallet.getChainId().then( (chainId) => {
-    console.log(chainId);
-}); 
-*/
+if ( true ) {
+    ownerWallet.getChainId().then( (chainId) => {
+        console.log(chainId);
+    }); 
+}
 
-const constractDoc = require('../Back-Blockchain/build/contracts/RBBRegistry_v2.json');
+const constractDoc = require('../Back-Blockchain/build/contracts/RBBRegistry.json');
 const abiAsJson = constractDoc.abi;
 const abi = JSON.stringify(abiAsJson);
 const bytecode = constractDoc.bytecode;
 
 const factory = new ethers.ContractFactory(abi, bytecode, ownerWallet);
 
-factory.deploy().then( async (rbbRegistrySmartContract) =>   {
+if ( false ) {
+    factory.deploy().then( async (rbbRegistrySmartContract) =>   {
 
-    console.log("Endereço do contrato: ", rbbRegistrySmartContract.address);
-    rbbRegistrySmartContract.setResponsibleForRegistryPreValidation(preValidationAddress);
-
-    //não adianta conferir resultado logo depois, mesmo se colocar await pq soh significa que a transacao foi enviada.
-    //Por isso é necessário ter o timeout
-
-    setTimeout(function(){ confereResultado(rbbRegistrySmartContract); }, 10000);
-
-});
-
+        console.log("Endereço do contrato: ", rbbRegistrySmartContract.address);
+        rbbRegistrySmartContract.setResponsibleForRegistryPreValidation(preValidationAddress);
+    
+        //não adianta conferir resultado logo depois, mesmo se colocar await pq soh significa que a transacao foi enviada.
+        //Por isso é necessário ter o timeout
+    
+        setTimeout(function(){ confereResultado(rbbRegistrySmartContract); }, 10000);
+    
+    });     
+}
 
 function getWallet(walletFileName, password) {
 

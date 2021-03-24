@@ -1,6 +1,6 @@
 const ethers  = require('ethers');
 
-//const abiAsJson = require ('../Back-Blockchain/build/contracts/RBBRegistry_v2.json').abi;
+//const abiAsJson = require ('../Back-Blockchain/build/contracts/RBBRegistry.json').abi;
 
 const abiAsJson = [
 	{

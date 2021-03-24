@@ -70,7 +70,7 @@
 
             <!-- Supadmin -->
             <div style="color: #cebb11;" class="status-conta"
-                *ngIf="this.usuario.roleAsString == 'Supadmin && this.usuario.roleAsString != undefined'">
+                *ngIf="this.usuario != undefined && this.usuario.roleAsString == 'Supadmin && this.usuario.roleAsString != undefined'">
               SUPADMIN
             </div>
 
@@ -81,13 +81,13 @@
           <template #htmlTemplate>
             <div>
               <h1>CNPJ:</h1>
-              <h2>{{this.usuario.cnpj | mask: '00.000.000/0000-00'}}</h2>
+              <h2 *ngIf="this.usuario != undefined">{{this.usuario.cnpj | mask: '00.000.000/0000-00'}}</h2>
 
               <h1>Situação:</h1>
-              <h2>{{this.usuario.statusAsString}}</h2>
+              <h2 *ngIf="this.usuario != undefined">{{this.usuario.statusAsString}}</h2>
 
               <h1>Papel:</h1>
-              <h2>{{this.usuario.roleAsString}}</h2>
+              <h2 *ngIf="this.usuario != undefined">{{this.usuario.roleAsString}}</h2>
             </div>
           </template>
 
