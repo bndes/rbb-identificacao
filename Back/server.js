@@ -395,9 +395,14 @@ async function trataUpload(req, res, next) {
 					src.on('error', function (err)
 					{
 						console.log("Upload ERROR! from "+ tmp_path + ", original name " + req.file.originalname + ", copied to " + target_path); 
-					});	
-					await SERVER_FUNCTIONS.validateDocumentSignature(src, cnpjEsperado);					
-					res.json(hashedResult);				
+					});						
+					let retornoValidacaoCert = await SERVER_FUNCTIONS.validateDocumentSignature(src, cnpjEsperado);
+					if ( retornoValidacaoCert == 0 ) {
+						res.json(hashedResult);		
+					}	
+					else {
+						res.json("ERRO: " + retornoValidacaoCert );		
+					}			
 					
 				} catch (err) {
 					let msg = " ERRO: Certificado não está no formato adequado. ";
