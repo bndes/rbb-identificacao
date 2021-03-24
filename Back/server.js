@@ -385,24 +385,20 @@ async function trataUpload(req, res, next) {
 				const cnpjEsperado = cnpj;
 				
 				try {
-					let retornoValidacaoCert = await SERVER_FUNCTIONS.validateDocumentSignature(src, cnpjEsperado);
-					if ( retornoValidacaoCert == 0 ) {
-						const dest = fs.createWriteStream(target_path);
-						src.pipe(dest);
-						src.on('end', function ()
-						{
-							console.log("Upload Completed from "+ tmp_path + ", original name " + req.file.originalname + ", copied to " + target_path); 
-						});
-						src.on('error', function (err)
-						{
-							console.log("Upload ERROR! from "+ tmp_path + ", original name " + req.file.originalname + ", copied to " + target_path); 
-						});	
-						res.json(hashedResult);
-					} else {
-						let msg = " ERRO: " + retornoValidacaoCert;
-						console.log(msg); 
-						res.json(msg);
-					}
+
+					const dest = fs.createWriteStream(target_path);
+					src.pipe(dest);
+					src.on('end', async function ()
+					{
+						console.log("Upload Completed from "+ tmp_path + ", original name " + req.file.originalname + ", copied to " + target_path); 						
+					});
+					src.on('error', function (err)
+					{
+						console.log("Upload ERROR! from "+ tmp_path + ", original name " + req.file.originalname + ", copied to " + target_path); 
+					});	
+					await SERVER_FUNCTIONS.validateDocumentSignature(src, cnpjEsperado);					
+					res.json(hashedResult);				
+					
 				} catch (err) {
 					let msg = " ERRO: Certificado não está no formato adequado. ";
 					console.log(msg); 
