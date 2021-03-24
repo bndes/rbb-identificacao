@@ -450,7 +450,7 @@ console.log("filePathAndNameToFront = " + filePathAndNameToFront);
 
 const ethers  		= require('ethers');
 var encyptedWallet  = require('./wallet.json');
-const password 		= process.env.PASSWORD_WALLET;
+const password 		= process.env.PASSWORD_PREVALIDATION_WALLET;
 
 let preWallet 		  = ethers.Wallet.fromEncryptedJsonSync(JSON.stringify(encyptedWallet), password);
 const provider        = new ethers.providers.JsonRpcProvider(config.infra.URL_blockchain_provider);
