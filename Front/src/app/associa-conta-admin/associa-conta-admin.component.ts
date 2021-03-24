@@ -35,6 +35,7 @@ export class AssociaContaAdminComponent implements OnInit {
   load: boolean;
   disable: boolean;
   statusConta: boolean;
+  estadoConta: string;
 
   loadButton = {};
   alertOptions = {
@@ -52,10 +53,13 @@ export class AssociaContaAdminComponent implements OnInit {
       setInterval(function () {
         self.recuperaContaSelecionada(),
         1000});
-
+      setInterval(function () {
+        self.checkCadastro(),
+        1000});
       this.load = false;
       this.disable = true;
       this.uploadstart = false;
+      this.statusConta = false;
     }
 
   ngOnInit() {
@@ -63,12 +67,6 @@ export class AssociaContaAdminComponent implements OnInit {
     this.flagUploadConcluido = false;
     this.cliente = new Cliente();
     this.cliente.subcreditos = new Array<Subcredito>();
-
-    if (this.selectedAccount != 0) {
-      this.statusConta = true;
-    } else {
-      this.statusConta = false
-    }
   }
 
   inicializaDadosDerivadosPessoaJuridica() {
@@ -100,10 +98,7 @@ export class AssociaContaAdminComponent implements OnInit {
   }
 
   preparaUpload(cnpj, contrato, selectedAccount, self) {
-    if (this.uploadstart == true) {
-      this.load=true;
-      this.disable=false;
-    }
+
     console.log("preapra upload");
     console.log("cnpj=" + cnpj);
     console.log("contrato=" + contrato);
@@ -112,12 +107,20 @@ export class AssociaContaAdminComponent implements OnInit {
 
     if (cnpj  &&  selectedAccount) {
       this.fileHandleService.atualizaUploaderComponent(cnpj, contrato, selectedAccount, tipo, self);
-
+    }
+  }
+  checkCadastro(){
+    if (this.uploadstart == true) {
       if (this.flagUploadConcluido == true) {
+        console.log("upload concluido");
         this.load = false;
         this.disable = false;
+        this.uploadstart = false;
+      } else {
+        this.disable = false;
+        this.load = true;
       }
-    }
+    };
   }
 
   cancelar() {
@@ -125,6 +128,8 @@ export class AssociaContaAdminComponent implements OnInit {
 
     this.inicializaDadosDerivadosPessoaJuridica();
   }
+
+
 
   async recuperaContaSelecionada() {
 
