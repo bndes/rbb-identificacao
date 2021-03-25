@@ -69,7 +69,8 @@ const TIMESTAMP: string[] = [
 })
 export class ValidarContaAdminComponent implements OnInit {
 
-  displayedColumns: string[] = ['rbbid', 'cnpj', 'name', 'address' , 'perfil',  'evento', 'status', 'validacao', 'congelamento', 'congelamentoCNPJ'];
+  //displayedColumns: string[] = ['rbbid', 'cnpj', 'name', 'address' , 'perfil',  'evento', 'status', 'validacao', 'congelamento', 'congelamentoCNPJ'];
+  displayedColumns: string[] = ['rbbid', 'cnpj', 'name', 'address' , 'perfil',  'status', 'validacao', 'congelamento', 'congelamentoCNPJ'];
   dataSource: MatTableDataSource<DashboardPessoaJuridica>;
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
@@ -187,9 +188,10 @@ export class ValidarContaAdminComponent implements OnInit {
 //        this.estadoLista = "vazia"
 
       console.log("*** Executou o metodo de registrar exibicao eventos");
-      ListaEventos.registraEventos(this.web3Service,this);
-      this.web3Service.recuperaNovosEventos(this,ListaEventos.registraNovoEvento);
-      //ListaEventos.registraEventosCadastro      (this.web3Service, this);
+      //ListaEventos.registraEventos(this.web3Service,this);
+      //this.web3Service.recuperaNovosEventos(this,ListaEventos.registraNovoEvento);
+      
+      ListaEventos.registraEventosCadastro      (this.web3Service, this);
       //ListaEventos.registraEventosTroca         (this.web3Service, this); 
       //ListaEventos.registraEventosValidacao     (this.web3Service, this);
       //ListaEventos.registraEventosInvalidacao   (this.web3Service, this);      

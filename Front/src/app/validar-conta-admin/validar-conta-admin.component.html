@@ -57,7 +57,7 @@
             </ng-container>
     
             <ng-container matColumnDef="status">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header> Situação </th>
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Situação Atual</th>
               <td style="text-align: center; font-weight: 550; font-size: 16px; " mat-cell *matCellDef="let row"> 
                 {{row.status}} <span *ngIf='row.pausada'>e Pausada</span>
               </td>
