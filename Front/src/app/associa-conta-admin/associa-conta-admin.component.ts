@@ -36,6 +36,7 @@ export class AssociaContaAdminComponent implements OnInit {
   disable: boolean;
   statusConta: boolean;
   estadoConta: string;
+  usuario: any;
 
   loadButton = {};
   alertOptions = {
@@ -56,6 +57,7 @@ export class AssociaContaAdminComponent implements OnInit {
       setInterval(function () {
         self.checkCadastro(),
         1000});
+
       this.load = false;
       this.disable = true;
       this.uploadstart = false;
@@ -109,7 +111,7 @@ export class AssociaContaAdminComponent implements OnInit {
       this.fileHandleService.atualizaUploaderComponent(cnpj, contrato, selectedAccount, tipo, self);
     }
   }
-  checkCadastro(){
+  async checkCadastro(){
     if (this.uploadstart == true) {
       if (this.flagUploadConcluido == true) {
         console.log("upload concluido");
@@ -121,6 +123,13 @@ export class AssociaContaAdminComponent implements OnInit {
         this.load = true;
       }
     };
+    let estadoConta = await this.web3Service.getEstadoContaAsString(this.selectedAccount);
+
+    if (this.selectedAccount && estadoConta =='Disponível') {
+      this.statusConta = true;
+    } else {
+      this.statusConta = false;
+    }
   }
 
   cancelar() {

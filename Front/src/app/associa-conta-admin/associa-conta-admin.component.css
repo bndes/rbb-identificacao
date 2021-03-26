@@ -167,6 +167,14 @@ p {
   color:#168821 !important;
 }
 
+.text-danger{
+  color:  #e60000 !important;
+}
+
+.text-sucess{
+  color:#168821 !important;
+}
+
 .container .leftbox {
     float: left;
     top: -5%;
