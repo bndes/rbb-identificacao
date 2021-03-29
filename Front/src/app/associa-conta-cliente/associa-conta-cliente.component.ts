@@ -32,6 +32,8 @@ export class AssociaContaClienteComponent implements OnInit {
   declaracao_titulo: string;
   declaracao_corpo: string;
   declaracao: string;
+  disable: boolean;
+  statusConta: boolean;
 
   alertOptions = {
     autoClose: true,
@@ -40,17 +42,23 @@ export class AssociaContaClienteComponent implements OnInit {
 
   constructor(private pessoaJuridicaService: PessoaJuridicaService,
     private web3Service: Web3Service, private router: Router, private zone: NgZone, private ref: ChangeDetectorRef,
-    public fileHandleService: FileHandleService, public alertService: AlertService) {       
+    public fileHandleService: FileHandleService, public alertService: AlertService) {
 
       let self = this;
 
       setInterval(function () {
-        self.recuperaContaSelecionada(), 
+        self.recuperaContaSelecionada(),
         1000});
+      setInterval(function () {
+        self.checkCadastro(),
+        1000});
+
+      this.disable = true;
+      this.statusConta = false;
     }
 
   ngOnInit() {
-    this.maskCnpj = Utils.getMaskCnpj(); 
+    this.maskCnpj = Utils.getMaskCnpj();
     this.flagUploadConcluido = false;
     this.cliente = new Cliente();
     this.cliente.subcreditos = new Array<Subcredito>();
@@ -59,7 +67,7 @@ export class AssociaContaClienteComponent implements OnInit {
   inicializaDadosDerivadosPessoaJuridica() {
     this.cliente.dadosCadastrais = undefined;
     this.subcreditoSelecionado = 0;
-    this.hashdeclaracao = undefined;    
+    this.hashdeclaracao = undefined;
     this.flagUploadConcluido = false;
     this.cliente.subcreditos = new Array<Subcredito>();
   }
@@ -70,27 +78,27 @@ export class AssociaContaClienteComponent implements OnInit {
     let cnpj = this.cliente.cnpj;
     this.inicializaDadosDerivadosPessoaJuridica();
 
-    if ( cnpj.length == 14 ) { 
+    if ( cnpj.length == 14 ) {
       console.log (" Buscando o CNPJ do cliente (14 digitos fornecidos)...  " + cnpj)
       this.recuperaClientePorCNPJ(cnpj);
     }
 
     this.pessoaJuridicaService.pedeDeclaracao(cnpj, this.selectedAccount).subscribe(
-      empresa => { 
+      empresa => {
         console.log("associa...pedeDeclaracao(cnpj)");
         console.log(empresa);
-        
-        this.declaracao_titulo =  JSON.stringify(empresa.declaracao_titulo);
-        this.declaracao_corpo =  JSON.stringify(empresa.declaracao_corpo); 
 
-        
+        this.declaracao_titulo =  JSON.stringify(empresa.declaracao_titulo);
+        this.declaracao_corpo =  JSON.stringify(empresa.declaracao_corpo);
+
+
       },
       error => {
         console.log("associa...pedeDeclaracao(cnpj)");
         console.log(error);
       }
     );
-    
+
     this.preparaUpload(this.cliente.cnpj, this.subcreditoSelecionado, this.selectedAccount, this);
   }
 
@@ -109,45 +117,56 @@ export class AssociaContaClienteComponent implements OnInit {
     if (cnpj  &&  selectedAccount) {
       this.fileHandleService.atualizaUploaderComponent(cnpj, contrato, selectedAccount, tipo, self);
     }
-  }  
+  }
 
-  cancelar() { 
+  cancelar() {
     this.cliente = new Cliente();
 
     this.inicializaDadosDerivadosPessoaJuridica();
   }
 
+  async checkCadastro(){
+    let estadoConta = await this.web3Service.getEstadoContaAsString(this.selectedAccount);
+
+    if (this.selectedAccount != 0 && estadoConta =='Disponível') {
+      this.statusConta = true;
+      this.disable = false;
+    } else {
+      this.statusConta = false;
+    }
+  }
+
   async recuperaContaSelecionada() {
 
-    let self = this;      
+    let self = this;
     let newSelectedAccount = await this.web3Service.getCurrentAccountSync();
     if ( !self.selectedAccount || (newSelectedAccount !== self.selectedAccount && newSelectedAccount)) {
       if ( this.flagUploadConcluido == false ) {
         this.selectedAccount = newSelectedAccount;
         console.log("selectedAccount=" + this.selectedAccount);
-        this.verificaEstadoContaBlockchainSelecionada(this.selectedAccount); 
-        this.preparaUpload(this.cliente.cnpj, this.subcreditoSelecionado, this.selectedAccount, this);      
+        this.verificaEstadoContaBlockchainSelecionada(this.selectedAccount);
+        this.preparaUpload(this.cliente.cnpj, this.subcreditoSelecionado, this.selectedAccount, this);
       }
       else {
         console.log( "Upload has already made! You should not change your account. Reseting... " );
         this.cancelar();
-      }        
-    }    
+      }
+    }
 
   }
 
   async verificaEstadoContaBlockchainSelecionada(contaBlockchainSelecionada) {
-    
+
     let self = this;
-    console.log("result contaBlockchainSelecionada=" + contaBlockchainSelecionada);            
+    console.log("result contaBlockchainSelecionada=" + contaBlockchainSelecionada);
 
     if (contaBlockchainSelecionada) {
         let estadoConta = await this.web3Service.getEstadoContaAsString(contaBlockchainSelecionada);
 
           if (estadoConta){
             self.contaEstaValida = estadoConta
-            console.log("result conta=" + estadoConta);            
-                  
+            console.log("result conta=" + estadoConta);
+
             setTimeout(() => {
               self.ref.detectChanges()
             }, 1000)
@@ -170,11 +189,11 @@ export class AssociaContaClienteComponent implements OnInit {
           console.log("empresa encontrada - ");
           console.log(empresa);
           this.inicializaDadosDerivadosPessoaJuridica();
-          
+
           self.cliente.dadosCadastrais = empresa["dadosCadastrais"];
 
           for (var i = 0; i < empresa["subcreditos"].length; i++) {
-           
+
             let subStr = JSON.parse(JSON.stringify(empresa["subcreditos"][i]));
             //self.includeAccountIfNoAssociated(self, cnpj, subStr);
 
@@ -203,35 +222,35 @@ export class AssociaContaClienteComponent implements OnInit {
   includeAccountIfNoAssociated (self, cnpj, sub) {
 
     self.web3Service.getPJInfoByCnpj(cnpj, sub.numero,
-              
+
       (pjInfo) => {
-  
-        if (pjInfo.isAssociavel) { 
-            self.includeIfNotExists(self.cliente.subcreditos, sub);            
+
+        if (pjInfo.isAssociavel) {
+            self.includeIfNotExists(self.cliente.subcreditos, sub);
 
             if (!self.subcreditoSelecionado) {
               self.subcreditoSelecionado = self.cliente.subcreditos[0].numero;
-              self.preparaUpload(self.cliente.cnpj, self.subcreditoSelecionado, self.selectedAccount, self); 
+              self.preparaUpload(self.cliente.cnpj, self.subcreditoSelecionado, self.selectedAccount, self);
             }
         }
-  
+
       },
       (error) => {
         console.log("Erro ao verificar se contrato estah associado na blockhain");
         console.log(error);
       })
-  
+
   }
 
 
   includeIfNotExists(subcreditos, sub) {
 
     let include = true;
-    for(var i=0; i < subcreditos.length; i++) { 
+    for(var i=0; i < subcreditos.length; i++) {
       if (subcreditos[i].numero==sub.numero) {
         include=false;
       }
-    }  
+    }
     if (include) subcreditos.push(sub);
   }
 
@@ -240,25 +259,25 @@ export class AssociaContaClienteComponent implements OnInit {
   async associarContaCliente() {
     console.log('associarContaRegular:: inicio')
     let self = this;
-     
-    let result = await this.web3Service.isContaDisponivel(this.selectedAccount); 
 
-    if (!result) {  
-      let msg = "A conta "+ this.selectedAccount +" não está disponível para associação"; 
+    let result = await this.web3Service.isContaDisponivel(this.selectedAccount);
+
+    if (!result) {
+      let msg = "A conta "+ this.selectedAccount +" não está disponível para associação";
       this.alertService.error(msg, this.alertOptions);
     }
     else {
       this.hashdeclaracao = "0";
       this.web3Service.cadastra(parseInt(self.cliente.cnpj), self.hashdeclaracao).then(
-        function(txHash) { 
+        function(txHash) {
           self.alertService.success("Gravação concluída na Blockchain.", self.alertOptions);
-          self.router.navigate(['home/associa/contas']);            
-        }        
-      , function(error) {  
+          self.router.navigate(['home/associa/contas']);
+        }
+      , function(error) {
           self.alertService.error("Erro ao asssociar", self.alertOptions);
       });
       this.alertService.info("Confirme no metamask", this.alertOptions);
-    } 
+    }
 
   }
 
@@ -268,17 +287,17 @@ export class AssociaContaClienteComponent implements OnInit {
        pagesplit: true
     };
     console.log(pdf);
-    
+
     const splitTitulo = pdf.splitTextToSize(this.declaracao_titulo, 540);
     pdf.text(splitTitulo,30,100);
 
     const splitCorpo = pdf.splitTextToSize(this.declaracao_corpo, 540);
     pdf.text(splitCorpo,30,200);
-    
+
     pdf.save("declaracao_rbb_para_assinar.pdf");
-    
+
  }
 
-  
+
 
 }
