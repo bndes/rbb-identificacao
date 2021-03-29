@@ -264,6 +264,7 @@ contract RBBRegistry is IRBBRegistry, Ownable() {
         require( isTheSameID(responsible, addr), "Somente conta de mesma organização pode executar esta ação" );
 
         require ((addr==responsible || !isAdmin(addr)), "Não pode pausar conta de outro ADMIN");
+        require ((addr==responsible || isAdmin(responsible)), "Conta REGULAR não pode pausar outra conta");
 
         pauseAddressInternal (addr, 1);
 
@@ -379,6 +380,7 @@ contract RBBRegistry is IRBBRegistry, Ownable() {
         require( isTheSameID(responsible, addr) , "Apenas contas da mesma organizacao podem ser invalidadas. ");
 
         require ((addr==responsible || !isAdmin(addr)), "Não pode invalidar conta de outro ADMIN");
+        require ((addr==responsible || isAdmin(responsible)), "Conta REGULAR não pode invalidar outra conta");
 
         invalidateAddressInternal(addr, 2);
 
@@ -538,16 +540,18 @@ contract RBBRegistry is IRBBRegistry, Ownable() {
         return legalEntitiesInfo[addr].CNPJ;
     }
 
-    function getRegistry (address addr) public view override returns (uint, uint64, string memory, uint, uint, bool, uint256) {
+    function getRegistry (address addr) public view override returns (uint, uint64, string memory, uint, uint, bool, uint256, bool) {
         Registry memory reg = legalEntitiesInfo[addr];
         string memory proof = reg.hashProof;
+        bool bExp = isExpired(addr);
         return (  reg.RBBId,
                   reg.CNPJ, 
                   proof, 
                   (uint) (reg.state),
                   (uint) (reg.role),
                   reg.paused,
-                  reg.dateTimeExpiration
+                  reg.dateTimeExpiration,
+                  bExp
                 );
     }
 
