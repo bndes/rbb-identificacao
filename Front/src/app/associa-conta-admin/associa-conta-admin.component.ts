@@ -36,7 +36,6 @@ export class AssociaContaAdminComponent implements OnInit {
   disable: boolean;
   statusConta: boolean;
   estadoConta: string;
-  usuario: any;
 
   loadButton = {};
   alertOptions = {
@@ -113,8 +112,7 @@ export class AssociaContaAdminComponent implements OnInit {
   }
   async checkCadastro(){
     if (this.uploadstart == true) {
-      if (this.flagUploadConcluido == true) {
-        console.log("upload concluido");
+      if (this.flagUploadConcluido == true && this.hashdeclaracao != undefined) {
         this.load = false;
         this.disable = false;
         this.uploadstart = false;
@@ -125,7 +123,7 @@ export class AssociaContaAdminComponent implements OnInit {
     };
     let estadoConta = await this.web3Service.getEstadoContaAsString(this.selectedAccount);
 
-    if (this.selectedAccount && estadoConta =='Disponível') {
+    if (this.selectedAccount != 0 && estadoConta =='Disponível') {
       this.statusConta = true;
     } else {
       this.statusConta = false;
