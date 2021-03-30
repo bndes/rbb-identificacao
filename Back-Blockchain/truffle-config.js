@@ -1,12 +1,13 @@
 const privateKey = "0x0000000000000000000000000000000000000000000000000000000000000000";
-const writerIP = "user:senha@rbb.hom.bndes.net/node";
-const writerPort = "443";
+const writerProtocol = "http://";
+const writerIP = "0.0.0.0";
+const writerPort = "4545";
 const netID = "648629";
 let privateKeyProvider;
 
 if ( false ) {
   const HDWalletProvider = require("@truffle/hdwallet-provider");
-  privateKeyProvider = new HDWalletProvider(privateKey, "https://" + writerIP ); 
+  privateKeyProvider = new HDWalletProvider(privateKey, writerProtocol +  writerIP + ":" + writerPort ); 
 }
 
 module.exports = {
