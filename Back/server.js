@@ -455,7 +455,7 @@ const password 		= process.env.PASSWORD_PREVALIDATION_WALLET;
 let preWallet 		  = ethers.Wallet.fromEncryptedJsonSync(JSON.stringify(encyptedWallet), password);
 const provider        = new ethers.providers.JsonRpcProvider(config.infra.URL_blockchain_provider);
 const wallet          = preWallet.connect(provider);
-const contractAddress = contrato_json_BNDESRegistry.networks[config.infra.rede_blockchain].address;
+const contractAddress = addrContratoBNDESRegistry;
 
 console.log("Oracle Validator at " + encyptedWallet.address);
 
