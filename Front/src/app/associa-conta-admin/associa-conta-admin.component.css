@@ -167,6 +167,14 @@ p {
   color:#168821 !important;
 }
 
+.text-danger{
+  color:  #e60000 !important;
+}
+
+.text-sucess{
+  color:#168821 !important;
+}
+
 .container .leftbox {
     float: left;
     top: -5%;
@@ -666,7 +674,7 @@ p {
     .container h1 {
       font-family: 'Montserrat', sans-serif;
       color: #4c73f5;
-      font-size: 16px !important;
+      font-size: 26px !important;
       margin-top:4% ;
       margin-bottom: 20px;
     }
@@ -678,7 +686,7 @@ p {
       font-size: 16px;
       height: 45px;
       width: 200px;
-      margin-bottom: 100px !important;
+      margin-bottom: 10px !important;
     }
 
     .br-card{

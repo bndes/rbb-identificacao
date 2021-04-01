@@ -23,6 +23,6 @@ interface IRBBRegistry {
     function isRegistryOperational(uint RBBId) external view  returns (bool); 
 
     //retorna toda estrutura. Não verifica se estah operacional
-    function getRegistry (address addr) external view  returns (uint, uint64, string memory, uint, uint, bool, uint256); 
+    function getRegistry (address addr) external view  returns (uint, uint64, string memory, uint, uint, bool, uint256, bool); 
 
 }

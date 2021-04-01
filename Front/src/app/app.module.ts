@@ -20,6 +20,7 @@ import { CallComponent } from './call/call.component';
 import { AlertModule } from './_alert';
 import { NgxMaskModule, IConfig } from 'ngx-mask'
 import { NgxTippyModule } from 'ngx-tippy-wrapper';
+import {APP_BASE_HREF} from '@angular/common';
 
 /* Services */
 import { Web3Service } from './Web3Service';
@@ -63,7 +64,9 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
     NgxMaskModule.forRoot(),
     NgxTippyModule
   ],
-  providers: [PessoaJuridicaService, Web3Service, ConstantesService, GoogleMapsService, FileHandleService ],
+  providers: [PessoaJuridicaService, Web3Service, ConstantesService, GoogleMapsService, FileHandleService ,
+    {provide: APP_BASE_HREF, useValue: '/rbbid'}
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -23,7 +23,7 @@
                 <label>Selecione a conta blockchain desejada no Metamask. A conta deve aparecer no estado "Disponível".</label>
                 <input name="contaBlockchain" class="form-control form-control-sm" type="text" [ngModel]="selectedAccount" readonly
                 disabled [ngClass]="{'color-danger':this.statusConta == false, 'color-success': this.statusConta == true}" size="45">
-                <div class="msg-conta-invalida" >
+                <div class="msg-conta-invalida" [ngClass]="{'text-danger':this.statusConta == false, 'text-success': this.statusConta == true}">
                     {{contaEstaValida}}
                 </div>
             </div>
@@ -47,7 +47,7 @@
                           <label>5. Clique no botão abaixo para <b>fazer upload do PDF</b> da Declaração assinado digitalmente. </label>
                           <br>
                       <div class="br-upload" style="margin-bottom: 10px !important;margin-top: 30px; margin-right: 1000px;" >
-                          <button id="btArquivo"  (click)="hashdeclaracao='';uploadstart=true;fileInput.click()" class=" br-button upload-button"><i class="fas fa-upload"></i>Upload</button>
+                          <button id="btArquivo" (click)="hashdeclaracao='';uploadstart=true; disable=false;fileInput.click()" class=" br-button upload-button"><i class="fas fa-upload"></i>Upload</button>
 
                           <input type="file" id="arquivo"  accept=".pdf" #fileInput ng2FileSelect [uploader]="this.fileHandleService.uploader" (change)="this.fileHandleService.chamaUpload()"/>
 

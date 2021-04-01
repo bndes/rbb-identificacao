@@ -9,7 +9,7 @@ console.log("owner: " + ownerWallet.address);
 //const preValidationAddress = preValidationWallet.address;
 const preValidationAddress = "0x1baafa8a6ecab2b1d6c3683d480966233704e30c";
 
-const provider  = new ethers.providers.JsonRpcProvider("http://localhost:8545/");
+const provider  = new ethers.providers.JsonRpcProvider("");
 
 ownerWallet = ownerWallet.connect(provider);
 
@@ -26,12 +26,18 @@ const bytecode = constractDoc.bytecode;
 
 const factory = new ethers.ContractFactory(abi, bytecode, ownerWallet);
 
-if ( false ) {
+if ( true ) {
     factory.deploy().then( async (rbbRegistrySmartContract) =>   {
-
+/*
+        rbbRegistrySmartContract.on("*", (event) => {
+            console.log("event: ", event);
+        });
+*/
         console.log("Endereço do contrato: ", rbbRegistrySmartContract.address);
         rbbRegistrySmartContract.setResponsibleForRegistryPreValidation(preValidationAddress);
-    
+
+
+
         //não adianta conferir resultado logo depois, mesmo se colocar await pq soh significa que a transacao foi enviada.
         //Por isso é necessário ter o timeout
     
@@ -50,11 +56,14 @@ function getWallet(walletFileName, password) {
 
 async function confereResultado(rbbRegistrySmartContract) {
     const resp = (await rbbRegistrySmartContract.responsibleForRegistryPreValidation());
-    if (resp == preValidationAddress) {
+    if (resp.toLowerCase() == preValidationAddress.toLowerCase()) {
         console.log("Responsavel pela prevalidacao no contrato corretamente configurado");
     }
     else {
         console.log("ERRO - Responsavel pela prevalidacao no contrato NÃO FOI corretamente configurado");
+        console.log(resp);
+        console.log(preValidationAddress);
+
     }
 }
 

@@ -385,24 +385,25 @@ async function trataUpload(req, res, next) {
 				const cnpjEsperado = cnpj;
 				
 				try {
+
+					const dest = fs.createWriteStream(target_path);
+					src.pipe(dest);
+					src.on('end', async function ()
+					{
+						console.log("Upload Completed from "+ tmp_path + ", original name " + req.file.originalname + ", copied to " + target_path); 						
+					});
+					src.on('error', function (err)
+					{
+						console.log("Upload ERROR! from "+ tmp_path + ", original name " + req.file.originalname + ", copied to " + target_path); 
+					});						
 					let retornoValidacaoCert = await SERVER_FUNCTIONS.validateDocumentSignature(src, cnpjEsperado);
 					if ( retornoValidacaoCert == 0 ) {
-						const dest = fs.createWriteStream(target_path);
-						src.pipe(dest);
-						src.on('end', function ()
-						{
-							console.log("Upload Completed from "+ tmp_path + ", original name " + req.file.originalname + ", copied to " + target_path); 
-						});
-						src.on('error', function (err)
-						{
-							console.log("Upload ERROR! from "+ tmp_path + ", original name " + req.file.originalname + ", copied to " + target_path); 
-						});	
-						res.json(hashedResult);
-					} else {
-						let msg = " ERRO: " + retornoValidacaoCert;
-						console.log(msg); 
-						res.json(msg);
-					}
+						res.json(hashedResult);		
+					}	
+					else {
+						res.json("ERRO: " + retornoValidacaoCert );		
+					}			
+					
 				} catch (err) {
 					let msg = " ERRO: Certificado não está no formato adequado. ";
 					console.log(msg); 
@@ -449,12 +450,12 @@ console.log("filePathAndNameToFront = " + filePathAndNameToFront);
 
 const ethers  		= require('ethers');
 var encyptedWallet  = require('./wallet.json');
-const password 		= process.env.PASSWORD_WALLET;
+const password 		= process.env.PASSWORD_PREVALIDATION_WALLET;
 
 let preWallet 		  = ethers.Wallet.fromEncryptedJsonSync(JSON.stringify(encyptedWallet), password);
 const provider        = new ethers.providers.JsonRpcProvider(config.infra.URL_blockchain_provider);
 const wallet          = preWallet.connect(provider);
-const contractAddress = contrato_json_BNDESRegistry.networks[config.infra.rede_blockchain].address;
+const contractAddress = addrContratoBNDESRegistry;
 
 console.log("Oracle Validator at " + encyptedWallet.address);
 

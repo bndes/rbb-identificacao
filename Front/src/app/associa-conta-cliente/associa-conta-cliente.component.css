@@ -30,11 +30,11 @@ body{
     font-family: 'Montserrat', sans-serif;
     padding-left: 10%;
     margin-top: 2%;
-  
+
 }
 
 .leftbox {
-  
+
   top: 25%;
   left: 14%;
   position: absolute;
@@ -42,7 +42,7 @@ body{
   height: 7%;
   background:#4c73f5;
   box-shadow: 1px 3px 5px #070707;
- 
+
 }
 
 nav a {
@@ -152,7 +152,7 @@ p {
 }
 
 
-/* 
+/*
 .container .leftbox {
     float: left;
     top: -5%;
@@ -162,7 +162,7 @@ p {
     height: 38%;
     background:#1351b4;
     box-shadow: 5px 5px 12px rgba(#070707, .5);
-    
+
 } */
 
 .declaracao {
@@ -190,7 +190,34 @@ p {
   margin-top: 35px;
 }
 
+.disabledButton{
+  background: #ffffff00;
+  border-color: #1351b460;
+  color: #1351b460;
+  cursor:not-allowed !important;
+  pointer-events: none;
+}
 
+
+.color-danger{
+  background-color: #e600001f !important;
+  border-color: #e60000 !important;
+  color:  #e60000 !important;
+}
+
+.color-success{
+  background-color:  #1688211f !important;
+  border-color: #168821 !important;
+  color:#168821 !important;
+}
+
+.text-danger{
+  color:  #e60000 !important;
+}
+
+.text-sucess{
+  color:#168821 !important;
+}
 
 /* responsividade da tela */
 
@@ -205,25 +232,25 @@ p {
     border: 0.1px solid rgb(0, 0, 0);
     height: 400px ;
     width: 80%;
-    
+
   }
-  
+
   .containerResize{
     height: 650px ;
   }
-  
-  
+
+
   .leftbox h1 {
       font-size: 15px;
       color: #FFFFFF;
       font-family: 'Montserrat', sans-serif;
       padding-left: 8%;
       margin-top: 2%;
-    
+
   }
-  
+
   .leftbox {
-    
+
     top: 30%;
     left: 7%;
     position: absolute;
@@ -231,7 +258,7 @@ p {
     height: 8%;
     background:#4c73f5;
     box-shadow: 1px 3px 5px #070707;
-   
+
   }
 
   .container h1 {
@@ -241,11 +268,11 @@ p {
     margin-top: 30px;
     margin-bottom: 20px;
   }
-  
+
   .rightbox {
     padding-top: 25%;
     padding-left: 5%;
-    width: 100%; 
+    width: 100%;
   }
 
   .rightbox button{
@@ -257,12 +284,12 @@ p {
     font-size: 18px;
     padding-left: 10%;
   }
-  
+
 }
 
 
 @media only screen and (min-width: 500px) and (max-width: 768px) {
-  
+
   .container {
     background: #FFFFFF;
     margin-left: 10%;
@@ -272,25 +299,25 @@ p {
     border: 0.1px solid rgb(0, 0, 0);
     height: 400px ;
     width: 80%;
-    
+
   }
-  
+
   .containerResize{
     height: 650px ;
   }
-  
-  
+
+
   .leftbox h1 {
       font-size: 20px;
       color: #FFFFFF;
       font-family: 'Montserrat', sans-serif;
       padding-left: 10%;
       margin-top: 2%;
-    
+
   }
-  
+
   .leftbox {
-    
+
     top: 30%;
     left: 7%;
     position: absolute;
@@ -298,7 +325,7 @@ p {
     height: 8%;
     background:#4c73f5;
     box-shadow: 1px 3px 5px #070707;
-   
+
   }
 
   .container h1 {
@@ -308,11 +335,11 @@ p {
     margin-top: 3% ;
     margin-bottom: 20px;
   }
-  
+
   .rightbox {
     padding-top: 120px;
     padding-left: 5%;
-    width: 100%; 
+    width: 100%;
   }
 
   .rightbox button{
@@ -324,7 +351,7 @@ p {
     font-size: 18px;
     padding-left: 10%;
   }
-  
+
   .br-input {
     width: 80%;
     margin-bottom: 15px;
@@ -343,25 +370,25 @@ p {
     border: 0.1px solid rgb(0, 0, 0);
     height: 400px ;
     width: 80%;
-    
+
   }
-  
+
   .containerResize{
     height: 650px ;
   }
-  
-  
+
+
   .leftbox h1 {
       font-size: 20px;
       color: #FFFFFF;
       font-family: 'Montserrat', sans-serif;
       padding-left: 10%;
       margin-top: 2%;
-    
+
   }
-  
+
   .leftbox {
-    
+
     top: 30%;
     left: 7%;
     position: absolute;
@@ -369,7 +396,7 @@ p {
     height: 8%;
     background:#4c73f5;
     box-shadow: 1px 3px 5px #070707;
-   
+
   }
 
   .container h1 {
@@ -379,11 +406,11 @@ p {
     margin-top: 3% ;
     margin-bottom: 20px;
   }
-  
+
   .rightbox {
     padding-top: 120px;
     padding-left: 5%;
-    width: 100%; 
+    width: 100%;
   }
 
   .rightbox button{
@@ -395,7 +422,7 @@ p {
     font-size: 18px;
     padding-left: 30px;
   }
-  
+
   .br-input {
     width: 80%;
     margin-bottom: 15px;
@@ -413,25 +440,25 @@ p {
     border: 0.1px solid rgb(0, 0, 0);
     height: 400px ;
     width: 100%;
-    
+
   }
-  
+
   .containerResize{
     height: 650px ;
   }
-  
-  
+
+
   .leftbox h1 {
       font-size: 20px;
       color: #FFFFFF;
       font-family: 'Montserrat', sans-serif;
       padding-left: 10%;
       margin-top: 2%;
-    
+
   }
-  
+
   .leftbox {
-    
+
     top: 30%;
     left: 14%;
     position: absolute;
@@ -439,7 +466,7 @@ p {
     height: 8%;
     background:#4c73f5;
     box-shadow: 1px 3px 5px #070707;
-   
+
   }
 
   .container h1 {
@@ -449,11 +476,11 @@ p {
     margin-top: 3% ;
     margin-bottom: 20px;
   }
-  
+
   .rightbox {
     padding-top: 120px;
     padding-left: 5%;
-    width: 100%; 
+    width: 100%;
   }
 
   .rightbox button{
@@ -465,7 +492,7 @@ p {
     font-size: 18px;
     padding-left: 30px;
   }
-  
+
   .br-input {
     width: 80%;
     margin-bottom: 15px;
@@ -482,25 +509,25 @@ p {
     border: 0.1px solid rgb(0, 0, 0);
     height: 400px ;
     width: 60%;
-    
+
   }
-  
+
   .containerResize{
     height: 650px ;
   }
-  
-  
+
+
   .leftbox h1 {
       font-size: 20px;
       color: #FFFFFF;
       font-family: 'Montserrat', sans-serif;
       padding-left: 10%;
       margin-top: 2%;
-    
+
   }
-  
+
   .leftbox {
-    
+
     top: 30%;
     left: 14%;
     position: absolute;
@@ -508,7 +535,7 @@ p {
     height: 8%;
     background:#4c73f5;
     box-shadow: 1px 3px 5px #070707;
-   
+
   }
 
   .container h1 {
@@ -518,11 +545,11 @@ p {
     margin-top: 3% ;
     margin-bottom: 20px;
   }
-  
+
   .rightbox {
     padding-top: 120px;
     padding-left: 5%;
-    width: 100%; 
+    width: 100%;
   }
 
   .rightbox button{
@@ -534,7 +561,7 @@ p {
     font-size: 18px;
     padding-left: 30px;
   }
-  
+
   .br-input {
     width: 80%;
     margin-bottom: 15px;
