@@ -1,0 +1,687 @@
+
+@import url('https://fonts.googleapis.com/css?family=Nunito:400,900|Montserrat|Roboto');
+
+body{
+  background-color: #268744;
+  width: 100vw;
+  top: 0%;
+  height: max-content;
+  display: flex;
+
+}
+
+
+.container {
+  background: #FFFFFF;
+  margin-left: 15%;
+  margin-top: 5%;
+  box-shadow: 2px 5px 20px rgba(#070707, .5);
+  border: 0.1px solid rgb(0, 0, 0);
+  margin-bottom: 15%;
+  height: 400px ;
+}
+
+.containerResize{
+  height: 1060px ;
+}
+
+
+.leftbox h1 {
+    font-size: 25px;
+    color: #FFFFFF;
+    font-family: 'Montserrat', sans-serif;
+    padding-left: 10%;
+    margin-top: 2%;
+}
+
+.leftbox {
+  float: left;
+  top: 25%;
+  left: 12%;
+  position: absolute;
+  width: 700px;
+  height: 7%;
+  background:#4c73f5;
+  box-shadow: 1px 3px 5px #070707;
+
+}
+
+nav a {
+  list-style: none;
+  padding: 30px;
+  color: #FFFFFF;
+  font-size: 1.1em;
+  display: block;
+  transition: all .3s ease-in-out;
+}
+
+nav a :hover {
+    color: #F2E317;
+    transform: scale(1.2);
+    cursor: pointer;
+}
+
+nav a :first-child {
+    margin-top: 7px;
+}
+
+.active {
+  color: #3FB6A8;
+}
+
+.rightbox {
+  padding-top: 10%;
+  padding-left: 5%;
+  width: 100%;
+}
+
+.rightbox .br-button{
+  height: 5%;
+  margin-top: 4%;
+  margin-left: 30%;
+  font-size: 21px;
+  height: 50px;
+  width: 300px;
+  margin-bottom: 50px;
+}
+
+h1 {
+  font-family: 'Montserrat', sans-serif;
+  color: #4c73f5;
+  font-size: 25px;
+  margin-top: 20px;
+  margin-bottom: 30px;
+}
+
+h2 {
+  color: #777777;
+  font-family: 'Roboto', sans-serif;
+  width: 80%;
+  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 1px;
+  margin-left: 2px;
+}
+
+p {
+  border-width: 1px;
+  border-style: solid;
+  border-image: linear-gradient(to right, #3FB6A8, rgba(#7ED386,.5)) 1 0%;
+  border-top: 0;
+  width: 80%;
+  font-family: 'Montserrat', sans-serif;
+  font-size: .7em;
+  padding: 7px 0;
+  color: #070707;
+}
+
+
+
+
+
+.btn {
+  float: right;
+  font-family: 'Roboto', sans-serif;
+  text-transform: uppercase;
+  font-size: 10px;
+  border: none;
+  color: #3FB6A8;
+}
+
+.btn:hover {
+  text-decoration: underline;
+  font-weight: 900;
+}
+
+
+.noshow {
+  opacity: 0;
+}
+
+.br-input {
+  width: 75%;
+  margin-bottom: 15px;
+}
+
+.label{
+  padding-left: 5px;
+}
+
+.disabledButton{
+  background: #ffffff00;
+  border-color: #1351b460;
+  color: #1351b460;
+  cursor:not-allowed !important;
+  pointer-events: none;
+}
+
+.color-danger{
+  background-color: #e600001f !important;
+  border-color: #e60000 !important;
+  color:  #e60000 !important;
+}
+
+.color-success{
+  background-color:  #1688211f !important;
+  border-color: #168821 !important;
+  color:#168821 !important;
+}
+
+.container .leftbox {
+    float: left;
+    top: -5%;
+    left: 5%;
+    position: absolute;
+    width: 10%;
+    height: 38%;
+    background:#4c73f5;
+    box-shadow: 5px 5px 12px rgba(#070707, .5);
+
+}
+
+.declaracao {
+  margin-bottom: 15px;
+}
+
+.imgDeclaracao {
+  width: 40px;
+}
+
+.fa-check {
+  margin-top: 10px;
+  margin-right: 10px;
+  float: right;
+}
+
+.conteudo {
+  border: 1px solid rgba(0,0,0,.125);
+  border-radius: 10px;
+  margin-bottom: 10px;
+  padding: 10px
+}
+
+.refreshContaBlockchain {
+  margin-top: 35px;
+}
+
+
+@media only screen and (max-width: 500px) {
+
+.container {
+  background: #000000;
+  margin-left: 15%;
+  margin-top: 25%;
+  box-shadow: 2px 5px 20px rgba(#070707, .5);
+  border: 0.1px solid rgb(0, 0, 0);
+  margin-bottom: 15%;
+  height: 400px ;
+  width: 250px;
+}
+
+.containerResize{
+  height: 1400px ;
+}
+
+
+.leftbox h1 {
+    font-size: 12px;
+    color: #FFFFFF;
+    font-family: 'Montserrat', sans-serif;
+    padding-left: 10%;
+    margin-top: 1%;
+}
+
+.leftbox {
+  float: left;
+  top: 23%;
+  left: 12%;
+  position: absolute;
+  width: 240px;
+  height: 7%;
+  background:#4c73f5;
+  box-shadow: 1px 3px 5px #070707;
+
+}
+
+.container h1 {
+  font-family: 'Montserrat', sans-serif;
+  color: #4c73f5;
+  font-size: 16px !important;
+  margin-top: 30% ;
+  margin-bottom: 20px;
+}
+
+.rightbox .br-button{
+  height: 5%;
+  margin-top: 8%;
+  margin-left: 15%;
+  font-size: 16px;
+  height: 50px;
+  width: 150px;
+  margin-bottom: 10px;
+}
+
+}
+
+
+@media only screen and (min-width: 502px) and (max-width: 750px) {
+
+.container {
+  background: #000000;
+  margin-left: 15%;
+  margin-top: 20%;
+  box-shadow: 2px 5px 20px rgba(#070707, .5);
+  border: 0.1px solid rgb(0, 0, 0);
+  margin-bottom: 15%;
+  height: 400px ;
+  width: 400px ;
+}
+
+.containerResize{
+  height: 1350px ;
+}
+
+
+.leftbox h1 {
+    font-size: 18px;
+    color: #FFFFFF;
+    font-family: 'Montserrat', sans-serif;
+    padding-left: 10%;
+    margin-top: 1%;
+}
+
+.leftbox {
+  float: left;
+  top: 30%;
+  left: 5%;
+  position: absolute;
+  width: 340px;
+  height: 7%;
+  background:#4c73f5;
+  box-shadow: 1px 3px 5px #070707;
+
+}
+
+.container h1 {
+  font-family: 'Montserrat', sans-serif;
+  color: #4c73f5;
+  font-size: 16px !important;
+  margin-top: 20% ;
+  margin-bottom: 20px;
+}
+
+.rightbox .br-button{
+  height: 5%;
+  margin-top: 8%;
+  margin-left: 17%;
+  font-size: 16px;
+  height: 45px;
+  width: 200px;
+  margin-bottom: 10px !important;
+}
+}
+
+
+@media only screen and (min-width: 752px) and (max-width: 800px) {
+  .container {
+    background: #000000;
+    margin-left: 15%;
+    margin-top: 20%;
+    box-shadow: 2px 5px 20px rgba(#070707, .5);
+    border: 0.1px solid rgb(0, 0, 0);
+    margin-bottom: 15%;
+    height: 400px ;
+    width: 600px ;
+  }
+
+  .containerResize{
+    height: 1350px ;
+  }
+
+
+  .leftbox h1 {
+      font-size: 18px;
+      color: #FFFFFF;
+      font-family: 'Montserrat', sans-serif;
+      padding-left: 10%;
+      margin-top: 4%;
+  }
+
+  .leftbox {
+    float: left;
+    top: 32%;
+    left: 5%;
+    position: absolute;
+    width: 470px;
+    height: 7%;
+    background:#4c73f5;
+    box-shadow: 1px 3px 5px #070707;
+
+  }
+
+  .container h1 {
+    font-family: 'Montserrat', sans-serif;
+    color: #4c73f5;
+    font-size: 16px !important;
+    margin-top: 14% ;
+    margin-bottom: 20px;
+  }
+
+  .rightbox .br-button{
+    height: 5%;
+    margin-top: 8%;
+    margin-left: 17%;
+    font-size: 16px;
+    height: 45px;
+    width: 200px;
+    margin-bottom: 100px !important;
+  }
+}
+
+
+@media only screen and (min-width: 801px) and (max-width: 1000px) {
+
+  .container {
+    background: #000000;
+    margin-left: 15%;
+    margin-top: 20%;
+    box-shadow: 2px 5px 20px rgba(#070707, .5);
+    border: 0.1px solid rgb(0, 0, 0);
+    margin-bottom: 15%;
+    height: 400px ;
+    width: 600px ;
+  }
+
+  .containerResize{
+    height: 1260px ;
+  }
+
+
+  .leftbox h1 {
+      font-size: 20px;
+      color: #FFFFFF;
+      font-family: 'Montserrat', sans-serif;
+      padding-left: 10%;
+      margin-top: 4%;
+  }
+
+  .leftbox {
+    float: left;
+    top: 32%;
+    left: 10%;
+    position: absolute;
+    width: 540px;
+    height: 7%;
+    background:#4c73f5;
+    box-shadow: 1px 3px 5px #070707;
+
+  }
+
+  .container h1 {
+    font-family: 'Montserrat', sans-serif;
+    color: #4c73f5;
+    font-size: 16px !important;
+    margin-top: 18% ;
+    margin-bottom: 20px;
+  }
+
+  .rightbox .br-button{
+    height: 5%;
+    margin-top: 5%;
+    margin-left: 27%;
+    font-size: 16px;
+    height: 45px;
+    width: 200px;
+    margin-bottom: 100px !important;
+  }
+
+  .br-card{
+    height: 700px !important;
+  }
+
+  }
+
+  @media only screen and (min-width: 1001px) and (max-width: 1150px) {
+
+    .container {
+      background: #FFFFFF;
+      margin-left: 15%;
+      margin-top: 15%;
+      box-shadow: 2px 5px 20px rgba(#070707, .5);
+      border: 0.1px solid rgb(0, 0, 0);
+      margin-bottom: 15%;
+      height: 400px ;
+      width: 800px ;
+    }
+
+    .containerResize{
+      height: 1260px ;
+    }
+
+
+    .leftbox h1 {
+        font-size: 20px;
+        color: #FFFFFF;
+        font-family: 'Montserrat', sans-serif;
+        padding-left: 10%;
+        margin-top: 4%;
+    }
+
+    .leftbox {
+      float: left;
+      top: 30%;
+      left: 10%;
+      position: absolute;
+      width: 540px;
+      height: 7%;
+      background:#4c73f5;
+      box-shadow: 1px 3px 5px #070707;
+
+    }
+
+    .container h1 {
+      font-family: 'Montserrat', sans-serif;
+      color: #4c73f5;
+      font-size: 16px !important;
+      margin-top: 7% ;
+      margin-bottom: 20px;
+    }
+
+    .rightbox .br-button{
+      height: 5%;
+      margin-top: 5%;
+      margin-left: 27%;
+      font-size: 16px;
+      height: 45px;
+      width: 200px;
+      margin-bottom: 100px !important;
+    }
+
+    .br-card{
+      height: 700px !important;
+    }
+  }
+
+
+  @media only screen and (min-width: 1170px) and (max-width: 1450px) {
+
+    .container {
+      background: #000000;
+      margin-left: 15%;
+      margin-top: 15%;
+      box-shadow: 2px 5px 20px rgba(#070707, .5);
+      border: 0.1px solid rgb(0, 0, 0);
+      margin-bottom: 15%;
+      height: 400px ;
+      width: 1100px ;
+    }
+
+    .containerResize{
+      height: 1260px ;
+    }
+
+
+    .leftbox h1 {
+        font-size: 20px;
+        color: #FFFFFF;
+        font-family: 'Montserrat', sans-serif;
+        padding-left: 10%;
+        margin-top: 4%;
+    }
+
+    .leftbox {
+      float: left;
+      top: 38%;
+      left: 10%;
+      position: absolute;
+      width: 540px;
+      height: 7%;
+      background:#4c73f5;
+      box-shadow: 1px 3px 5px #070707;
+
+    }
+
+    .container h1 {
+      font-family: 'Montserrat', sans-serif;
+      color: #4c73f5;
+      font-size: 16px !important;
+      margin-top:4% ;
+      margin-bottom: 20px;
+    }
+
+    .rightbox .br-button{
+      height: 5%;
+      margin-top: 5%;
+      margin-left: 27%;
+      font-size: 16px;
+      height: 45px;
+      width: 200px;
+      margin-bottom: 100px !important;
+    }
+
+    .br-card{
+      height: 700px !important;
+    }
+  }
+
+
+  @media only screen and (min-width: 1455px) and (max-width: 1650px) {
+    .container {
+      background: #000000;
+      margin-left: 15%;
+      margin-top: 15%;
+      box-shadow: 2px 5px 20px rgba(#070707, .5);
+      border: 0.1px solid rgb(0, 0, 0);
+      margin-bottom: 15%;
+      height: 400px ;
+      width: 1100px ;
+    }
+
+    .containerResize{
+      height: 1260px ;
+    }
+
+
+    .leftbox h1 {
+        font-size: 20px;
+        color: #FFFFFF;
+        font-family: 'Montserrat', sans-serif;
+        padding-left: 10%;
+        margin-top: 4%;
+    }
+
+    .leftbox {
+      float: left;
+      top: 38%;
+      left: 10%;
+      position: absolute;
+      width: 540px;
+      height: 7%;
+      background:#4c73f5;
+      box-shadow: 1px 3px 5px #070707;
+
+    }
+
+    .container h1 {
+      font-family: 'Montserrat', sans-serif;
+      color: #4c73f5;
+      font-size: 16px !important;
+      margin-top:4% ;
+      margin-bottom: 20px;
+    }
+
+    .rightbox .br-button{
+      height: 5%;
+      margin-top: 5%;
+      margin-left: 27%;
+      font-size: 16px;
+      height: 45px;
+      width: 200px;
+      margin-bottom: 100px !important;
+    }
+
+    .br-card{
+      height: 700px !important;
+    }
+  }
+
+
+  @media only screen and (min-width: 1655px) and (max-width: 2500px) {
+    .container {
+      background: #FFFFFF;
+      margin-left: 15%;
+      margin-top: 5%;
+      box-shadow: 2px 5px 20px rgba(#070707, .5);
+      border: 0.1px solid rgb(0, 0, 0);
+      margin-bottom: 15%;
+      height: 1260px ;
+      width: 1100px ;
+    }
+
+    .containerResize{
+      height: 1260px ;
+    }
+
+
+    .leftbox h1 {
+        font-size: 20px;
+        color: #FFFFFF;
+        font-family: 'Montserrat', sans-serif;
+        padding-left: 10%;
+        margin-top: 4%;
+    }
+
+    .leftbox {
+      float: left;
+      top: 26%;
+      left: 10%;
+      position: absolute;
+      width: 540px;
+      height: 7%;
+      background:#4c73f5;
+      box-shadow: 1px 3px 5px #070707;
+
+    }
+
+    .container h1 {
+      font-family: 'Montserrat', sans-serif;
+      color: #4c73f5;
+      font-size: 16px !important;
+      margin-top:4% ;
+      margin-bottom: 20px;
+    }
+
+    .rightbox .br-button{
+      height: 5%;
+      margin-top: 5%;
+      margin-left: 30%;
+      font-size: 16px;
+      height: 45px;
+      width: 200px;
+      margin-bottom: 100px !important;
+    }
+
+    .br-card{
+      height: 700px !important;
+    }
+  }

@@ -9,6 +9,7 @@ import { PauseClienteComponent } from './pause-cliente/pause-cliente.component';
 import { PauseAdminComponent } from './pause-admin/pause-admin.component';
 import { HomeComponent } from './home/home.component';
 import { CallComponent } from './call/call.component';
+import { RevalidarContaComponent } from './revalidar-conta/revalidar-conta.component';
 
 const routes: Routes = [
   { path: '', component: TemplateComponent,
@@ -21,6 +22,9 @@ const routes: Routes = [
       },
       {
         path: 'home/associa/contas', component: ListacontasComponent
+      },
+      {
+        path: 'home/revalidar/contas', component: RevalidarContaComponent
       },
       {
         path: 'home/validar', component: ValidarContaAdminComponent

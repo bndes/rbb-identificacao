@@ -30,6 +30,7 @@ import { ConstantesService } from './ConstantesService';
 import { GoogleMapsService } from './shared/google-maps.service';
 
 import { FileUploadModule } from 'ng2-file-upload';
+import { RevalidarContaComponent } from './revalidar-conta/revalidar-conta.component';
 
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
@@ -49,7 +50,8 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
     PauseClienteComponent,
     PauseAdminComponent,
     HomeComponent,
-    CallComponent
+    CallComponent,
+    RevalidarContaComponent
   ],
   imports: [
     BrowserModule,
