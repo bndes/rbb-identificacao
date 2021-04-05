@@ -214,6 +214,37 @@ export class Web3Service {
         });
     }
 */
+async ReValidarAdmin(cnpj: number, hashdeclaracao: string): Promise<any>  {
+    let contaBlockchain = await this.getCurrentAccountSync();
+
+    console.log("Web3Service - Cadastra")
+    console.log("CNPJ: " + cnpj +
+    ", hashdeclaracao: " + hashdeclaracao
+    )
+
+    hashdeclaracao = hashdeclaracao.replace("0x","").toLowerCase(); //ICF_V2
+    console.log("hashdeclaracao alterado:" + hashdeclaracao);
+
+    const signer = this.accountProvider.getSigner();
+    const contWithSigner = this.RBBRegistrySmartContract.connect(signer);
+    return (await contWithSigner.reactiveAccount(hashdeclaracao));
+}
+
+async ReValidarRegular(cnpj: number, hashdeclaracao: string): Promise<any>  {
+    let contaBlockchain = await this.getCurrentAccountSync();
+
+    console.log("Web3Service - Cadastra")
+    console.log("CNPJ: " + cnpj +
+    ", hashdeclaracao: " + hashdeclaracao
+    )
+
+    hashdeclaracao = hashdeclaracao.replace("0x","").toLowerCase(); //ICF_V2
+    console.log("hashdeclaracao alterado:" + hashdeclaracao);
+
+    const signer = this.accountProvider.getSigner();
+    const contWithSigner = this.RBBRegistrySmartContract.connect(signer);
+    return (await contWithSigner.reactiveForRegularAccounts());
+}
 
     async cadastra(cnpj: number, hashdeclaracao: string): Promise<any>  {
 

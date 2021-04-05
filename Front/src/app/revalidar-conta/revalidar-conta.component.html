@@ -1,0 +1,93 @@
+<p>revalidar-conta works!</p>
+
+<body>
+
+    <div  style="position: absolute;  width: 100%;" class="text-center">
+        <alert></alert>
+    </div>
+
+    <div   class="container">
+        <div class="rightbox">
+           <!-- <h1 style="font-size: 120%;" >Associar Conta Blockchain ao e-CNPJ</h1>
+            <div class="br-input">
+                <label>Informe o CNPJ:</label>
+                <input name="cnpjWithMask" mask="00.000.000/0000-00" [(ngModel)]="cliente.cnpjWithMask"  class="form-control form-control-sm" (input)="changeCnpj()"
+                required [disabled]="this.flagUploadConcluido" />
+            </div>
+            
+            <div class="br-input" >
+                <label>Razão Social:</label>
+                <input name="razaoSocial" class="form-control form-control-sm" [(ngModel)]="cliente.dadosCadastrais.razaoSocial" readonly  disabled/>
+            </div>
+        -->
+            <div class="br-input" >
+                <label>Selecione a conta blockchain desejada no Metamask. A conta deve aparecer no estado "Disponível".</label>
+                <input name="contaBlockchain" class="form-control form-control-sm" type="text" [ngModel]="selectedAccount" readonly
+                disabled [ngClass]="{'color-danger':this.statusConta == false, 'color-success': this.statusConta == true}" size="45">
+                <div class="msg-conta-invalida" [ngClass]="{'text-danger':this.statusConta == false, 'text-success': this.statusConta == true}">
+                    {{contaEstaValida}}
+                </div>
+            </div>
+
+
+            <div style="height: fit-content; background-color: #d2e4ff44; box-shadow: 0 0 3px #000000, 0 0 5px #b0b0b4;"  class="br-card conteudo form-group" >
+                <div style="background-color:#d2e4ff44;"  class="front">
+                  <div  class="header">
+                      <h1 style="font-size: 20px; margin-top: 10px !important;">Procedimento de Declaração</h1>
+                  </div>
+                 <div class="content">
+
+                          <label>1. Antes de começar, certifique-se que você tem o <b>Adobe Reader</b> instalado em sua máquina. Caso não tenha, clique <a target="_blank" href="https://get2.adobe.com/br/reader/">aqui</a> para instalar</label>
+
+                          <label>2. Clique <a target="_blank" href="{{fileHandleService.getCaminhoRoteiroAssinaturaDigital()}}">aqui</a> para ler o <b>Roteiro de Instruções</b> para essa etapa. </label>
+
+                          <label>3. Clique <button class="link" ngbTooltip="Baixar declaracao" (click)="createPdf()">aqui</button> para <b>salvar localmente</b> a Declaração de Propriedade e Responsabilidade sobre Conta Blockchain, e abrir com o Adobe Reader.</label>
+
+                          <label>4. Seguindo as instruções do Roteiro, <b>assine a declaração digitalmente com seu e-CNPJ</b> conectado ao computador. </label>
+
+                          <label>5. Clique no botão abaixo para <b>fazer upload do PDF</b> da Declaração assinado digitalmente. </label>
+                          <br>
+                      <div *ngIf='this.contaAdminFlag' class="br-upload" style="margin-bottom: 10px !important;margin-top: 30px; margin-right: 1000px;" >
+                          <button id="btArquivo" (click)="hashdeclaracao='';uploadstart=true; disable=false;fileInput.click()" class=" br-button upload-button"><i class="fas fa-upload"></i>Upload</button>
+
+                          <input type="file" id="arquivo"  accept=".pdf" #fileInput ng2FileSelect [uploader]="this.fileHandleService.uploader" (change)="this.fileHandleService.chamaUpload()"/>
+
+                          <div style="width: 500px;" class="msg-hash-declaracao" >
+                              <h2 style="width: 400px; margin-bottom: 0px !important; color: #000000;" >Hash da Declaração: </h2>
+                              <h2 style="width: 300px; font-size: 10px; color: #000000;">{{hashdeclaracao}}</h2>
+                          </div>
+                          <div class="upload-list"></div>
+                      </div>
+                  </div>
+                  <div style="height: 100px; width:100%; justify-content: center;margin-bottom: 12%; " class="footer">
+                    <button *ngIf='this.contaAdminFlag==true' style="margin-left: 35% !important;
+                                       margin-bottom: 10%;
+                                       justify-content: center;
+                                       width: 30%;
+                                       height: 70%;
+                                       font-size: 30px;
+                                       justify-content: center;" class="br-button primary" [ngClass]="{'loading':load == true, 'disabledButton': disable == true}" type="button" (click)="reativarContaClienteAdmin()" >Reativar 
+                        </button>
+                        <button *ngIf='this.contaAdminFlag!=true' style="margin-left: 35% !important;
+                                       margin-bottom: 10%;
+                                       justify-content: center;
+                                       width: 30%;
+                                       height: 70%;
+                                       font-size: 30px;
+                                       justify-content: center;" class="br-button primary" [ngClass]="{'loading':load == true, 'disabledButton': disableRegular == true}" type="button" (click)="reativarContaClienteRegular()" >Reativar 
+                        </button>
+                  </div>
+
+                </div>
+            </div>
+        </div>
+    <div>
+
+    </div>
+    </div>
+
+    <div class="leftbox">
+        <h1>Associação de Representante Administrador</h1>
+    </div>
+
+    </body>
