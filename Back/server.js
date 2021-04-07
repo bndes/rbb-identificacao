@@ -119,6 +119,9 @@ var contrato_json_BNDESRegistry = require(config.infra.contrato_json_BNDESRegist
 var n = contrato_json_BNDESRegistry.networks;
 
 console.log("config.infra.rede_blockchain (1=Main|4=Rinkeby|4447=local) = " + config.infra.rede_blockchain);
+// Var Banco de dados
+const pool = new sql.ConnectionPool(configAcessoBDPJ);
+const poolConnect = pool.connect(err => {});
 
 //ABI = contrato_json_BNDESToken['abi']
 
@@ -272,7 +275,7 @@ console.log('/api/pj-por-cnpj::mockPJ=' + mockPJ);
 		}
 		else {
 
-			new sql.ConnectionPool(configAcessoBDPJ).connect().then(pool => {
+			poolConnect.then(pool => {
 				return pool.request()
 									 .input('cnpj', sql.VarChar(14), cnpjRecebido)
 									 .query(config.negocio.query_cnpj)
@@ -297,13 +300,13 @@ console.log('/api/pj-por-cnpj::mockPJ=' + mockPJ);
 					console.log(pj);
 	
 					res.status(200).json(pj);				
-					sql.close();
+					//sql.close();
 	
 	
 				}).catch(err => {
 					console.log(err);
 					res.status(500).send({ message: "${err}"})
-					sql.close();
+					//sql.close();
 				});
 	
 
