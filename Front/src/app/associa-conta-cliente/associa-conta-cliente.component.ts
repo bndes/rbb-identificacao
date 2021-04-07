@@ -49,9 +49,6 @@ export class AssociaContaClienteComponent implements OnInit {
       setInterval(function () {
         self.recuperaContaSelecionada(),
         1000});
-      setInterval(function () {
-        self.checkCadastro(),
-        1000});
 
       this.disable = true;
       this.statusConta = false;
@@ -125,17 +122,6 @@ export class AssociaContaClienteComponent implements OnInit {
     this.inicializaDadosDerivadosPessoaJuridica();
   }
 
-  async checkCadastro(){
-    let estadoConta = await this.web3Service.getEstadoContaAsString(this.selectedAccount);
-
-    if (this.selectedAccount != 0 && estadoConta =='Disponível') {
-      this.statusConta = true;
-      this.disable = false;
-    } else {
-      this.statusConta = false;
-    }
-  }
-
   async recuperaContaSelecionada() {
 
     let self = this;
@@ -163,6 +149,12 @@ export class AssociaContaClienteComponent implements OnInit {
     if (contaBlockchainSelecionada) {
         let estadoConta = await this.web3Service.getEstadoContaAsString(contaBlockchainSelecionada);
 
+          if (contaBlockchainSelecionada != 0 && estadoConta =='Disponível') {
+            this.statusConta = true;
+            this.disable = false;
+          } else {
+            this.statusConta = false;
+          }
           if (estadoConta){
             self.contaEstaValida = estadoConta
             console.log("result conta=" + estadoConta);
