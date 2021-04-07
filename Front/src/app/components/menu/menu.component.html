@@ -56,7 +56,7 @@
 
             <!-- Conta nao associada -->
             <div style="color: #ff9100;" class="status-conta"
-                *ngIf="this.usuario.cnpj == 0  && this.selectedAccount != undefined">
+                *ngIf="this.usuario == null  && this.selectedAccount != undefined">
                 Essa conta ainda não foi associada
             </div>
 
