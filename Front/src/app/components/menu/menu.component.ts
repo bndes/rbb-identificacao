@@ -44,17 +44,21 @@ export class MenuComponent implements OnInit {
 
   constructor(private web3Service: Web3Service) {
 
+    let self = this;
+
+    setInterval(function () {
+      self.recuperaContaSelecionada(),
+      1000});
   }
 
   ngOnInit():void {
 
     this.web3Service.intializeWeb3();
-    
-    setInterval(async () => {
+
+    /* setInterval(async () => {
       this.selectedAccount = await this.web3Service.getCurrentAccountSync();
       console.log(this.selectedAccount);
-      this.usuario = await this.recuperaRegistroBlockchain(this.selectedAccount);
-  }, 5000)
+  }, 5000) */
   }
 
   toggleSideBar(){
@@ -67,6 +71,19 @@ export class MenuComponent implements OnInit {
       this.web3Service.onClickInstall();
     } else {
       this.web3Service.onClickConnect();
+    }
+  }
+
+  async recuperaContaSelecionada(){
+    let self = this;
+
+    let newSelectedAccount = await this.web3Service.getCurrentAccountSync();
+    if ( !self.selectedAccount || (newSelectedAccount !== self.selectedAccount && newSelectedAccount)) {
+      this.selectedAccount = newSelectedAccount;
+      console.log("selectedAccount=" + this.selectedAccount);
+      self.usuario = await this.recuperaRegistroBlockchain(this.selectedAccount);
+      console.log('this.usuario');
+      console.log(this.usuario);
     }
   }
 

@@ -36,13 +36,11 @@
           <div class="header-content" >{{this.selectedAccount}}</div>
           <div class="header-content" *ngIf="this.selectedAccount == undefined " >Conta não selecionada</div>
 
-          <!-- TODO - Botao do metamask -->
-
           <span style="margin: 0px;" class="br-divider"></span>
 
           <div style="flex-direction: row;">
             <button style="float: left;margin-top: 13px;" mat-button class="br-button" type="button" circle mini >
-                <i style="color: #4c73f5;float: left; margin-left: 4px;" [ngxTippy]="htmlTemplate" type="button"class="fas fa-id-card" [tippyProps]="templateRef"></i>
+                <i style="color: #4c73f5;float: left; margin-left: 4px;" [ngxTippy]="htmlTemplate" type="button" class="fas fa-id-card" [tippyProps]="templateRef"></i>
             </button>
 
             <!-- Conta nao selecionada -->
@@ -58,7 +56,7 @@
 
             <!-- Conta nao associada -->
             <div style="color: #ff9100;" class="status-conta"
-                *ngIf="this.usuario == undefined && this.selectedAccount != undefined">
+                *ngIf="this.usuario.cnpj == 0  && this.selectedAccount != undefined">
                 Essa conta ainda não foi associada
             </div>
 
@@ -82,10 +80,10 @@
             <div>
               <h1>CNPJ:</h1>
               <h2 *ngIf="this.usuario != undefined">{{this.usuario.cnpj | mask: '00.000.000/0000-00'}}</h2>
-
+              <span style="margin: 0px; margin-bottom: 4px;width: 100%;" class="br-divider"></span>
               <h1>Situação:</h1>
               <h2 *ngIf="this.usuario != undefined">{{this.usuario.statusAsString}}</h2>
-
+              <span style="margin: 0px; width: 100%;" class="br-divider"></span>
               <h1>Papel:</h1>
               <h2 *ngIf="this.usuario != undefined">{{this.usuario.roleAsString}}</h2>
             </div>

@@ -44,6 +44,8 @@ export class AssociaContaAdminComponent implements OnInit {
 };
 
 
+
+
   constructor(private pessoaJuridicaService: PessoaJuridicaService,
     private web3Service: Web3Service, private router: Router, private zone: NgZone, private ref: ChangeDetectorRef,
     public fileHandleService: FileHandleService, public alertService: AlertService) {
@@ -110,7 +112,8 @@ export class AssociaContaAdminComponent implements OnInit {
       this.fileHandleService.atualizaUploaderComponent(cnpj, contrato, selectedAccount, tipo, self);
     }
   }
-  async checkCadastro(){
+
+  checkCadastro(){
     if (this.uploadstart == true) {
       if (this.flagUploadConcluido == true && this.hashdeclaracao != undefined) {
         this.load = false;
@@ -121,18 +124,10 @@ export class AssociaContaAdminComponent implements OnInit {
         this.load = true;
       }
     };
-    let estadoConta = await this.web3Service.getEstadoContaAsString(this.selectedAccount);
-
-    if (this.selectedAccount != 0 && estadoConta =='Disponível') {
-      this.statusConta = true;
-    } else {
-      this.statusConta = false;
-    }
   }
 
   cancelar() {
     this.cliente = new Cliente();
-
     this.inicializaDadosDerivadosPessoaJuridica();
   }
 
@@ -143,18 +138,21 @@ export class AssociaContaAdminComponent implements OnInit {
     let self = this;
     let newSelectedAccount = await this.web3Service.getCurrentAccountSync();
     if ( !self.selectedAccount || (newSelectedAccount !== self.selectedAccount && newSelectedAccount)) {
+
       if ( this.flagUploadConcluido == false ) {
         this.selectedAccount = newSelectedAccount;
         console.log("selectedAccount=" + this.selectedAccount);
         this.verificaEstadoContaBlockchainSelecionada(this.selectedAccount);
         this.preparaUpload(this.cliente.cnpj, this.subcreditoSelecionado, this.selectedAccount, this);
+
+
       }
       else {
-        console.log( "Upload has already made! You should not change your account. Reseting... " );
+        console.log( "Upload has already been made! You should not change your account. Reseting... " );
+        //TODO alerta
         this.cancelar();
       }
     }
-
   }
 
   async verificaEstadoContaBlockchainSelecionada(contaBlockchainSelecionada) {
@@ -165,6 +163,13 @@ export class AssociaContaAdminComponent implements OnInit {
     if (contaBlockchainSelecionada) {
       let estadoConta = await this.web3Service.getEstadoContaAsString(contaBlockchainSelecionada);
 
+      if (estadoConta =='Disponível') {
+        this.statusConta = true;
+        console.log("Conta disponivel =" + this.selectedAccount);
+      } else {
+        this.statusConta = false;
+        console.log("Conta nao disponivel");
+      }
         if (estadoConta){
           self.contaEstaValida = estadoConta
           console.log("result conta=" + estadoConta);
@@ -172,6 +177,7 @@ export class AssociaContaAdminComponent implements OnInit {
           setTimeout(() => {
             self.ref.detectChanges()
           }, 1000)
+
         } else {
           console.error("Erro ao verificar o estado da conta")
         }
