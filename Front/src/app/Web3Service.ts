@@ -227,7 +227,7 @@ async ReValidarAdmin(cnpj: number, hashdeclaracao: string): Promise<any>  {
 
     const signer = this.accountProvider.getSigner();
     const contWithSigner = this.RBBRegistrySmartContract.connect(signer);
-    return (await contWithSigner.reactiveAccount(hashdeclaracao));
+    return (await contWithSigner.revalidateAccount(hashdeclaracao));
 }
 
 async ReValidarRegular(cnpj: number, hashdeclaracao: string): Promise<any>  {
@@ -243,7 +243,7 @@ async ReValidarRegular(cnpj: number, hashdeclaracao: string): Promise<any>  {
 
     const signer = this.accountProvider.getSigner();
     const contWithSigner = this.RBBRegistrySmartContract.connect(signer);
-    return (await contWithSigner.reactiveForRegularAccounts());
+    return (await contWithSigner.revalidateForRegularAccounts());
 }
 
     async cadastra(cnpj: number, hashdeclaracao: string): Promise<any>  {
