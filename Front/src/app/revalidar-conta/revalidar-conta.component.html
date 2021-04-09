@@ -1,4 +1,4 @@
-<p>revalidar-conta works!</p>
+
 
 <body>
 
@@ -21,7 +21,7 @@
             </div>
         -->
             <div class="br-input" >
-                <label>Selecione a conta blockchain desejada no Metamask. A conta deve aparecer no estado "Disponível".</label>
+                <label>Selecione a conta blockchain desejada no Metamask.</label>
                 <input name="contaBlockchain" class="form-control form-control-sm" type="text" [ngModel]="selectedAccount" readonly
                 disabled [ngClass]="{'color-danger':this.statusConta == false, 'color-success': this.statusConta == true}" size="45">
                 <div class="msg-conta-invalida" [ngClass]="{'text-danger':this.statusConta == false, 'text-success': this.statusConta == true}">
@@ -35,8 +35,8 @@
             
             
 
-            <div style="height: 1000px; background-color: #d2e4ff44; box-shadow: 0 0 3px #000000, 0 0 5px #b0b0b4;"  class="br-card conteudo form-group" >
-                <div style="background-color:#d2e4ff44;"  class="front">
+            <div  style="height: 1000px; background-color: #d2e4ff44; box-shadow: 0 0 3px #000000, 0 0 5px #b0b0b4;"  class="br-card conteudo form-group" >
+                <div  *ngIf='this.statusConta==true' style="height: 810px; background-color:#d2e4ff44;"  class="front">
                   <div  class="header">
                       <h1 *ngIf='this.contaAdminFlag==false' style="font-size: 20px; margin-top: 10px !important;">Revalidar Conta Autorizada</h1>
                       <h1 *ngIf='this.contaAdminFlag==true' style="font-size: 20px; margin-top: 10px !important;">Revalidar Conta Admin</h1>
