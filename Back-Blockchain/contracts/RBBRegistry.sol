@@ -416,11 +416,11 @@ contract RBBRegistry is IRBBRegistry, Ownable() {
     
     }
 
-    function reactiveForRegularAccounts() public {
-        reactiveAccount("0");
+    function revalidateForRegularAccounts() public {
+        revalidateAccount("0");
     }
 
-    function reactiveAccount(string memory hashProof) public {
+    function revalidateAccount(string memory hashProof) public {
         
         address addr = msg.sender;
 
