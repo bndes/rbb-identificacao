@@ -73,6 +73,7 @@ nav a :first-child {
   padding-top: 10%;
   padding-left: 5%;
   width: 100%;
+  
 }
 
 .rightbox .br-button{
@@ -436,7 +437,7 @@ p {
   }
 
   .br-card{
-    height: 700px !important;
+    height: 840px !important;
   }
 
   }
@@ -498,7 +499,7 @@ p {
     }
 
     .br-card{
-      height: 700px !important;
+      height: 840px !important;
     }
   }
 
@@ -560,7 +561,7 @@ p {
     }
 
     .br-card{
-      height: 700px !important;
+      height: 840px !important;
     }
   }
 
@@ -621,7 +622,7 @@ p {
     }
 
     .br-card{
-      height: 700px !important;
+      height: 840px !important;
     }
   }
 
@@ -682,6 +683,6 @@ p {
     }
 
     .br-card{
-      height: 700px !important;
+      height: 840px !important;
     }
   }
