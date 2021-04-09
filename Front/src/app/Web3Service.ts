@@ -115,7 +115,11 @@ export class Web3Service {
             //console.log("getCurrentAccountSync waiting for getSigner");
             return undefined;
         }
+
+        /* return  this.ethereum.request({ method: 'eth_accounts' }); */
     }
+
+
 
     conectar () {
         this.ethereum.enable();
@@ -127,12 +131,12 @@ export class Web3Service {
          this.RBBRegistrySmartContract.filters.AccountRoleChange(null),
         this.RBBRegistrySmartContract.filters.AccountPaused(null),
          this.RBBRegistrySmartContract.filters.AccountUnpaused(null)];
-        
+
         return await this.RBBRegistrySmartContract.queryFilter(filter);
     }
     async recuperaNovosEventos(caller, func){
         this.RBBRegistrySmartContract.on("*", (event) => {
-            
+
             //ListaEventos.registraNovoEvento(event,this, caller);
             func(event,this, caller);
           });
@@ -276,16 +280,16 @@ async ReValidarRegular(cnpj: number, hashdeclaracao: string): Promise<any>  {
         try {
             const signer = this.accountProvider.getSigner();
             const contWithSigner = this.RBBRegistrySmartContract.connect(signer);
-            
+
             if ( usuario.roleAsString == "Admin" ) {
-                (await contWithSigner.pauseAddressSameOrg(contaBlockchain));          
+                (await contWithSigner.pauseAddressSameOrg(contaBlockchain));
                 return true;
             }
             if ( this.isResponsibleForMonitoring( usuarioEndereco ) ) {
-                (await contWithSigner.pauseAddressAfterMonitoring(contaBlockchain));          
+                (await contWithSigner.pauseAddressAfterMonitoring(contaBlockchain));
                 return true;
             }
-            
+
         } catch (error) {
             console.log("pause:" )
             console.log( error);
@@ -304,14 +308,14 @@ async ReValidarRegular(cnpj: number, hashdeclaracao: string): Promise<any>  {
 
         try {
             const signer = this.accountProvider.getSigner();
-            const contWithSigner = this.RBBRegistrySmartContract.connect(signer);           
+            const contWithSigner = this.RBBRegistrySmartContract.connect(signer);
 
             if ( usuario.roleAsString == "Admin" ) {
-                (await contWithSigner.unpauseAddressSameOrg(contaBlockchain));          
+                (await contWithSigner.unpauseAddressSameOrg(contaBlockchain));
                 return true;
             }
             if ( this.isResponsibleForMonitoring( usuarioEndereco ) ) {
-                (await contWithSigner.unpauseAddressAfterMonitoring(contaBlockchain));          
+                (await contWithSigner.unpauseAddressAfterMonitoring(contaBlockchain));
                 return true;
             }
 
@@ -326,21 +330,21 @@ async ReValidarRegular(cnpj: number, hashdeclaracao: string): Promise<any>  {
     async pauseLegalEntity(rbbid: number) {
         let usuarioVetor = await this.identificaUsuario();
         let usuario = usuarioVetor[0];
-        let usuarioEndereco = usuarioVetor[1];        
+        let usuarioEndereco = usuarioVetor[1];
 
         console.log("Web3Service - pauseLegalEntity");
         console.log("RBBId: " + rbbid );
 
         try {
             const signer = this.accountProvider.getSigner();
-            const contWithSigner = this.RBBRegistrySmartContract.connect(signer); 
+            const contWithSigner = this.RBBRegistrySmartContract.connect(signer);
 
             if ( rbbid == usuario.rbbid ) {
                 (await contWithSigner.pauseLegalEntitySameOrg(rbbid));
                 return true;
             }
             if ( this.isResponsibleForMonitoring( usuarioEndereco ) ) {
-                (await contWithSigner.pauseLegalEntityAfterMonitoring(rbbid));          
+                (await contWithSigner.pauseLegalEntityAfterMonitoring(rbbid));
                 return true;
             }
 
@@ -351,13 +355,13 @@ async ReValidarRegular(cnpj: number, hashdeclaracao: string): Promise<any>  {
         }
     }
 
-    async identificaUsuario() {          
+    async identificaUsuario() {
         let usuarioEndereco = await this.getCurrentAccountSync();
         let usuario = await this.getPJInfo(usuarioEndereco);
         return [usuario, usuarioEndereco];
     }
 
-    async validarCadastro(address: string) {          
+    async validarCadastro(address: string) {
         console.log("Web3Service - validarCadastro");
         console.log("address: " + address );
         let usuarioVetor = await this.identificaUsuario();
@@ -369,14 +373,14 @@ async ReValidarRegular(cnpj: number, hashdeclaracao: string): Promise<any>  {
             const contWithSigner = this.RBBRegistrySmartContract.connect(signer);
 
             if ( usuario.roleAsString == "Admin" ) {
-                (await contWithSigner.validateRegistrySameOrg(address));          
+                (await contWithSigner.validateRegistrySameOrg(address));
                 return true;
             }
             if ( this.isResponsibleForRegistryValidation( usuarioEndereco ) ) {
-                (await contWithSigner.validateRegistry(address));    
+                (await contWithSigner.validateRegistry(address));
                 return true;
             }
-                
+
             throw "Usuário não tem permissão para validar conta";
 
         } catch (error) {
@@ -398,22 +402,22 @@ async ReValidarRegular(cnpj: number, hashdeclaracao: string): Promise<any>  {
             const contWithSigner = this.RBBRegistrySmartContract.connect(signer);
 
             if ( usuarioEndereco === address ) {
-                (await contWithSigner.invalidateYourOwnAddress());          
+                (await contWithSigner.invalidateYourOwnAddress());
                 return true;
-            }   
+            }
             console.log("Web3Service - invalidarCadastro - Nao eh invalidateYourOwnAddress");
             if ( usuario.roleAsString == "Admin" ) {
-                (await contWithSigner.invalidateAddressSameOrg(address));          
+                (await contWithSigner.invalidateAddressSameOrg(address));
                 return true;
             }
             console.log("Web3Service - invalidarCadastro - Nao eh invalidateAddressSameOrg");
             if ( this.isResponsibleForRegistryValidation( usuarioEndereco ) ) {
-                (await contWithSigner.invalidateAddress(address));    
+                (await contWithSigner.invalidateAddress(address));
                 return true;
-            }   
+            }
             console.log("Web3Service - invalidarCadastro - Nao eh invalidateAddress");
             if ( this.isResponsibleForMonitoring( usuarioEndereco ) ) {
-                (await contWithSigner.invalidateAddressAfterMonitoring(address));    
+                (await contWithSigner.invalidateAddressAfterMonitoring(address));
                 return true;
             }
             console.log("Web3Service - invalidarCadastro - Nao eh invalidateAddressAfterMonitoring");
@@ -456,9 +460,9 @@ async ReValidarRegular(cnpj: number, hashdeclaracao: string): Promise<any>  {
         console.log("address= " +address);
         let comparacao =  ( enderecoDoResponsavelPelaValidacao == address );
         console.log("comparacao= " +comparacao);
-        
+
         return comparacao;
-    }  
+    }
 
     async isResponsibleForMonitoring(address: string): Promise<boolean> {
 
@@ -468,9 +472,9 @@ async ReValidarRegular(cnpj: number, hashdeclaracao: string): Promise<any>  {
         console.log("address= " +address);
         let comparacao =  ( enderecoDoResponsavelPelaMonitoracao == address );
         console.log("comparacao= " +comparacao);
-        
+
         return comparacao;
-    }  
+    }
 
 
     async isContaDisponivel(address: string): Promise<boolean> {

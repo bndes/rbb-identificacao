@@ -13,8 +13,6 @@ import { AssociaContaAdminComponent } from './associa-conta-admin/associa-conta-
 import { AssociaContaClienteComponent } from './associa-conta-cliente/associa-conta-cliente.component';
 import { ListacontasComponent } from './listacontas/listacontas.component';
 import { ValidarContaAdminComponent } from './validar-conta-admin/validar-conta-admin.component';
-import { PauseClienteComponent } from './pause-cliente/pause-cliente.component';
-import { PauseAdminComponent } from './pause-admin/pause-admin.component';
 import { HomeComponent } from './home/home.component';
 import { CallComponent } from './call/call.component';
 import { AlertModule } from './_alert';
@@ -47,8 +45,6 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
     AssociaContaClienteComponent,
     ListacontasComponent,
     ValidarContaAdminComponent,
-    PauseClienteComponent,
-    PauseAdminComponent,
     HomeComponent,
     CallComponent,
     RevalidarContaComponent
