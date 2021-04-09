@@ -28,25 +28,34 @@
                     {{contaEstaValida}}
                 </div>
             </div>
+            <div class="br-input" >
+                <label>Razão Social:</label>
+                <input name="razaoSocial" class="form-control form-control-sm" [(ngModel)]="this.cliente.dadosCadastrais.razaoSocial" readonly  disabled/>
+            </div>
+            
+            
 
-
-            <div style="height: fit-content; background-color: #d2e4ff44; box-shadow: 0 0 3px #000000, 0 0 5px #b0b0b4;"  class="br-card conteudo form-group" >
+            <div style="height: 1000px; background-color: #d2e4ff44; box-shadow: 0 0 3px #000000, 0 0 5px #b0b0b4;"  class="br-card conteudo form-group" >
                 <div style="background-color:#d2e4ff44;"  class="front">
                   <div  class="header">
-                      <h1 style="font-size: 20px; margin-top: 10px !important;">Procedimento de Declaração</h1>
+                      <h1 *ngIf='this.contaAdminFlag==false' style="font-size: 20px; margin-top: 10px !important;">Revalidar Conta Autorizada</h1>
+                      <h1 *ngIf='this.contaAdminFlag==true' style="font-size: 20px; margin-top: 10px !important;">Revalidar Conta Admin</h1>
                   </div>
-                 <div class="content">
-
-                          <label>1. Antes de começar, certifique-se que você tem o <b>Adobe Reader</b> instalado em sua máquina. Caso não tenha, clique <a target="_blank" href="https://get2.adobe.com/br/reader/">aqui</a> para instalar</label>
-
-                          <label>2. Clique <a target="_blank" href="{{fileHandleService.getCaminhoRoteiroAssinaturaDigital()}}">aqui</a> para ler o <b>Roteiro de Instruções</b> para essa etapa. </label>
-
-                          <label>3. Clique <button class="link" ngbTooltip="Baixar declaracao" (click)="createPdf()">aqui</button> para <b>salvar localmente</b> a Declaração de Propriedade e Responsabilidade sobre Conta Blockchain, e abrir com o Adobe Reader.</label>
-
-                          <label>4. Seguindo as instruções do Roteiro, <b>assine a declaração digitalmente com seu e-CNPJ</b> conectado ao computador. </label>
-
-                          <label>5. Clique no botão abaixo para <b>fazer upload do PDF</b> da Declaração assinado digitalmente. </label>
+                 <div *ngIf='this.contaAdminFlag==true' class="content">
+                    <label style="font-size:14px; padding-right: 100px; margin-bottom: 40px; ">Esta funcionalidade permite solicitar a revalidação de uma Conta Admin de PJ já cadastrada na Rede Brasileira de Blockchain que esteja pausada, expirada, ou prestes a expirar. Para esta operação, é necessário ter em mãos o e-CNPJ e reenviar a Declaração de Propriedade e Responsabilidade sobre Conta Blockchain. Atenção: Não é possível revalidar uma conta blockchain no estado inválida.</label>
+                        <br>  
+                          <label  >1.  Selecione no Metamask a conta a ser revalidada</label>
                           <br>
+                          <label  >2.  Confira as informações apresentadas</label>
+                          <br>
+                          <label>3. Clique <a target="_blank" href="{{fileHandleService.getCaminhoRoteiroAssinaturaDigital()}}">aqui</a> para ler o <b>Roteiro de Instruções</b> para essa etapa. </label>
+                          <br>
+                          <label>4. Clique <button class="link" ngbTooltip="Baixar declaracao" (click)="createPdf()">aqui</button> para <b>salvar localmente</b> a Declaração de Propriedade e Responsabilidade sobre Conta Blockchain, e abrir com o Adobe Reader.</label>
+                          <br>
+                          <label>5. Seguindo as instruções do Roteiro, <b>assine a declaração digitalmente com seu e-CNPJ</b> conectado ao computador. </label>
+                          <br>
+                          <label>6. Clique no botão abaixo para <b>fazer upload do PDF</b> da Declaração assinado digitalmente. </label>
+                            <br>
                       <div *ngIf='this.contaAdminFlag' class="br-upload" style="margin-bottom: 10px !important;margin-top: 30px; margin-right: 1000px;" >
                           <button id="btArquivo" (click)="hashdeclaracao='';uploadstart=true; disable=false;fileInput.click()" class=" br-button upload-button"><i class="fas fa-upload"></i>Upload</button>
 
@@ -59,6 +68,30 @@
                           <div class="upload-list"></div>
                       </div>
                   </div>
+                  <div *ngIf='this.contaAdminFlag==false' class="content">
+                    <label style="font-size:14px; padding-right: 100px; margin-bottom: 40px; ">Esta funcionalidade permite solicitar ao(s) Administrador(es) do CNPJ a revalidação de uma Conta Autorizada já cadastrada na Rede Brasileira de Blockchain que esteja pausada, expirada, ou prestes a expirar.</label>
+                        <br>  
+                          <label  >1.  Selecione no Metamask a conta a ser revalidada</label>
+                          <br>
+                          <label  >2.  Confira as informações apresentadas</label>
+                          <br>
+                          <label  >3.  Clique no botão "Revalidar Conta Autorizada</label>
+                          <br>
+                          <label  >4.  Aguarde a aprovação do Admin do CNPJ</label>
+                          <br>
+                      <div *ngIf='this.contaAdminFlag' class="br-upload" style="margin-bottom: 10px !important;margin-top: 10px; margin-right: 1000px;" >
+                          <button id="btArquivo"style="margin-bottom: 1px;padding-bottom: 2px;" (click)="hashdeclaracao='';uploadstart=true; disable=false;fileInput.click()" class=" br-button upload-button"><i class="fas fa-upload"></i>Upload</button>
+
+                          <input type="file" id="arquivo"  accept=".pdf" #fileInput ng2FileSelect [uploader]="this.fileHandleService.uploader" (change)="this.fileHandleService.chamaUpload()"/>
+
+                          <div style="width: 500px;" class="msg-hash-declaracao" >
+                              <h2 style="width: 400px; margin-bottom: 0px !important; color: #000000;" >Hash da Declaração: </h2>
+                              <h2 style="width: 300px; font-size: 10px; color: #000000;">{{hashdeclaracao}}</h2>
+                          </div>
+                          <div class="upload-list"></div>
+                      </div>
+                  </div>
+
                   <div style="height: 100px; width:100%; justify-content: center;margin-bottom: 12%; " class="footer">
                     <button *ngIf='this.contaAdminFlag==true' style="margin-left: 35% !important;
                                        margin-bottom: 10%;
@@ -66,7 +99,7 @@
                                        width: 30%;
                                        height: 70%;
                                        font-size: 30px;
-                                       justify-content: center;" class="br-button primary" [ngClass]="{'loading':load == true, 'disabledButton': disable == true}" type="button" (click)="reativarContaClienteAdmin()" >Reativar 
+                                       justify-content: center;" class="br-button primary" [ngClass]="{'loading':load == true, 'disabledButton': disable == true}" type="button" (click)="reativarContaClienteAdmin()" >Revalidar 
                         </button>
                         <button *ngIf='this.contaAdminFlag!=true' style="margin-left: 35% !important;
                                        margin-bottom: 10%;
@@ -74,7 +107,7 @@
                                        width: 30%;
                                        height: 70%;
                                        font-size: 30px;
-                                       justify-content: center;" class="br-button primary" [ngClass]="{'loading':load == true, 'disabledButton': disableRegular == true}" type="button" (click)="reativarContaClienteRegular()" >Reativar 
+                                       justify-content: center;" class="br-button primary" [ngClass]="{'loading':load == true, 'disabledButton': disableRegular == true}" type="button" (click)="reativarContaClienteRegular()" >Revalidar 
                         </button>
                   </div>
 
@@ -87,7 +120,7 @@
     </div>
 
     <div class="leftbox">
-        <h1>Associação de Representante Administrador</h1>
+        <h1>Revalidar Conta</h1>
     </div>
 
     </body>

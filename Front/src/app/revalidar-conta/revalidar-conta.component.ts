@@ -162,16 +162,23 @@ export class RevalidarContaComponent implements OnInit {
           this.contaAdminFlag=false;
         }
         let status = this.web3Service.getEstadoContaAsStringByCodigo(registro.status);
+        
         if(status !="Invalidada" && status != "Disponível"){
           this.cliente.cnpj = registro.cnpj;
+          this.statusConta=true;
+          this.inicializaDadosDerivadosPessoaJuridica();
+          await this.recuperaClientePorCNPJ( Utils.removeSpecialCharacters(this.cliente.cnpj));
+
           this.disableRegular=false;
-          console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+          
           console.log("this.selectedAccount: "+ this.selectedAccount);
           console.log("this.cliente.cnp: "+ this.cliente.cnpj);
+          console.log("this.cliente.dadosCadastrais.razaoSocial: "+ this.cliente.dadosCadastrais);
           console.log("registro.status: "+ (this.web3Service.getEstadoContaAsStringByCodigo(registro.status)));
-          console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+          
 
         }else{
+          this.statusConta=false;
           let texto = "Conta nao Valida";
           self.alertService.error(texto, self.alertOptions);
         }
@@ -231,6 +238,7 @@ export class RevalidarContaComponent implements OnInit {
   }
 
   async recuperaClientePorCNPJ(cnpj) {
+    
 
     console.log("RECUPERA CLIENTE com CNPJ = " + cnpj);
 
@@ -238,13 +246,15 @@ export class RevalidarContaComponent implements OnInit {
 
     this.pessoaJuridicaService.recuperaClientePorCnpj(cnpj).subscribe(
       empresa => {
+        
         if (empresa && empresa.dadosCadastrais) {
+          
           console.log("empresa encontrada - ");
           console.log(empresa);
           this.inicializaDadosDerivadosPessoaJuridica();
-
+          
           self.cliente.dadosCadastrais = empresa["dadosCadastrais"];
-
+          console.log(self.cliente.dadosCadastrais.razaoSocial);
           for (var i = 0; i < empresa["subcreditos"].length; i++) {
 
             let subStr = JSON.parse(JSON.stringify(empresa["subcreditos"][i]));
