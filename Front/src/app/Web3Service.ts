@@ -116,9 +116,8 @@ export class Web3Service {
             return undefined;
         }
  */     var address = await this.ethereum.request({ method: 'eth_accounts' });
-        var stringAddress = address.toString();
-
-        if(stringAddress){
+        if(address){
+          var stringAddress = address.toString();
           var checksumAddress = ethers.utils.getAddress(stringAddress);
           return checksumAddress;
         } else{
