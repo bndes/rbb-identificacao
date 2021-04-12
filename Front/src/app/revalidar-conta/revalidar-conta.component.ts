@@ -149,7 +149,7 @@ export class RevalidarContaComponent implements OnInit {
       //if ( this.flagUploadConcluido == false ) {
         this.selectedAccount = newSelectedAccount;
         
-        //this.verificaEstadoContaBlockchainSelecionada(this.selectedAccount);
+        this.verificaEstadoContaBlockchainSelecionada(this.selectedAccount);
         let registro = await this.web3Service.getPJInfo(this.selectedAccount);
         console.log("registro.status: "+ registro.status);
         console.log("selectedAccount=" + this.selectedAccount);
@@ -180,6 +180,7 @@ export class RevalidarContaComponent implements OnInit {
         }else{
           this.statusConta=false;
           let texto = "Conta nao Valida";
+          this.cliente.dadosCadastrais.razaoSocial="";
           self.alertService.error(texto, self.alertOptions);
         }
         this.preparaUpload(this.cliente.cnpj, this.subcreditoSelecionado, this.selectedAccount, this);

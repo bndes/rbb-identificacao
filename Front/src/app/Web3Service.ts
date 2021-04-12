@@ -80,8 +80,9 @@ export class Web3Service {
         console.log("INICIALIZOU O WEB3 - RBBRegistryAddress abaixo");
         console.log("this.RBBRegistryAddress=" + this.RBBRegistryAddress);
 
-        this.RBBRegistrySmartContract = new ethers.Contract(this.RBBRegistryAddress, this.ABIRBBRegistry, this.provider);
-
+        //this.RBBRegistrySmartContract = new ethers.Contract(this.RBBRegistryAddress, this.ABIRBBRegistry, this.provider);
+        this.RBBRegistrySmartContract = new ethers.Contract(this.RBBRegistryAddress, this.ABIRBBRegistry, this.accountProvider );
+        
         console.log("INICIALIZOU O WEB3");
         console.log("BNDESRegistry=");
         console.log(this.RBBRegistrySmartContract);

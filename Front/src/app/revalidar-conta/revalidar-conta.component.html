@@ -21,10 +21,10 @@
             </div>
         -->
             <div class="br-input" >
-                <label>Selecione a conta blockchain desejada no Metamask.</label>
+                <label>Selecione a conta blockchain desejada no Metamask.A conta não deve estar no estado "Disponível" ou "Invalidada"</label>
                 <input name="contaBlockchain" class="form-control form-control-sm" type="text" [ngModel]="selectedAccount" readonly
                 disabled [ngClass]="{'color-danger':this.statusConta == false, 'color-success': this.statusConta == true}" size="45">
-                <div class="msg-conta-invalida" [ngClass]="{'text-danger':this.statusConta == false, 'text-success': this.statusConta == true}">
+                <div  class="msg-conta-invalida" [ngClass]="{'text-danger':this.statusConta == false, 'text-success': this.statusConta == true}">
                     {{contaEstaValida}}
                 </div>
             </div>
