@@ -54,22 +54,16 @@
                 </button>
             </div>
 
-            <!-- Conta nao associada -->
-            <div style="color: #4c73f5;" class="status-conta"
-                *ngIf="this.usuario != undefined  && this.selectedAccount != undefined">
-                Essa conta ainda não foi associada
-            </div>
-
-            <!-- Conta valida e associada -->
+            <!-- Conta disponivel -->
             <div style="color: #09a709;" class="status-conta"
-                *ngIf="this.usuario != undefined && this.usuario.cnpj != 0 ">
-                Conta associada
+                *ngIf="this.usuario != undefined && this.usuario.statusAsString != 'Invalidada'">
+                Status: {{this.usuario.statusAsString}}
             </div>
 
-            <!-- Supadmin -->
-            <div style="color: #cebb11;" class="status-conta"
-                *ngIf="this.usuario != undefined && this.usuario.roleAsString == 'Supadmin && this.usuario.roleAsString != undefined'">
-              SUPADMIN
+            <!-- Conta  invalidada -->
+            <div style="color: #ce1111;" class="status-conta"
+                *ngIf="this.usuario != undefined && this.usuario.statusAsString == 'Invalidada'">
+              Conta Invalidada
             </div>
 
           </div>
@@ -81,11 +75,9 @@
               <h1>CNPJ:</h1>
               <h2 *ngIf="this.usuario != undefined">{{this.usuario.cnpj | mask: '00.000.000/0000-00'}}</h2>
               <span style="margin: 0px; margin-bottom: 4px;width: 100%;" class="br-divider"></span>
-              <h1>Situação:</h1>
-              <h2 *ngIf="this.usuario != undefined">{{this.usuario.statusAsString}}</h2>
-              <span style="margin: 0px; width: 100%;" class="br-divider"></span>
+
               <h1>Papel:</h1>
-              <h2 *ngIf="this.usuario != undefined">{{this.usuario.roleAsString}}</h2>
+              <h2 *ngIf="this.usuario != undefined">{{this.usuario.roleAsString }}</h2>
             </div>
           </template>
 
