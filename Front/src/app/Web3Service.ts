@@ -108,15 +108,23 @@ export class Web3Service {
         };
     }
 
-    public getCurrentAccountSync() {
-        if (this.accountProvider.getSigner() != undefined)
+    public async getCurrentAccountSync() {
+        /* if (this.accountProvider.getSigner() != undefined)
             return this.accountProvider.getSigner().getAddress();
         else {
             //console.log("getCurrentAccountSync waiting for getSigner");
             return undefined;
         }
+ */     var address = await this.ethereum.request({ method: 'eth_accounts' });
+        var stringAddress = address.toString();
 
-        /* return  this.ethereum.request({ method: 'eth_accounts' }); */
+        if(stringAddress){
+          var checksumAddress = ethers.utils.getAddress(stringAddress);
+          return checksumAddress;
+        } else{
+           return undefined;
+        }
+
     }
 
 
@@ -129,7 +137,7 @@ export class Web3Service {
          this.RBBRegistrySmartContract.filters.AccountValidation(null),
          this.RBBRegistrySmartContract.filters.AccountInvalidation(null),
          this.RBBRegistrySmartContract.filters.AccountRoleChange(null),
-        this.RBBRegistrySmartContract.filters.AccountPaused(null),
+         this.RBBRegistrySmartContract.filters.AccountPaused(null),
          this.RBBRegistrySmartContract.filters.AccountUnpaused(null)];
 
         return await this.RBBRegistrySmartContract.queryFilter(filter);
