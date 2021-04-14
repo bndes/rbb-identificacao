@@ -63,7 +63,7 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
     NgxTippyModule
   ],
   providers: [PessoaJuridicaService, Web3Service, ConstantesService, GoogleMapsService, FileHandleService ,
-    {provide: APP_BASE_HREF, useValue: '/rbbid'}
+    {provide: APP_BASE_HREF, useValue: '/identificacao/'}
   ],
   bootstrap: [AppComponent]
 })

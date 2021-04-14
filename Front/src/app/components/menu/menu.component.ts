@@ -53,7 +53,7 @@ export class MenuComponent implements OnInit {
 
   ngOnInit():void {
 
-    this.web3Service.intializeWeb3();
+//    this.web3Service.intializeWeb3();
 
     /* setInterval(async () => {
       this.selectedAccount = await this.web3Service.getCurrentAccountSync();
