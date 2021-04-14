@@ -283,6 +283,7 @@ export class ValidarContaAdminComponent implements OnInit {
     }
 
     async validarCadastro(contaBlockchainValidar) {
+      let self = this;
       console.log(contaBlockchainValidar);
       
       if (contaBlockchainValidar === undefined) {
@@ -291,8 +292,16 @@ export class ValidarContaAdminComponent implements OnInit {
         return;
       }    
 
-      let booleano = <boolean> (await this.web3Service.validarCadastro(contaBlockchainValidar)); 
-          
+      let booleano = await this.web3Service.validarCadastro(contaBlockchainValidar).then(
+        function(txHash) {
+         
+          self.alertService.success("Gravação concluída na Blockchain.", self.alertOptions);
+          self.router.navigate(['home/associa/contas']);
+        }
+      , function(error) {
+        self.alertService.error("Não foi possível validar cadastro na blockchain. Usuário tem essa permissão?", self.alertOptions);
+      }); 
+      /*    
       if (booleano) {
         let texto = "O cadastro da conta foi validado.";
             this.alertService.success(texto, this.alertOptions);   
@@ -304,7 +313,7 @@ export class ValidarContaAdminComponent implements OnInit {
         this.alertService.error(texto, this.alertOptions);  
         return;              
       }
-      
+      */
       let texto = "Confirme a operação no metamask e aguarde a confirmação.";
       this.alertService.info(texto, this.alertOptions); 
     }
@@ -318,9 +327,18 @@ export class ValidarContaAdminComponent implements OnInit {
         console.log("error", "Erro", s, 2)
         return;
       }
-
-      let booleano = <boolean> (await this.web3Service.invalidarCadastro(contaBlockchainInvalidar)); 
+      let booleano = await this.web3Service.invalidarCadastro(contaBlockchainInvalidar).then(
+        function(txHash) {
           
+          self.alertService.success("Gravação concluída na Blockchain.", self.alertOptions);
+          self.router.navigate(['home/associa/contas']);
+        }
+      , function(error) {
+        self.alertService.error("Não foi possível invalidar cadastro na blockchain. Usuário tem essa permissão?", self.alertOptions);
+      });
+/*
+      let booleano = <boolean> (await this.web3Service.invalidarCadastro(contaBlockchainInvalidar)); 
+         
       if (booleano) {
         let texto = "O cadastro da conta foi invalidado.";
             this.alertService.success(texto, this.alertOptions);   
@@ -332,12 +350,13 @@ export class ValidarContaAdminComponent implements OnInit {
         this.alertService.error(texto, this.alertOptions);                
         return;
       }
-      
+      */
       let texto = "Confirme a operação no metamask e aguarde a confirmação.";
       this.alertService.info(texto, this.alertOptions); 
     }
     
     async pause(contaBlockchain) {
+      let self = this;
       console.log(contaBlockchain);
       
       if (contaBlockchain === undefined) {
@@ -345,7 +364,16 @@ export class ValidarContaAdminComponent implements OnInit {
         console.log("error", "Erro", s, 2);
         return;
       }    
-  
+      let booleano = await this.web3Service.pause(contaBlockchain).then(
+        function(txHash) {
+          
+          self.alertService.success("Pause de conta enviada. Aguarde a confirmação.", self.alertOptions);
+          self.router.navigate(['home/associa/contas']);
+        }
+      , function(error) {
+        self.alertService.error("Erro ao pausar cadastro na blockchain", self.alertOptions);
+      });
+      /*
       let booleano = <boolean> (await this.web3Service.pause(contaBlockchain)); 
           
       if (booleano) {
@@ -358,20 +386,31 @@ export class ValidarContaAdminComponent implements OnInit {
         this.alertService.error(texto, this.alertOptions);                
         return;
       }
-      
+      */
       let texto = "Confirme a operação no metamask e aguarde a confirmação.";
       this.alertService.info(texto, this.alertOptions); 
     }
 
     async unpause(contaBlockchain) {
+      let self = this;
       console.log(contaBlockchain);
       
       if (contaBlockchain === undefined) {
         let texto = "A conta blockchain é um Campo Obrigatório";
         this.alertService.error(texto, this.alertOptions); 
         return;
-      }    
-  
+      } 
+      
+      let booleano = await this.web3Service.unpause(contaBlockchain).then(
+        function(txHash) {
+          
+          self.alertService.success("Aguarde a confirmação.", self.alertOptions);
+          self.router.navigate(['home/associa/contas']);
+        }
+      , function(error) {
+        self.alertService.error("Erro ao despausar cadastro na blockchain", self.alertOptions);
+      }); 
+      /*
       let booleano = <boolean> (await this.web3Service.unpause(contaBlockchain)); 
           
       if (booleano) {
@@ -384,7 +423,7 @@ export class ValidarContaAdminComponent implements OnInit {
         this.alertService.error(texto, this.alertOptions);                
         return;
       }
-      
+      */
       let texto = "Confirme a operação no metamask e aguarde a confirmação.";
       this.alertService.info(texto, this.alertOptions); 
 
@@ -392,13 +431,22 @@ export class ValidarContaAdminComponent implements OnInit {
 
     async pauseCNPJ(rbbid) {
       console.log(rbbid);
-      
+      let self = this;
       if (rbbid === undefined) {
         let s = "A rbbid é um Campo Obrigatório";
         console.log("error", "Erro", s, 2);
         return;
-      }    
-  
+      }
+      let booleano = await this.web3Service.pauseLegalEntity(rbbid).then(
+        function(txHash) {
+          
+          self.alertService.success("Pause de CNPJ enviada. Aguarde a confirmação.", self.alertOptions);
+          self.router.navigate(['home/associa/contas']);
+        }
+      , function(error) {
+        self.alertService.error("Erro ao pausar CNPJ na blockchain", self.alertOptions);
+      });    
+  /*
       let booleano = <boolean> (await this.web3Service.pauseLegalEntity(rbbid)); 
           
       if (booleano) {
@@ -411,7 +459,7 @@ export class ValidarContaAdminComponent implements OnInit {
         this.alertService.error(texto, this.alertOptions);                
         return;
       }
-      
+      */
       let texto = "Confirme a operação no metamask e aguarde a confirmação.";
       this.alertService.info(texto, this.alertOptions); 
     }
