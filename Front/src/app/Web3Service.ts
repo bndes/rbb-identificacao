@@ -22,7 +22,13 @@ export class Web3Service {
 
     private vetorTxJaProcessadas : any[];
 
-    private provider: any;
+
+    private eventoBNDESRegistry: any;
+    private eventoCadastro: any;
+    private eventoTransacao: any;
+
+    //private provider: any;
+
     private netVersion: any;
     private accountProvider: any;
     private URLBlockchainProvider: string;
@@ -57,7 +63,10 @@ export class Web3Service {
     async intializeWeb3() {
         console.log("this.URLBlockchainProvider ao inicializar web3 = " + this.URLBlockchainProvider);
 
-        this.provider = new ethers.providers.JsonRpcProvider(this.URLBlockchainProvider);
+
+        console.log("this.URLBlockchainProvider = " + this.URLBlockchainProvider);
+        //this.provider = new ethers.providers.JsonRpcProvider(this.URLBlockchainProvider);
+
         this.ethereum =  window['ethereum'];
 
         this.netVersion = await this.ethereum.request({
@@ -175,7 +184,8 @@ export class Web3Service {
     }
 
     registraWatcherEventosLocal(txHashProcurado, callback) {
-        this.provider.once(txHashProcurado, (receipt) => {
+        
+        this.accountProvider.once(txHashProcurado, (receipt) => {
             console.log('Transaction Mined: ' + receipt.hash);
             console.log(receipt);
             callback();
@@ -449,7 +459,7 @@ async ReValidarRegular(cnpj: number, hashdeclaracao: string): Promise<any>  {
     }
 
     async getBlockTimestamp(blockNumber: number) {
-        let block = await this.provider.getBlock(blockNumber);
+        let block = await this.accountProvider.getBlock(blockNumber);
         return block.timestamp;
     }
 
