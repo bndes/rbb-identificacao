@@ -81,32 +81,6 @@ app.use(function (req, res, next) {
 app.use(express.static(config.infra.caminhoPastaPublica));
 
 
-//Promise.promisifyAll(mongoose); // key part - promisification
-
-
-/*var PessoasJuridicas = mongoose.model('Pessoasjuridicas', {
-
-	cnpj: String,
-	dadosCadastrais: {
-		cidade: String,
-		razaoSocial: String,
-	},
-	subcreditos: [{
-		numero: Number,
-	}],
-});
-*/
-
-// Rotas
-/*
-	//use para pegar qq verbo hhtp
-	//verifica autenticacao para todas as rotas abaixo
-	app.use('/*', function(req, res, next) {
-		console.log("Sempre passa por aqui");
-		next();
-    });
-*/
-
 //Configuracao de acesso ao BD
 let configAcessoBDPJ = config.infra.acesso_BD_PJ;
 configAcessoBDPJ.password = process.env.BNC_BD_PJ_PASSWORD;
@@ -432,7 +406,7 @@ async function buscaFileInfo(req, res) {
 		let hashFile 		  = req.body.hashFile;		
 
 		let filePathAndNameToFront = await SERVER_FUNCTIONS.buscaTipoArquivo(cnpj, contrato, blockchainAccount, tipo, hashFile);
-console.log("filePathAndNameToFront = " + filePathAndNameToFront);
+		console.log("filePathAndNameToFront = " + filePathAndNameToFront);
 		let respJson = {
 			pathAndName: filePathAndNameToFront
 		};
@@ -549,8 +523,8 @@ async function listenEvent() {
 
 async function checkIDStatus(id) {
 
-let blockchainAccount = await RBBRegistry.getBlockchainAccounts (id);
-let blockchainAccountStatus = await RBBRegistry.getAccountState(blockchainAccount[0]);
+	let blockchainAccount = await RBBRegistry.getBlockchainAccounts (id);
+	let blockchainAccountStatus = await RBBRegistry.getAccountState(blockchainAccount[0]);
 
     console.log( { "id"      : id,
                  "address" : blockchainAccount, 

@@ -14,7 +14,6 @@ export class Web3Service {
     private RBBRegistryAddress: string = '';
     private blockchainNetwork: string = '';
     private ethereum: any;
-    private web3Instance: any;                  // Current instance of web3
 
     private RBBRegistrySmartContract: any;
 
@@ -22,10 +21,6 @@ export class Web3Service {
     private ABIRBBRegistry;
 
     private vetorTxJaProcessadas : any[];
-
-    private eventoBNDESRegistry: any;
-    private eventoCadastro: any;
-    private eventoTransacao: any;
 
     private provider: any;
     private netVersion: any;
@@ -49,21 +44,19 @@ export class Web3Service {
                 this.ABIRBBRegistry          = data['abiBNDESRegistry'];
                 this.URLBlockchainProvider   = data["URLBlockchainProvider"];
 
-                console.log("abis");
-                console.log(this.ABIRBBRegistry);
-
                 this.intializeWeb3();
 
             },
             error => {
                 console.log("**** Erro ao buscar constantes do front");
+                console.log(error);
             });
 
     }
 
     async intializeWeb3() {
+        console.log("this.URLBlockchainProvider ao inicializar web3 = " + this.URLBlockchainProvider);
 
-        console.log("this.URLBlockchainProvider = " + this.URLBlockchainProvider);
         this.provider = new ethers.providers.JsonRpcProvider(this.URLBlockchainProvider);
         this.ethereum =  window['ethereum'];
 
