@@ -62,9 +62,15 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
     NgxMaskModule.forRoot(),
     NgxTippyModule
   ],
-  providers: [PessoaJuridicaService, Web3Service, ConstantesService, GoogleMapsService, FileHandleService ,
-    {provide: APP_BASE_HREF, useValue: '/identificacao/'}
+  providers: [PessoaJuridicaService, Web3Service, ConstantesService, GoogleMapsService, FileHandleService 
   ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
+
+/*
+
+  providers: [PessoaJuridicaService, Web3Service, ConstantesService, GoogleMapsService, FileHandleService ,
+    {provide: APP_BASE_HREF, useValue: '/identificacao/'}
+  ],
+*/
