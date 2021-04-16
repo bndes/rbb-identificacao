@@ -28,4 +28,21 @@ body{
 
 }
 
+.minhagrid{
+  margin: auto;
+  width: 100px;
+  display: grid;
+  grid-template-columns:  1fr 1fr ;
+  grid-column-gap: 5px;
+}
 
+.c1{
+  background: yellow;
+  height: 100px;
+
+}
+.c2{
+  background: red;
+  height: 100px;
+
+}
