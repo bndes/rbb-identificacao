@@ -10,20 +10,16 @@
 
       <!-- Menu esquerdo -->
       <div class="menu">
-        <button mat-button class="br-button" type="button" circle mini  ><i class="fas fa-bars"  ></i>
+        <button mat-button class="br-button" [matMenuTriggerFor]="menu" type="button" circle mini  ><i class="fas fa-bars"  ></i>
         </button>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item [routerLink]="['home/associa/regular']" >Associação de Conta Regular</button>
+          <button mat-menu-item [routerLink]="['home/associa/admin']" > Associação de Conta Administrador (Requer E-CNPJ)</button>
+          <button mat-menu-item [routerLink]="['home/associa/contas']" > Listar Contas Associadas </button>
+          <button mat-menu-item [routerLink]="['home/validar']" > Gerenciar Contas </button>
+        </mat-menu>
         <div class="title">Rede Brasileira de Blockchain</div>
-
-          <button class="nav-link br-button secondary" [routerLink]="['home']" routerLinkActive="active"
-             [routerLinkActiveOptions]="{exact: true}"
-             style="height: 30px;
-                    line-height: 0px;
-                    font-size: 12px;
-                    padding-top: 5px;
-                    margin-left:12px;
-                    margin-top: 5px;
-                    border: 0px !important;">
-            <i class="fas fa-home"></i>RBB - Identificação</button>
+        <h2 class="subtitle">RBB - Identificação</h2>
       </div>
 
       <!-- Detalhes da conta -->
