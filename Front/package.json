@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --base-href /identificacao/",
-    "build": "ng build --prod --base-href /identificacao/",
+    "start": "ng serve --base-href /identificacao/ --deploy-url /",
+    "build": "ng build --prod --base-href /identificacao/ --deploy-url /",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
