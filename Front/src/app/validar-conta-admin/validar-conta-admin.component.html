@@ -36,6 +36,11 @@
               <td mat-cell *matCellDef="let row" > {{row.cnpj  | mask: '00.000.000/0000-00' }} </td>
             </ng-container>
 
+            <ng-container matColumnDef="name">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Razão Social </th>
+              <td mat-cell *matCellDef="let row"> {{row.razaoSocial}} </td>
+            </ng-container>
+
             <ng-container matColumnDef="address">
               <th mat-header-cell *matHeaderCellDef mat-sort-header> Blockchain Address </th>
               <td mat-cell *matCellDef="let row"> {{row.contaBlockchain}} </td>
@@ -46,9 +51,11 @@
               <td mat-cell *matCellDef="let row"> {{row.perfil}} </td>
             </ng-container>
 
-            <ng-container matColumnDef="name">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header> Razão Social </th>
-              <td mat-cell *matCellDef="let row"> {{row.razaoSocial}} </td>
+            <ng-container matColumnDef="status">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Situação Atual</th>
+              <td style="text-align: center; font-weight: 550; font-size: 16px; " mat-cell *matCellDef="let row">
+                {{row.status}} <span *ngIf='row.pausada'>e Pausada</span>
+              </td>
             </ng-container>
 
             <ng-container matColumnDef="evento">
@@ -56,12 +63,7 @@
               <td  mat-cell *matCellDef="let row"> {{row.evento}} </td>
             </ng-container>
 
-            <ng-container matColumnDef="status">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header> Situação Atual</th>
-              <td style="text-align: center; font-weight: 550; font-size: 16px; " mat-cell *matCellDef="let row">
-                {{row.status}} <span *ngIf='row.pausada'>e Pausada</span>
-              </td>
-            </ng-container>
+
 
             <!-- Mantenha em sincronia com os estados do RBBRegistry smartcontract
             *acao* pode ser ...
@@ -73,7 +75,7 @@
             5 = INVALIDATED -->
 
             <ng-container matColumnDef="validacao">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header> Validar/Invalidar </th>
+              <th mat-header-cell *matHeaderCellDef > Validar/Invalidar </th>
               <td  style="text-align: center;" mat-cell *matCellDef="let row" >
                 <!-- {{row.acao}} -->
                 <span *ngIf='row.acao==1 || row.acao==2 || row.acao==3 ' >
@@ -103,7 +105,7 @@
             </ng-container>
 
             <ng-container matColumnDef="congelamento">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header> Pausar/Reativar  </th>
+              <th mat-header-cell *matHeaderCellDef > Pausar/Reativar  </th>
               <td  style="text-align: center;" mat-cell *matCellDef="let row" >
                 <span *ngIf='true' >
 
@@ -145,7 +147,7 @@
             </ng-container>
 
             <ng-container matColumnDef="congelamentoCNPJ">
-                <th mat-header-cell *matHeaderCellDef mat-sort-header> Pausar_CNPJ </th>
+                <th mat-header-cell *matHeaderCellDef > Pausar_CNPJ </th>
                 <td  style="text-align: center;" mat-cell *matCellDef="let row" >
                   <span *ngIf='true' >
 
