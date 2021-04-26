@@ -31,7 +31,7 @@ body{
   position: absolute;
   width: 60%;
   height: 90px;
-  background:#4c73f5;
+  background:#071d41;
   box-shadow: 1px 3px 5px #070707;
   offset: top;
   top: -30px;
@@ -68,7 +68,7 @@ nav a :first-child {
 }
 
 .rightbox {
-  padding-top: 10%;
+  padding-top: 9%;
   padding-left: 5%;
   width: 100%;
   height: fit-content;
