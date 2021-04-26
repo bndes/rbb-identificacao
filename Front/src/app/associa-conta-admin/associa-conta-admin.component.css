@@ -24,7 +24,7 @@ body{
 }
 
 .containerResize{
-  height: 1060px ;
+  height: fit-content ;
 }
 
 .leftbox {
@@ -124,6 +124,7 @@ p {
   font-size: 10px;
   border: none;
   color: #3FB6A8;
+  padding: 10px;
 }
 
 .btn:hover {

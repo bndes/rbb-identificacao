@@ -33,7 +33,7 @@
             </div>
 
 
-            <div style="height: fit-content; background-color: #d2e4ff44; box-shadow: 0 0 3px #000000, 0 0 5px #b0b0b4; margin-right: 20px;"  class="br-card conteudo form-group" *ngIf='cliente.dadosCadastrais' >
+            <div style="height: fit-content; background-color: #d2e4ff44; box-shadow: 0 0 3px #000000, 0 0 5px #b0b0b4; margin-right: 20px; margin-bottom: 60px;"  class="br-card conteudo form-group" *ngIf='cliente.dadosCadastrais' >
                 <div style="background-color:#d2e4ff44;"  class="front">
                   <div  class="header">
                       <h1 style="font-size: 20px; margin-top: 10px !important;">Procedimento de Declaração</h1>
@@ -61,17 +61,18 @@
                           </div>
                           <div class="upload-list"></div>
                       </div>
+
+                      <button style="margin-left: 35% !important;
+                                     justify-content: center;
+                                     width: 30%;
+                                     height: 70%;
+                                     font-size: 120%;
+                                     padding: 10px ;
+                                     justify-content: center;" class="br-button primary" [ngClass]="{'loading':load == true, 'disabledButton': disable == true}" type="button" (click)="associarContaCliente()" >Associar
+                       </button>
+
                   </div>
-                  <div style="height: 100px; width:100%; justify-content: center;margin-bottom: 12%; " class="footer">
-                    <button style="margin-left: 35% !important;
-                                   margin-bottom: 10%;
-                                   justify-content: center;
-                                   width: 30%;
-                                   height: 70%;
-                                   font-size: 30px;
-                                   justify-content: center;" class="br-button primary" [ngClass]="{'loading':load == true, 'disabledButton': disable == true}" type="button" (click)="associarContaCliente()" >Associar
-                    </button>
-                  </div>
+
 
                 </div>
             </div>
