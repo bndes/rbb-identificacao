@@ -15,35 +15,33 @@ body{
   background: #FFFFFF;
   margin-left: 15%;
   margin-top: 5%;
+  margin-right: 16%;
   box-shadow: 2px 5px 20px rgba(#070707, .5);
   border: 0.1px solid rgb(0, 0, 0);
   margin-bottom: 15%;
   height: 400px ;
+  position: relative;
 }
 
 .containerResize{
   height: 1060px ;
 }
 
-
-.leftbox h1 {
-    font-size: 25px;
-    color: #FFFFFF;
-    font-family: 'Montserrat', sans-serif;
-    padding-left: 10%;
-    margin-top: 2%;
-}
-
 .leftbox {
-  float: left;
-  top: 25%;
-  left: 12%;
   position: absolute;
-  width: 700px;
-  height: 7%;
+  width: 70%;
+  height: 90px;
   background:#4c73f5;
   box-shadow: 1px 3px 5px #070707;
+  offset: top;
+  top: -30px;
+  left: -50px;
+}
 
+.title-leftbox{
+  color: rgb(255, 255, 255);
+  font-size: 140%;
+  padding-left: 20px;
 }
 
 nav a {
@@ -175,17 +173,6 @@ p {
   color:#168821 !important;
 }
 
-.container .leftbox {
-    float: left;
-    top: -5%;
-    left: 5%;
-    position: absolute;
-    width: 10%;
-    height: 38%;
-    background:#4c73f5;
-    box-shadow: 5px 5px 12px rgba(#070707, .5);
-
-}
 
 .declaracao {
   margin-bottom: 15px;
@@ -212,7 +199,7 @@ p {
   margin-top: 35px;
 }
 
-
+/*
 @media only screen and (max-width: 500px) {
 
 .container {
@@ -231,13 +218,6 @@ p {
 }
 
 
-.leftbox h1 {
-    font-size: 12px;
-    color: #FFFFFF;
-    font-family: 'Montserrat', sans-serif;
-    padding-left: 10%;
-    margin-top: 1%;
-}
 
 .leftbox {
   float: left;
@@ -251,13 +231,6 @@ p {
 
 }
 
-.container h1 {
-  font-family: 'Montserrat', sans-serif;
-  color: #4c73f5;
-  font-size: 16px !important;
-  margin-top: 30% ;
-  margin-bottom: 20px;
-}
 
 .rightbox .br-button{
   height: 5%;
@@ -290,13 +263,6 @@ p {
 }
 
 
-.leftbox h1 {
-    font-size: 18px;
-    color: #FFFFFF;
-    font-family: 'Montserrat', sans-serif;
-    padding-left: 10%;
-    margin-top: 1%;
-}
 
 .leftbox {
   float: left;
@@ -310,13 +276,6 @@ p {
 
 }
 
-.container h1 {
-  font-family: 'Montserrat', sans-serif;
-  color: #4c73f5;
-  font-size: 16px !important;
-  margin-top: 20% ;
-  margin-bottom: 20px;
-}
 
 .rightbox .br-button{
   height: 5%;
@@ -347,14 +306,6 @@ p {
   }
 
 
-  .leftbox h1 {
-      font-size: 18px;
-      color: #FFFFFF;
-      font-family: 'Montserrat', sans-serif;
-      padding-left: 10%;
-      margin-top: 4%;
-  }
-
   .leftbox {
     float: left;
     top: 32%;
@@ -367,13 +318,6 @@ p {
 
   }
 
-  .container h1 {
-    font-family: 'Montserrat', sans-serif;
-    color: #4c73f5;
-    font-size: 16px !important;
-    margin-top: 14% ;
-    margin-bottom: 20px;
-  }
 
   .rightbox .br-button{
     height: 5%;
@@ -405,14 +349,6 @@ p {
   }
 
 
-  .leftbox h1 {
-      font-size: 20px;
-      color: #FFFFFF;
-      font-family: 'Montserrat', sans-serif;
-      padding-left: 10%;
-      margin-top: 4%;
-  }
-
   .leftbox {
     float: left;
     top: 32%;
@@ -425,13 +361,6 @@ p {
 
   }
 
-  .container h1 {
-    font-family: 'Montserrat', sans-serif;
-    color: #4c73f5;
-    font-size: 16px !important;
-    margin-top: 18% ;
-    margin-bottom: 20px;
-  }
 
   .rightbox .br-button{
     height: 5%;
@@ -467,14 +396,6 @@ p {
     }
 
 
-    .leftbox h1 {
-        font-size: 20px;
-        color: #FFFFFF;
-        font-family: 'Montserrat', sans-serif;
-        padding-left: 10%;
-        margin-top: 4%;
-    }
-
     .leftbox {
       float: left;
       top: 30%;
@@ -487,13 +408,6 @@ p {
 
     }
 
-    .container h1 {
-      font-family: 'Montserrat', sans-serif;
-      color: #4c73f5;
-      font-size: 16px !important;
-      margin-top: 7% ;
-      margin-bottom: 20px;
-    }
 
     .rightbox .br-button{
       height: 5%;
@@ -529,13 +443,6 @@ p {
     }
 
 
-    .leftbox h1 {
-        font-size: 20px;
-        color: #FFFFFF;
-        font-family: 'Montserrat', sans-serif;
-        padding-left: 10%;
-        margin-top: 4%;
-    }
 
     .leftbox {
       float: left;
@@ -549,13 +456,6 @@ p {
 
     }
 
-    .container h1 {
-      font-family: 'Montserrat', sans-serif;
-      color: #4c73f5;
-      font-size: 16px !important;
-      margin-top:4% ;
-      margin-bottom: 20px;
-    }
 
     .rightbox .br-button{
       height: 5%;
@@ -590,14 +490,6 @@ p {
     }
 
 
-    .leftbox h1 {
-        font-size: 20px;
-        color: #FFFFFF;
-        font-family: 'Montserrat', sans-serif;
-        padding-left: 10%;
-        margin-top: 4%;
-    }
-
     .leftbox {
       float: left;
       top: 38%;
@@ -610,13 +502,6 @@ p {
 
     }
 
-    .container h1 {
-      font-family: 'Montserrat', sans-serif;
-      color: #4c73f5;
-      font-size: 16px !important;
-      margin-top:4% ;
-      margin-bottom: 20px;
-    }
 
     .rightbox .br-button{
       height: 5%;
@@ -651,13 +536,6 @@ p {
     }
 
 
-    .leftbox h1 {
-        font-size: 20px;
-        color: #FFFFFF;
-        font-family: 'Montserrat', sans-serif;
-        padding-left: 10%;
-        margin-top: 4%;
-    }
 
     .leftbox {
       float: left;
@@ -671,13 +549,6 @@ p {
 
     }
 
-    .container h1 {
-      font-family: 'Montserrat', sans-serif;
-      color: #4c73f5;
-      font-size: 26px !important;
-      margin-top:4% ;
-      margin-bottom: 20px;
-    }
 
     .rightbox .br-button{
       height: 5%;
@@ -693,3 +564,4 @@ p {
       height: 700px !important;
     }
   }
+ */
