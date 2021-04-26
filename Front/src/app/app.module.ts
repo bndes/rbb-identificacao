@@ -68,8 +68,8 @@ export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
 })
 export class AppModule { }
 
-/*
 
+/*
   providers: [PessoaJuridicaService, Web3Service, ConstantesService, GoogleMapsService, FileHandleService ,
     {provide: APP_BASE_HREF, useValue: '/identificacao/'}
   ],

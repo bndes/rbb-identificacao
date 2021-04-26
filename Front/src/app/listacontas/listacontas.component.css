@@ -4,17 +4,17 @@
     width: 100%;
     top: 0%;
   }
-  
+
 
 .container-fluid{
-    padding-top: 30px;
+    padding-top: 100px;
     position: relative;
     max-width: 85%;
-    padding-bottom: 60px;
+    padding-bottom: 200px;
     padding-left: 2%;
     padding-right: 2%;
     max-width: 80%;
-    
+
 }
 
 
@@ -28,13 +28,13 @@
   font-weight: 400;
 }
 
+.search-bar{
+  background-color: #071d41;
+}
 
 #tabela{
   padding-top: 55px
 }
-
-
-
 
 #searchbtn:hover{
   background-color: var(--color-primary-pastel-02, #dbe8fb);

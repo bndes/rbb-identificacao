@@ -180,7 +180,6 @@ template h2 {
   -webkit-box-orient: vertical;
   font-family: "Trebuchet MS", Helvetica, sans-serif;
 }
-
 .menu .subtitle {
   font-size: var(--font-size-scale-base);
   margin-left: 32px;
@@ -207,4 +206,18 @@ template h2 {
 
 .br-divider{
   width: 90%;
+}
+
+.br-button{
+  padding: 0px;
+  width: 60px;
+  font-size: 80%;
+  height: 30px;
+  line-height: 5px;
+  margin-left: 6px;
+}
+
+.menu-line:hover{
+  background-color: #071d41;
+  color: white;
 }

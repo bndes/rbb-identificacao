@@ -13,11 +13,11 @@
 h2 {
   color: #ffffff;
   font-family: 'Roboto', sans-serif;
-  text-transform: uppercase;
+  text-transform: small-caps;
   font-size: 20px;
   letter-spacing: 1px;
   text-align: center;
-  
+
 }
 
 body{
@@ -28,4 +28,21 @@ body{
 
 }
 
+ .br-button{
+  background-color: rgba(25, 0, 255, 0.329);
+  border: 2px solid rgba(255, 255, 255, 0.123);
+  color: white;
+  line-height: 5px;
+  font-size: 100%;
+  padding: 10px;
+}
 
+.br-button:hover{
+  color: var(--color-primary-default);
+  border: 3px solid rgba(0, 17, 255, 0.404);
+}
+.row{
+  margin-bottom: 50px;
+  margin-top: 30px;
+  justify-content: center;
+}
