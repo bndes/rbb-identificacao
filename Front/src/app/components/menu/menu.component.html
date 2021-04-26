@@ -13,10 +13,11 @@
         <button mat-button class="br-button" [matMenuTriggerFor]="menu" type="button" circle mini  ><i class="fas fa-bars"  ></i>
         </button>
         <mat-menu #menu="matMenu">
-          <button mat-menu-item [routerLink]="['home/associa/regular']" >Associação de Conta Regular</button>
-          <button mat-menu-item [routerLink]="['home/associa/admin']" > Associação de Conta Administrador (Requer E-CNPJ)</button>
-          <button mat-menu-item [routerLink]="['home/associa/contas']" > Listar Contas Associadas </button>
-          <button mat-menu-item [routerLink]="['home/validar']" > Gerenciar Contas </button>
+          <button class="menu-line" mat-menu-item [routerLink]="['home']"><i class="fas fa-arrow-left"></i> Home</button>
+          <button class="menu-line" mat-menu-item [routerLink]="['home/associa/regular']" >Associação de Conta Regular</button>
+          <button class="menu-line" mat-menu-item [routerLink]="['home/associa/admin']" > Associação de Conta Administrador (Requer E-CNPJ)</button>
+          <button class="menu-line" mat-menu-item [routerLink]="['home/associa/contas']" > Listar Contas Associadas </button>
+          <button class="menu-line" mat-menu-item [routerLink]="['home/validar']" > Gerenciar Contas </button>
         </mat-menu>
         <div class="title">Rede Brasileira de Blockchain</div>
         <h2 class="subtitle">RBB - Identificação</h2>
