@@ -5,26 +5,22 @@
         <h1 class="titulo1">RBB ID</h1>
         <h2>Confiança e segurança nas suas operações digitais.</h2>
         <h2>Crie a identidade digital da sua empresa na blockchain.</h2>
-          
-        <dir class="row">
-            <dir class="col-2"></dir>
-            <dir class="col-4 "style="margin-right:2px;">
+
+        <div class="row">
             <button class="content " class="nav-link" [routerLink]="['home/associa/admin']" routerLinkActive="active" title=" Cadastre uma conta para administrar a&#013; identidade e as contas autorizadas a &#013;representar da sua empresa na blockchain"
-            [routerLinkActiveOptions]="{exact: true}" style=" height: 50px; margin-top: 3%;  width:280px; font-size: 16px; text-align: center; " class="br-button primary" type="button">Cadastre um ID Admin
+            [routerLinkActiveOptions]="{exact: true}"  class="br-button primary" type="button">ID Admin
             </button>
-            </dir>
-            <dir class="col-3 " style="margin-left: 2px;">
+            <div style="width:50px;" ></div>
             <button class="content " class="nav-link" [routerLink]="['home/associa/regular']" routerLinkActive="active" title="Cadastre uma conta para representar&#013; sua empresa na blockchain"
-            [routerLinkActiveOptions]="{exact: true}" style=" height: 50px; margin-top: 3%; width:280px; font-size: 16px; text-align: center; " class="br-button primary" type="button">Cadastre um ID Autorizado
+            [routerLinkActiveOptions]="{exact: true}" class="br-button primary" type="button">ID Autorizado
             </button>
-            </dir>
-            <dir class="col-2"></dir>
-        </dir>
-        
-        <h2>SE VOCÊ JÁ POSSUI SUA IDENTIDADE DIGITAL NA BLOCKCHAIN</h2>
-        
-        <button class="content " class="nav-link" [routerLink]="['home']" routerLinkActive="active" 
-        [routerLinkActiveOptions]="{exact: true}" style="height: 50px; width: 25%;  margin-top: 3%; margin-left: 38%;  font-size: 18px; text-align: center;" class="br-button primary" type="button">Gerencie sua identidade
-        </button>
-    </div> 
+        </div>
+
+        <h2 style="font-size: 18px;" >Se você já possui sua identidade digital na blockchain</h2>
+        <div class="row">
+          <button class="content " class="nav-link" [routerLink]="['home']" routerLinkActive="active"
+          [routerLinkActiveOptions]="{exact: true}" class="br-button primary" type="button">Gerencie sua identidade
+          </button>
+        </div>
+    </div>
 </body>
