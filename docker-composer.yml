@@ -1,0 +1,39 @@
+version: '3.4'
+x-defaults:
+  logging: &logging-default
+    options:
+      max-size: '10m'
+      max-file: '5'
+    driver: json-file
+
+  proxy: &proxy-default
+    http_proxy:
+    https_proxy:
+    no_proxy:
+    HTTP_PROXY:
+    HTTPS_PROXY:
+    NO_PROXY:
+
+  localization: &localization-default
+    TZ: America/Sao_Paulo
+    LANG: en_US.UTF-8
+
+
+services:
+  frontend:
+    image: ${IMAGE_FRONTEND}
+    logging: *logging-default
+    depends_on:
+      - backend
+    environment:
+      << : *localization-default
+    ports:
+      - ${APP_HTTP_PORT}:8000
+  backend:
+    image: ${IMAGE_BACKEND}
+    logging: *logging-default
+    environment:
+      << : *localization-default
+      BNC_BD_PJ_PASSWORD:
+    volumes:
+      - ${VOLUME_PATH}/config.json:/backend/Back/config.json
