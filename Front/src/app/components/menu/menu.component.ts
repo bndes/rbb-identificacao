@@ -51,7 +51,7 @@ export class MenuComponent implements OnInit {
     setInterval(function () {
       self.recuperaContaSelecionada(),
       1000});
-
+//TODO avaliar pra quando for pra producao
     console.log(
       `\n%cBuild Info:\n\n%c ❯ Environment: %c${
           environment.production ? "production 🏭" : "development 🚧"
