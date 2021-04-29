@@ -1,113 +1,84 @@
-<div style="height: 120px;" class="rbb-menu" >
-  <div class="container-lg">
-    <div style="padding-top: 25px;" class="flex-container">
+  <div style="height: 120px; width: 100%;" class="rbb-menu" >
+    <div class="container-lg">
+      <div style="padding-top: 25px;" class="flex-container">
 
-      <div class="logo">
-        <img src="https://www.gov.br/++theme++padrao_govbr/img/govbr-colorido-b.png" alt="logo">
-      </div>
-
-      <!-- TODO - Refazer menu de navegação -->
-
-      <!-- Menu esquerdo -->
-      <div class="menu">
-        <button mat-button class="br-button" [matMenuTriggerFor]="menu" type="button" circle mini  ><i class="fas fa-bars"  ></i>
-        </button>
-        <mat-menu #menu="matMenu">
-          <button class="menu-line" mat-menu-item [routerLink]="['home']"><i class="fas fa-arrow-left"></i> Home</button>
-          <button class="menu-line" mat-menu-item [routerLink]="['home/associa/regular']" >Associação de Conta Regular</button>
-          <button class="menu-line" mat-menu-item [routerLink]="['home/associa/admin']" > Associação de Conta Administrador (Requer E-CNPJ)</button>
-          <button class="menu-line" mat-menu-item [routerLink]="['home/associa/contas']" > Listar Contas Associadas </button>
-          <button class="menu-line" mat-menu-item [routerLink]="['home/validar']" > Gerenciar Contas </button>
-        </mat-menu>
-        <div class="title">Rede Brasileira de Blockchain</div>
-        <h2 class="subtitle">RBB - Identificação</h2>
-      </div>
-
-      <!-- Detalhes da conta -->
-      <div class="info">
-        <div style="margin-right: 80px;" class="header-id">
-          <div class="header-camp">
-            Conta Blockchain :
-          </div>
-
-          <div class="header-content" >{{this.selectedAccount}}</div>
-          <div class="header-content" *ngIf="this.selectedAccount == undefined " >Conta não selecionada</div>
-
-          <span style="margin: 0px;" class="br-divider"></span>
-
-          <div style="flex-direction: row;">
-            <button style="float: left;margin-top: 13px;" mat-button class="br-button" type="button" circle mini >
-                <i style="color: #4c73f5;float: left; margin-left: 4px;" [ngxTippy]="htmlTemplate" type="button" class="fas fa-id-card" [tippyProps]="templateRef"></i>
-            </button>
-
-            <!-- Conta nao selecionada -->
-            <div style="color: #ff6d2a;" class="status-conta-metamask"
-                *ngIf="this.selectedAccount == undefined ">
-                Clique aqui para selecionar uma conta
-                <button class="br-button" circle small  (click)="this.metamaskClick();" >
-                  <img mat-button  style="height: 30px;width: 30px;"
-                      (click)="this.metamaskClick()"
-                       src="./assets/metamask.png" alt="logo">
-                </button>
-            </div>
-
-            <!-- Conta disponivel -->
-            <div style="color: #09a709;" class="status-conta"
-                *ngIf="this.usuario != undefined && this.usuario.statusAsString != 'Invalidada'">
-                Status: {{this.usuario.statusAsString}}
-            </div>
-
-            <!-- Conta  invalidada -->
-            <div style="color: #ce1111;" class="status-conta"
-                *ngIf="this.usuario != undefined && this.usuario.statusAsString == 'Invalidada'">
-              Conta Invalidada
-            </div>
-
-          </div>
+        <div class="logo">
+          <img src="https://www.gov.br/++theme++padrao_govbr/img/govbr-colorido-b.png" alt="logo">
         </div>
 
-          <!-- Template da tooltip das informaçoes -->
-          <template #htmlTemplate>
-            <div>
-              <h1>CNPJ:</h1>
-              <h2 *ngIf="this.usuario != undefined">{{this.usuario.cnpj | mask: '00.000.000/0000-00'}}</h2>
-              <span style="margin: 0px; margin-bottom: 4px;width: 100%;" class="br-divider"></span>
+        <!-- TODO - Refazer menu de navegação -->
 
-              <h1>Papel:</h1>
-              <h2 *ngIf="this.usuario != undefined">{{this.usuario.roleAsString }}</h2>
+        <!-- Menu esquerdo -->
+        <div class="menu">
+          <button mat-button class="br-button" [matMenuTriggerFor]="menu" type="button" circle mini  ><i class="fas fa-bars"  ></i>
+          </button>
+          <mat-menu #menu="matMenu">
+            <button class="menu-line" mat-menu-item [routerLink]="['home']"><i class="fas fa-arrow-left"></i> Home</button>
+            <button class="menu-line" mat-menu-item [routerLink]="['home/associa/regular']" >Associação de Conta Regular</button>
+            <button class="menu-line" mat-menu-item [routerLink]="['home/associa/admin']" > Associação de Conta Administrador (Requer E-CNPJ)</button>
+            <button class="menu-line" mat-menu-item [routerLink]="['home/associa/contas']" > Listar Contas Associadas </button>
+            <button class="menu-line" mat-menu-item [routerLink]="['home/validar']" > Gerenciar Contas </button>
+          </mat-menu>
+          <div class="title">Rede Brasileira de Blockchain</div>
+          <h2 class="subtitle">RBB - Identificação</h2>
+        </div>
+
+        <!-- Detalhes da conta -->
+        <div class="info">
+          <div class="header-id">
+            <div class="header-camp">
+              Conta Blockchain :
             </div>
-          </template>
 
+            <div class="header-content" >{{this.selectedAccount}}</div>
+            <div class="header-content" *ngIf="this.selectedAccount == undefined " >Conta não selecionada</div>
+
+            <span style="margin: 0px;" class="br-divider"></span>
+
+            <div style="flex-direction: row;">
+              <button style="float: left;margin-top: 13px;" mat-button class="br-button" type="button" circle mini >
+                  <i style="color: #4c73f5;float: left; margin-left: 4px;" [ngxTippy]="htmlTemplate" type="button" class="fas fa-id-card" [tippyProps]="templateRef"></i>
+              </button>
+
+              <!-- Conta nao selecionada -->
+              <div style="color: #ff6d2a;" class="status-conta-metamask"
+                  *ngIf="this.selectedAccount == undefined ">
+                  Clique aqui para selecionar uma conta
+                  <button class="br-button" circle small  (click)="this.metamaskClick();" >
+                    <img mat-button  style="height: 100%;width: 50%"
+                        (click)="this.metamaskClick()"
+                        src="./assets/metamask.png" alt="logo">
+                  </button>
+              </div>
+
+              <!-- Conta disponivel -->
+              <div style="color: #09a709;" class="status-conta"
+                  *ngIf="this.usuario != undefined && this.usuario.statusAsString != 'Invalidada'">
+                  Status: {{this.usuario.statusAsString}}
+              </div>
+
+              <!-- Conta  invalidada -->
+              <div style="color: #ce1111;" class="status-conta"
+                  *ngIf="this.usuario != undefined && this.usuario.statusAsString == 'Invalidada'">
+                Conta Invalidada
+              </div>
+
+            </div>
+          </div>
+
+            <!-- Template da tooltip das informaçoes -->
+            <template #htmlTemplate>
+              <div>
+                <h1>CNPJ:</h1>
+                <h2 *ngIf="this.usuario != undefined">{{this.usuario.cnpj | mask: '00.000.000/0000-00'}}</h2>
+                <span style="margin: 0px; margin-bottom: 4px;width: 100%;" class="br-divider"></span>
+
+                <h1>Papel:</h1>
+                <h2 *ngIf="this.usuario != undefined">{{this.usuario.roleAsString }}</h2>
+              </div>
+            </template>
+
+        </div>
       </div>
     </div>
   </div>
-</div>
-
-<!--
-
-<mat-sidenav style="height: max-content; position: absolute; margin-top: 110px; margin-left: 50px;"  #sidenav mode="side" [(opened)]="opened" (opened)="events.push('open!')"
-               (closed)="events.push('close!')">
-
-<mat-sidenav-container style="height: max-content; " class="example-container" class="br-menu">
-   <mat-sidenav-content >
-    <div class="folder">
-      <a style="margin-top: 10px;" class="item content nav-link" [routerLink]="['home/associa/regular']" routerLinkActive="active"
-        [routerLinkActiveOptions]="{exact: true}" (click)="sidenav.toggle()">
-          Associação de Conta Regular</a>
-      <a class="item content nav-link"  [routerLink]="['home/associa/admin']" routerLinkActive="active"
-        [routerLinkActiveOptions]="{exact: true}"(click)="sidenav.toggle()">
-          Associação de Conta Administrador (Requer E-CNPJ)</a>
-      <a class="item content nav-link" [routerLink]="['home/associa/contas']" routerLinkActive="active"
-        [routerLinkActiveOptions]="{exact: true}"(click)="sidenav.toggle()">
-          Listar Contas Associadas</a>
-      <a class="item content nav-link" [routerLink]="['home/validar']" routerLinkActive="active"
-        [routerLinkActiveOptions]="{exact: true}"(click)="sidenav.toggle()">
-          Gerenciar Contas</a>
-    </div>
-  </mat-sidenav-content>
-</mat-sidenav-container>
-</mat-sidenav>
--->
-
-
-

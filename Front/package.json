@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --base-href /identificacao/",
-    "build": "ng build --prod --base-href /identificacao/",
+    "build": "angular-build-info --init && ng build --prod --base-href /identificacao/",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
@@ -30,6 +30,7 @@
     "@popperjs/core": "^2.9.1",
     "@truffle/contract": "^4.2.20",
     "angular": "^1.8.1",
+    "angular-build-info": "^2.0.1",
     "angular-material": "^1.2.1",
     "bootstrap": "^4.5.2",
     "ethers": "^5.1.0",

@@ -3,6 +3,8 @@ import { NgxTippyProps } from 'ngx-tippy-wrapper';
 import { Web3Service } from '../../Web3Service';
 import 'tippy.js/animations/perspective-extreme.css';
 import MetaMaskOnboarding from "@metamask/onboarding"
+import { environment } from 'src/environments/environment';
+import build from 'src/build';
 
 
 const onboarding = new MetaMaskOnboarding();
@@ -49,6 +51,20 @@ export class MenuComponent implements OnInit {
     setInterval(function () {
       self.recuperaContaSelecionada(),
       1000});
+
+    console.log(
+      `\n%cBuild Info:\n\n%c ❯ Environment: %c${
+          environment.production ? "production 🏭" : "development 🚧"
+      }\n%c ❯ Build Version: ${build.version}\n ❯ Build Timestamp: ${
+          build.timestamp
+      }\n ❯ Built by: ${build.git.user}\n ❯ Commit: ${build.git.hash}\n`,
+      "font-size: 14px; color: #7c7c7b;",
+      "font-size: 12px; color: #7c7c7b",
+      environment.production
+          ? "font-size: 12px; color: #95c230;"
+          : "font-size: 12px; color: #e26565;",
+      "font-size: 12px; color: #7c7c7b"
+    );
   }
 
   ngOnInit():void {
@@ -76,7 +92,7 @@ export class MenuComponent implements OnInit {
 
   async recuperaContaSelecionada(){
     let self = this;
-    
+
     let newSelectedAccount = await this.web3Service.getCurrentAccountSync();
     if ( !self.selectedAccount || (newSelectedAccount !== self.selectedAccount && newSelectedAccount)) {
       this.selectedAccount = newSelectedAccount;
