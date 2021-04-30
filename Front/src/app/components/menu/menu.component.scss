@@ -40,21 +40,21 @@ mat-sidenav-content a{
   flex-direction: column;
   flex-wrap: nowrap;
   flex-grow: 3;
+  margin-right: 0px;
 
 }
 
 .status-conta-metamask{
   font-family: Trebuchet MS, Helvetica, sans-serif;
-  font-size: 16px;
+  font-size: 80%;
   letter-spacing: -0.6px;
   word-spacing: 2px;
   font-weight: 700;
   font-style: normal;
   font-variant: small-caps;
   text-transform: none;
-  margin-left: 7.5px;
-  margin-top: 5px;
-  float: left;
+  margin-left: 50px;
+  margin-top: 15px;
 }
 
 
@@ -163,7 +163,7 @@ template h2 {
   flex-wrap: wrap;
   flex-grow: 3;
   margin-top: 8px;
-  width: 50%;
+  width: 20%;
 }
 
 .menu .title {
@@ -186,12 +186,12 @@ template h2 {
   color: var(--color-secondary-05);
   white-space: nowrap;
   overflow: hidden;
-  width: 100%;
+  width: 40%;
   text-overflow: ellipsis;
 }
 
 .info {
-  width: 40%;
+  width: 30%;
   height: 40px;
   margin-top: 6px;
   order: 2;
@@ -200,8 +200,7 @@ template h2 {
   align-items: center;
   flex-wrap: nowrap;
   flex-grow: 3;
-  position: relative;
-  margin-left: 10%;
+  margin-left: 20%;
 }
 
 .br-divider{

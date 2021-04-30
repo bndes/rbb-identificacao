@@ -68,7 +68,7 @@ const TIMESTAMP: string[] = [
 })
 export class ListacontasComponent implements OnInit {
 
-    displayedColumns: string[] = ['rbbid', 'cnpj', 'name', 'address', 'perfil', 'timestamp', 'hashDeclaracao', 'evento', 'status', 'declaracao', 'explorer'];
+    displayedColumns: string[] = [ 'cnpj', 'name', 'address', 'perfil', 'timestamp', 'hashDeclaracao', 'evento', 'status', 'declaracao', 'rbbid', 'explorer'];
     dataSource: MatTableDataSource<DashboardPessoaJuridica>;
 
     @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
@@ -123,19 +123,19 @@ export class ListacontasComponent implements OnInit {
     ngOnInit() {
         let users;
 
-        setTimeout(() => {    
-            
+        setTimeout(() => {
+
             if (users == undefined || users.length != Array.from(this.listaTransacoesPJ).length) {
               console.log("ngOnInit :: Inicializa lista de transacoes");
-              this.listaTransacoesPJ = [];   
+              this.listaTransacoesPJ = [];
             }
-            
+
             this.monitoraEventos();
-            
+
           }, 3030)
-      
+
           setInterval(() => {
-            this.estadoLista = this.estadoLista === "undefined" ? "vazia" : "cheia"          
+            this.estadoLista = this.estadoLista === "undefined" ? "vazia" : "cheia"
             if ( users == undefined || users.length != Array.from(this.listaTransacoesPJ).length ) {
               console.log("ngOnInit :: Atualiza se houve mudança.")
               users = Array.from(this.listaTransacoesPJ);
@@ -144,7 +144,7 @@ export class ListacontasComponent implements OnInit {
               this.dataSource.sort = this.sort;
               this.ref.detectChanges()
             }
-          }, 330)         
+          }, 330)
 
 
 

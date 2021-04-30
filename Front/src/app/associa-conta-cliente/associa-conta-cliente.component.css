@@ -50,6 +50,7 @@ body{
   padding-left: 5%;
   width: 100%;
   height: fit-content;
+  position: relative;
 }
 
 h1 {
@@ -63,10 +64,10 @@ h1 {
 
 .rightbox button{
   height: 50px;
-  width: 200px;
+  width: 25%;
   position: absolute;
-  top: 1100px;
-  left: 600px;
+  top: 115%;
+  left: 36%;
   font-size: 21px;
 }
 
