@@ -94,11 +94,11 @@ export class ValidarContaAdminComponent implements OnInit {
   estadoLista: string = "undefined";
 
   usuario: any;
-
   p: number = 1;
   order: string = 'dataHora';
   reverse: boolean = false;
 
+  contaResponsavelPorValidacao: any =false;
   selectedAccount: any;
 
   alertOptions = {
@@ -165,7 +165,10 @@ export class ValidarContaAdminComponent implements OnInit {
   
         this.selectedAccount = newSelectedAccount;
         console.log("selectedAccount=" + this.selectedAccount);
-        this.usuario = this.recuperaRegistroBlockchain(this.selectedAccount);
+        this.usuario = await this.recuperaRegistroBlockchain(this.selectedAccount);
+        this.contaResponsavelPorValidacao =  await this.web3Service.isResponsibleForRegistryValidation(this.selectedAccount);
+        
+        
       }
   
     }    
@@ -293,10 +296,13 @@ export class ValidarContaAdminComponent implements OnInit {
       }    
 
       let booleano = await this.web3Service.validarCadastro(contaBlockchainValidar).then(
-        function(txHash) {
-         
+        function(status) {
+         if(status){
           self.alertService.success("Gravação concluída na Blockchain.", self.alertOptions);
           self.router.navigate(['home/associa/contas']);
+         }else{
+          self.alertService.error("Não foi possível validar cadastro na blockchain. Usuário tem essa permissão?", self.alertOptions);
+         }
         }
       , function(error) {
         self.alertService.error("Não foi possível validar cadastro na blockchain. Usuário tem essa permissão?", self.alertOptions);
@@ -314,8 +320,8 @@ export class ValidarContaAdminComponent implements OnInit {
         return;              
       }
       */
-      let texto = "Confirme a operação no metamask e aguarde a confirmação.";
-      this.alertService.info(texto, this.alertOptions); 
+      //let texto = "Confirme a operação no metamask e aguarde a confirmação.";
+      //this.alertService.info(texto, this.alertOptions); 
     }
     
     async invalidarCadastro(contaBlockchainInvalidar) {
@@ -328,10 +334,13 @@ export class ValidarContaAdminComponent implements OnInit {
         return;
       }
       let booleano = await this.web3Service.invalidarCadastro(contaBlockchainInvalidar).then(
-        function(txHash) {
-          
+        function(status) {
+          if(status){
           self.alertService.success("Gravação concluída na Blockchain.", self.alertOptions);
           self.router.navigate(['home/associa/contas']);
+          }else{
+            self.alertService.error("Não foi possível invalidar cadastro na blockchain. Usuário tem essa permissão?", self.alertOptions);
+          }
         }
       , function(error) {
         self.alertService.error("Não foi possível invalidar cadastro na blockchain. Usuário tem essa permissão?", self.alertOptions);
@@ -351,8 +360,8 @@ export class ValidarContaAdminComponent implements OnInit {
         return;
       }
       */
-      let texto = "Confirme a operação no metamask e aguarde a confirmação.";
-      this.alertService.info(texto, this.alertOptions); 
+      //let texto = "Confirme a operação no metamask e aguarde a confirmação.";
+      //this.alertService.info(texto, this.alertOptions); 
     }
     
     async pause(contaBlockchain) {
@@ -365,10 +374,15 @@ export class ValidarContaAdminComponent implements OnInit {
         return;
       }    
       let booleano = await this.web3Service.pause(contaBlockchain).then(
-        function(txHash) {
-          
+        function(status) {
+          if(status){
           self.alertService.success("Pause de conta enviada. Aguarde a confirmação.", self.alertOptions);
           self.router.navigate(['home/associa/contas']);
+          }
+          else{
+            let texto = "nao foi possivel";
+            this.alertService.info(texto, this.alertOptions); 
+          }
         }
       , function(error) {
         self.alertService.error("Erro ao pausar cadastro na blockchain", self.alertOptions);
@@ -387,8 +401,8 @@ export class ValidarContaAdminComponent implements OnInit {
         return;
       }
       */
-      let texto = "Confirme a operação no metamask e aguarde a confirmação.";
-      this.alertService.info(texto, this.alertOptions); 
+      //let texto = "Confirme a operação no metamask e aguarde a confirmação.";
+      //this.alertService.info(texto, this.alertOptions); 
     }
 
     async unpause(contaBlockchain) {
@@ -402,10 +416,14 @@ export class ValidarContaAdminComponent implements OnInit {
       } 
       
       let booleano = await this.web3Service.unpause(contaBlockchain).then(
-        function(txHash) {
-          
-          self.alertService.success("Aguarde a confirmação.", self.alertOptions);
-          self.router.navigate(['home/associa/contas']);
+        function(status) {
+          if(status){
+            self.alertService.success("Aguarde a confirmação.", self.alertOptions);
+            self.router.navigate(['home/associa/contas']);
+          }
+          else{
+            self.alertService.error("Erro ao despausar cadastro na blockchain", self.alertOptions);
+          }
         }
       , function(error) {
         self.alertService.error("Erro ao despausar cadastro na blockchain", self.alertOptions);
@@ -424,8 +442,8 @@ export class ValidarContaAdminComponent implements OnInit {
         return;
       }
       */
-      let texto = "Confirme a operação no metamask e aguarde a confirmação.";
-      this.alertService.info(texto, this.alertOptions); 
+      //let texto = "Confirme a operação no metamask e aguarde a confirmação.";
+      //this.alertService.info(texto, this.alertOptions); 
 
     }
 
@@ -439,9 +457,13 @@ export class ValidarContaAdminComponent implements OnInit {
       }
       let booleano = await this.web3Service.pauseLegalEntity(rbbid).then(
         function(txHash) {
-          
-          self.alertService.success("Pause de CNPJ enviada. Aguarde a confirmação.", self.alertOptions);
-          self.router.navigate(['home/associa/contas']);
+          if(txHash){
+            self.alertService.success("Pause de CNPJ enviada. Aguarde a confirmação.", self.alertOptions);
+            self.router.navigate(['home/associa/contas']);
+          }else{
+            self.alertService.error("Erro ao pausar CNPJ na blockchain", self.alertOptions);
+            return;
+          }
         }
       , function(error) {
         self.alertService.error("Erro ao pausar CNPJ na blockchain", self.alertOptions);
@@ -460,8 +482,8 @@ export class ValidarContaAdminComponent implements OnInit {
         return;
       }
       */
-      let texto = "Confirme a operação no metamask e aguarde a confirmação.";
-      this.alertService.info(texto, this.alertOptions); 
+      //let texto = "Confirme a operação no metamask e aguarde a confirmação.";
+      //this.alertService.info(texto, this.alertOptions); 
     }
 
 }

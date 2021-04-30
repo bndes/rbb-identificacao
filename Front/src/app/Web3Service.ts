@@ -285,19 +285,32 @@ async ReValidarRegular(cnpj: number, hashdeclaracao: string): Promise<any>  {
         console.log("Web3Service - Pause");
         console.log("Conta Blockchain: " + contaBlockchain );
         let usuarioVetor = await this.identificaUsuario();
+        console.log(usuarioVetor);
+        
         let usuario = usuarioVetor[0];
         let usuarioEndereco = usuarioVetor[1];
-
+        
+        
         try {
             const signer = this.accountProvider.getSigner();
             const contWithSigner = this.RBBRegistrySmartContract.connect(signer);
+            
+
 
             if ( usuario.roleAsString == "Admin" ) {
                 (await contWithSigner.pauseAddressSameOrg(contaBlockchain));
                 return true;
             }
-            if ( this.isResponsibleForMonitoring( usuarioEndereco ) ) {
+            if ( usuario.roleAsString == "Regular" ) {
+                (await contWithSigner.pauseAddressSameOrg(contaBlockchain));
+                return true;
+            }
+            if ( await this.isResponsibleForMonitoring( usuarioEndereco ) ) {
+                console.log(contaBlockchain);
+                
                 (await contWithSigner.pauseAddressAfterMonitoring(contaBlockchain));
+                
+
                 return true;
             }
 
@@ -345,16 +358,19 @@ async ReValidarRegular(cnpj: number, hashdeclaracao: string): Promise<any>  {
 
         console.log("Web3Service - pauseLegalEntity");
         console.log("RBBId: " + rbbid );
-
+        
+        console.log(usuarioEndereco);
         try {
             const signer = this.accountProvider.getSigner();
             const contWithSigner = this.RBBRegistrySmartContract.connect(signer);
-
-            if ( rbbid == usuario.rbbid ) {
-                (await contWithSigner.pauseLegalEntitySameOrg(rbbid));
+            console.log("1aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+            if ( rbbid == parseInt(usuario.rbbid,16)) {
+                console.log("2aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+                (await contWithSigner.pauseLegalEntitySameOrg());
                 return true;
             }
             if ( this.isResponsibleForMonitoring( usuarioEndereco ) ) {
+                console.log("3aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
                 (await contWithSigner.pauseLegalEntityAfterMonitoring(rbbid));
                 return true;
             }
