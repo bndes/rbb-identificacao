@@ -147,7 +147,14 @@
                     <button (click)='pause(row.contaBlockchain)' class="br-button search-trigger is-circle is-terciary" type="button" disabled>
                       <i class="fas fa-pause-circle"></i>
                     </button>
+                  </span>
+                  <span *ngIf='(row.acao == 1 || row.acao == 2 || row.acao == 3 || row.acao == 5) && (!(contaResponsavelPorValidacao) || !(row.pausada) )' >
                     <button (click)='unpause(row.contaBlockchain)' class="br-button search-trigger is-circle is-terciary" type="button" disabled>
+                      <i class="fas fa-play-circle"></i>
+                    </button>
+                  </span>
+                  <span *ngIf='(row.acao == 1 || row.acao == 2 || row.acao == 3 || row.acao == 5) && (contaResponsavelPorValidacao && row.pausada)' >
+                    <button (click)='unpause(row.contaBlockchain)' class="br-button search-trigger is-circle is-terciary" type="button" >
                       <i class="fas fa-play-circle"></i>
                     </button>
                   </span>

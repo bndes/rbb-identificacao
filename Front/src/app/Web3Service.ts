@@ -363,14 +363,14 @@ async ReValidarRegular(cnpj: number, hashdeclaracao: string): Promise<any>  {
         try {
             const signer = this.accountProvider.getSigner();
             const contWithSigner = this.RBBRegistrySmartContract.connect(signer);
-            console.log("1aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+            
             if ( rbbid == parseInt(usuario.rbbid,16)) {
-                console.log("2aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+                
                 (await contWithSigner.pauseLegalEntitySameOrg());
                 return true;
             }
             if ( this.isResponsibleForMonitoring( usuarioEndereco ) ) {
-                console.log("3aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+                
                 (await contWithSigner.pauseLegalEntityAfterMonitoring(rbbid));
                 return true;
             }
