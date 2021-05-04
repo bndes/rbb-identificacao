@@ -78,12 +78,12 @@
               <th mat-header-cell *matHeaderCellDef > Validar/Invalidar </th>
               <td  style="text-align: center;" mat-cell *matCellDef="let row" >
                 <!-- {{row.acao}} -->
-                <span *ngIf='(row.acao==1 || row.acao==2 || row.acao==3) && this.contaResponsavelPorValidacao == true' >
+                <span *ngIf='(row.acao==1 || row.acao==2 || row.acao==3) && ((this.contaResponsavelPorValidacao == true && row.perfil == "Admin") || (usuario.roleAsString == "Admin" && row.perfil == "Regular"))' >
                   <button (click)='validarCadastro(row.contaBlockchain)' class="br-button search-trigger is-circle is-terciary" type="button">
                     <i class="fas fa-check-circle"></i>
                   </button>
                 </span>
-                <span *ngIf='row.acao==4 || !(this.contaResponsavelPorValidacao == true)' >
+                <span *ngIf='row.acao==4 || !((this.contaResponsavelPorValidacao == true && row.perfil == "Admin") || (usuario.roleAsString == "Admin" && row.perfil == "Regular"))' >
                   <button (click)='validarCadastro(row.contaBlockchain)' class="br-button search-trigger is-circle is-terciary" type="button" disabled>
                     <i class="fas fa-check-circle"></i>
                   </button>

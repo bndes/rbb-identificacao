@@ -389,7 +389,7 @@ export class ValidarContaAdminComponent implements OnInit {
           self.router.navigate(['home/associa/contas']);
           }
           else{
-            let texto = "nao foi possivel";
+            let texto = "nao Erro ao pausar cadastro na blockchain possivel";
             this.alertService.info(texto, this.alertOptions); 
           }
         }
