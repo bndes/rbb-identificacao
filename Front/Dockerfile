@@ -3,6 +3,8 @@ ADD . /rbbid-front
 WORKDIR /rbbid-front
 RUN npm install
 
+RUN npm run-script timestamp
+
 RUN npm run-script build
 
 FROM nginx
@@ -24,4 +26,4 @@ EXPOSE 8000
 #   postinstall: "cp -r ../bndes-ux4 node_modules/"
 #   build: ng build --prod
 # }
-## 
+##
