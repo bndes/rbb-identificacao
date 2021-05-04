@@ -3,8 +3,6 @@ ADD . /rbbid-front
 WORKDIR /rbbid-front
 RUN npm install
 
-RUN npm run-script timestamp
-
 RUN npm run-script build
 
 FROM nginx
