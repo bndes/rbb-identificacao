@@ -37,7 +37,7 @@ export class PessoaJuridicaService {
     console.log("PessoaJuridicaService.ts :: Selecionou URL = " + this.serverUrl)
 
   }
-
+/*
   recuperaClientePorCnpj(cnpj: string): Observable<any> {
     let str_cnpj = new String(cnpj)
 
@@ -60,7 +60,7 @@ export class PessoaJuridicaService {
       .catch(this.handleError);
     }
   }
-  
+  */  
   //CHAMA BACKEND PARA FAZER A DECLARACAO PREENCHIDA
   pedeDeclaracao( cnpj: string, address: string ): Observable<any> {
     console.log("pessoaJuridicaService.pedeDeclaracao(cnpj)");
