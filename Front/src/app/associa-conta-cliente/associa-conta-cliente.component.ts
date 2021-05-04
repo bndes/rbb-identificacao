@@ -175,7 +175,7 @@ export class AssociaContaClienteComponent implements OnInit {
 
     let self = this;
 
-    this.pessoaJuridicaService.recuperaClientePorCnpj(cnpj).subscribe(
+    this.pessoaJuridicaService.recuperaEmpresaPorCnpj(cnpj).subscribe(
       empresa => {
         if (empresa && empresa.dadosCadastrais) {
           console.log("empresa encontrada - ");
