@@ -93,7 +93,7 @@ export class ValidarContaAdminComponent implements OnInit {
 
   estadoLista: string = "undefined";
 
-  usuario: any;
+  usuario: any=undefined;
   p: number = 1;
   order: string = 'dataHora';
   reverse: boolean = false;
