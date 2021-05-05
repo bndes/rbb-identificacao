@@ -94,8 +94,8 @@ var n = contrato_json_BNDESRegistry.networks;
 
 console.log("config.infra.rede_blockchain (1=Main|4=Rinkeby|4447=local) = " + config.infra.rede_blockchain);
 // Var Banco de dados
-const pool = new sql.ConnectionPool(configAcessoBDPJ);
-const poolConnect = pool.connect(err => {});
+//const pool = new sql.ConnectionPool(configAcessoBDPJ);
+//const poolConnect = pool.connect(err => {});
 
 //ABI = contrato_json_BNDESToken['abi']
 
@@ -183,6 +183,9 @@ app.post('/api/constantesFrontPJ', function (req, res) {
 app.post('/api/pj-por-cnpj', buscaPJPorCnpj);
 console.log('/api/pj-por-cnpj::mockPJ=' + mockPJ);
 	function buscaPJPorCnpj (req, res, next) {
+		console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaa');
+		console.log(configAcessoBDPJ);
+		console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaa');
 		console.log('buscaPJPorCnpj::mockPJ=' + mockPJ);
 		let cnpjRecebido = req.body.cnpj;
 
@@ -249,7 +252,8 @@ console.log('/api/pj-por-cnpj::mockPJ=' + mockPJ);
 		}
 		else {
 
-			poolConnect.then(pool => {
+			//poolConnect.then(pool => {
+			new sql.ConnectionPool(configAcessoBDPJ).connect().then(pool => {
 				return pool.request()
 									 .input('cnpj', sql.VarChar(14), cnpjRecebido)
 									 .query(config.negocio.query_cnpj)
@@ -274,13 +278,13 @@ console.log('/api/pj-por-cnpj::mockPJ=' + mockPJ);
 					console.log(pj);
 	
 					res.status(200).json(pj);				
-					//sql.close();
+					sql.close();
 	
 	
 				}).catch(err => {
 					console.log(err);
 					res.status(500).send({ message: "${err}"})
-					//sql.close();
+					sql.close();
 				});
 	
 
