@@ -87,7 +87,7 @@ export class ValidarContaAdminComponent implements OnInit {
     }
   }
 
-
+  
   listaTransacoesPJ: DashboardPessoaJuridica[] = undefined;
   blockchainNetworkPrefix: string;
 
@@ -97,9 +97,11 @@ export class ValidarContaAdminComponent implements OnInit {
   p: number = 1;
   order: string = 'dataHora';
   reverse: boolean = false;
-
+  
   contaResponsavelPorValidacao: any =false;
   selectedAccount: any;
+
+  animationLoad: boolean = true;
 
   alertOptions = {
     autoClose: true,
@@ -145,9 +147,9 @@ export class ValidarContaAdminComponent implements OnInit {
         this.dataSource.sort = this.sort;
         this.ref.detectChanges()
       }
-    }, 63)
+    }, 1030)
 
-
+    this.stopAnimationLoad(300000);
     //const users = Array.from({length: 1}, (_, k) => createNewUser(k + 1));
 
 
@@ -504,6 +506,15 @@ export class ValidarContaAdminComponent implements OnInit {
       //this.alertService.info(texto, this.alertOptions); 
 
     }
+    stopAnimationLoad(time){
+      setTimeout(() => {
+
+        this.animationLoad=false;     
+        
+  
+      }, time)
+    }
+  
 
 }
 
