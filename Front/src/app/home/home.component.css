@@ -79,5 +79,96 @@ h3 {
   margin-bottom: 20px;
   line-height: 17px;
   font-size: 85%;
+  position: relative;
+}
+
+.adminbutton:hover:after {
+  content: "Cadastra uma conta blockchain para administrar a identidade e as contas autorizadas a representar a PJ. ATENÇÂO: É necessário utilizar o e-CNPJ para executar esta função.";
+  font-family: 'Roboto', sans-serif;
+  font-size: 10px;
+  letter-spacing: 1px;
+  font-weight: 500;
+  position: absolute;
+  top: 55%;
+  left: 85%;
+  width: fit-content;
+  height: fit-content;
+  background-color: #071d41ef;
+  color: rgb(255, 255, 255);
+  border-radius: 15px;
+  padding: 10px;
+  z-index: 1;
+}
+
+.regularbutton:hover:after {
+  content: "Cadastra uma conta blockchain autorizadas a representar a PJ. A ID criada precisa ser validada por um ID Admin da PJ.";
+  font-family: 'Roboto', sans-serif;
+  font-size: 10px;
+  letter-spacing: 1px;
+  font-weight: 500;
+  position: absolute;
+  top: 55%;
+  left: 85%;
+  width: fit-content;
+  height: fit-content;
+  background-color: #071d41ef;
+  color: rgb(255, 255, 255);
+  border-radius: 15px;
+  padding: 10px;
+  z-index: 1;
+}
+
+.gerenciarbutton:hover:after {
+  content: " Acesse o painel de controle para verificar o status das IDs, e acessar as funções para validar, invalidar, pausar e reativar IDs, ou pausar uma PJ.";
+  font-family: 'Roboto', sans-serif;
+  font-size: 10px;
+  letter-spacing: 1px;
+  font-weight: 500;
+  position: absolute;
+  top: 55%;
+  left: 85%;
+  width: fit-content;
+  height: fit-content;
+  background-color: #071d41ef;
+  color: rgb(255, 255, 255);
+  border-radius: 15px;
+  padding: 10px;
+  z-index: 1;
+}
+
+.listabutton:hover:after {
+  content: "Verifique todos os eventos relacionados á gestão das IDs na RBB registrados na blockchain.";
+  font-family: 'Roboto', sans-serif;
+  font-size: 10px;
+  letter-spacing: 1px;
+  font-weight: 500;
+  position: absolute;
+  top: 55%;
+  left: 85%;
+  width: fit-content;
+  height: fit-content;
+  background-color: #071d41ef;
+  color: rgb(255, 255, 255);
+  border-radius: 15px;
+  padding: 10px;
+  z-index: 1;
+}
+
+.validarbutton:hover:after {
+  content: "Solicita revalidação de ID Admin ou ID Autorizado já cadastrado, que esteja pausado, expirado ou prestes a expirar. Não é possível revalidar um ID com status Invalidado.";
+  font-family: 'Roboto', sans-serif;
+  font-size: 10px;
+  letter-spacing: 1px;
+  font-weight: 500;
+  position: absolute;
+  top: 55%;
+  left: 85%;
+  width: fit-content;
+  height: fit-content;
+  background-color: #071d41ef;
+  color: rgb(255, 255, 255);
+  border-radius: 15px;
+  padding: 10px;
+  z-index: 1;
 }
 

@@ -20,7 +20,7 @@ export class FileHandleService {
   CAMINHO_MODELO_DECLARACAO_CONTA_DIGITAL: string;
   CAMINHO_ROTEIRO_ASSINATURA_DIGITAL: string;
 
-  public uploader: FileUploader;  
+  public uploader: FileUploader;
 
   constructor(private http: HttpClient, private constantes: ConstantesService) {
 
@@ -33,7 +33,7 @@ export class FileHandleService {
         this.operationAPIURL = data["operationAPIURL"];
         this.maxFileSize = data["maxFileSize"];
         this.CAMINHO_MODELO_DECLARACAO_CONTA_DIGITAL = data["CAMINHO_MODELO_DECLARACAO_CONTA_DIGITAL"];
-        this.CAMINHO_ROTEIRO_ASSINATURA_DIGITAL = data["CAMINHO_ROTEIRO_ASSINATURA_DIGITAL"];		
+        this.CAMINHO_ROTEIRO_ASSINATURA_DIGITAL = data["CAMINHO_ROTEIRO_ASSINATURA_DIGITAL"];
       },
       error => {
           console.log("**** Erro ao buscar constantes do front");
@@ -65,15 +65,15 @@ export class FileHandleService {
     }
 
 
-    return this.http.post<Object>(this.serverUrl + 'fileinfo', { cnpj: str_cnpj, contrato: str_contrato, 
+    return this.http.post<Object>(this.serverUrl + 'fileinfo', { cnpj: str_cnpj, contrato: str_contrato,
       blockchainAccount: blockchainAccount, hashFile: hashFile, tipo: tipo })
       .catch(this.handleError);
   }
 
   atualizaUploaderComponent(_cnpj, _contrato, _contaBlockchain, _tipo, componenteComDeclaracao) {
     let self = this;
-    this.uploader = new FileUploader({ 
-                          url: ConstantesService.serverUrl + "upload",                          
+    this.uploader = new FileUploader({
+                          url: ConstantesService.serverUrl + "upload",
                           maxFileSize: this.maxFileSize,
                           additionalParameter: {
                                 cnpj:             _cnpj,
@@ -81,15 +81,16 @@ export class FileHandleService {
                                 contaBlockchain:  _contaBlockchain,
                                 tipo: _tipo
                               },
-                          
+
                           itemAlias:  "arquivo"});
-    this.uploader.onAfterAddingFile = (fileItem) => 
-    { fileItem.withCredentials = false;      
+    this.uploader.onAfterAddingFile = (fileItem) => {
+      fileItem.withCredentials = false;
+      console.log('Arquivo adicionado.');
     };
 
     this.uploader.onWhenAddingFileFailed = (fileItem) => {
-       console.log("fail upload: max file size exceeded! ", fileItem);
-       componenteComDeclaracao.hashdeclaracao = "ERRO! Arquivo muito grande! Tente enviar um arquivo menor.";
+       console.log("Erro no uploader component: ", fileItem);
+       componenteComDeclaracao.hashdeclaracao = "ERRO! Tente enviar o arquivo novamente.";
         //this.failFlag = true;
     }
 
@@ -105,13 +106,13 @@ export class FileHandleService {
       this.uploader.uploadAll();
       console.log("chamaUpload() - this.uploader")
       console.log(this.uploader)
-  }  
+  }
 
-          
+
     private handleError(err: HttpErrorResponse) {
       console.log("handle errror em PJService");
       console.log(err);
       return Observable.throw(err.message);
-    }          
+    }
 
 }
