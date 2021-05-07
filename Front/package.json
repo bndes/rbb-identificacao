@@ -4,11 +4,12 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --base-href /identificacao/",
-    "build": "angular-build-info --init && ng build --prod --base-href /identificacao/",
+    "build": "ng build --prod --base-href /identificacao/",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "postinstall": "ngcc"
+    "postinstall": "ngcc",
+    "timestamp": "angular-build-info --init"
   },
   "private": true,
   "dependencies": {

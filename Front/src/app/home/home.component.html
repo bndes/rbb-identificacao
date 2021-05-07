@@ -1,38 +1,33 @@
-
 <div class="body">
-<div class="container">
+  <div class="container">
     <div class="rightbox">
-        <div class="leftbox">
-          <h1 class="title-leftbox"><strong> RBB - Identificação</strong></h1>
-        </div>
+      <div class="leftbox">
+        <h1 class="title-leftbox"><strong> RBB - Identificação</strong></h1>
+      </div>
 
-        <h2>Cadastre suas contas blockchain na RBB!</h2>
-        <h3>(Associação com pessoa jurídica)</h3>
+      <h2>Cadastre suas contas blockchain na RBB!</h2>
+      <h3>(Associação com pessoa jurídica)</h3>
 
-        <button  class="br-button primary" [routerLink]="['associa/admin']" type="button">
-          Conta Admin de PJ <br>(requer e-CNPJ)
-        </button>
-        <br>
-        <button  class="br-button primary" [routerLink]="['associa/regular']" type="button">
-          Conta Autorizada pela PJ
-        </button>
-        <br>
-        <button  class="br-button primary" [routerLink]="['validar']" type="button">
-          Gerenciar Contas Cadastradas
-        </button>
-        <br>
-        <button  class="br-button primary" [routerLink]="['associa/contas']" type="button">
-          Listar Eventos
-        </button>
-        <br>
-        <button  class="br-button primary" [routerLink]="['revalidar/contas']" type="button" title="Solicita revalidação de Conta Admin ou &#013;Autorizada já cadastrada, que esteja&#013; pausada, expirada, ou prestes a expirar.">
-          Revalidar Conta
-        </button>
-        <br>
-      
+      <button class="br-button primary  adminbutton" [routerLink]="['associa/admin']" type="button">
+        Criar ID Admin para PJ <br />(requer e-CNPJ)
+      </button>
+      <br />
+      <button class="br-button primary regularbutton" [routerLink]="['associa/regular']" type="button">
+        Criar ID Autorizado pela PJ
+      </button>
+      <br />
+      <button class="br-button primary gerenciarbutton" [routerLink]="['validar']" type="button">
+        Gerenciar identidades
+      </button>
+      <br />
+      <button class="br-button primary listabutton" [routerLink]="['associa/contas']" type="button">
+        Listar Eventos
+      </button>
+      <br />
+      <button class="br-button primary validarbutton" [routerLink]="['revalidar/contas']" type="button">
+        Revalidar ID
+      </button>
+      <br />
     </div>
-
-</div>
-
-
+  </div>
 </div>
