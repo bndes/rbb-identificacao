@@ -92,7 +92,7 @@ export class ListacontasComponent implements OnInit {
     estadoLista: string = "undefined";
 
     usuario: any;
-
+    animationLoad: boolean = true;
     p: number = 1;
     order: string = 'dataHora';
     reverse: boolean = false;
@@ -124,7 +124,7 @@ export class ListacontasComponent implements OnInit {
         let users;
 
         setTimeout(() => {
-
+            
             if (users == undefined || users.length != Array.from(this.listaTransacoesPJ).length) {
               console.log("ngOnInit :: Inicializa lista de transacoes");
               this.listaTransacoesPJ = [];
@@ -144,9 +144,9 @@ export class ListacontasComponent implements OnInit {
               this.dataSource.sort = this.sort;
               this.ref.detectChanges()
             }
-          }, 330)
+          }, 1063)
 
-
+          this.stopAnimationLoad(300000);
 
 
         //const users = Array.from({length: 1}, (_, k) => createNewUser(k + 1));
@@ -282,6 +282,15 @@ export class ListacontasComponent implements OnInit {
 
 
     }
+
+    stopAnimationLoad(time){
+        setTimeout(() => {
+  
+          this.animationLoad=false;     
+          
+    
+        }, time)
+      }
 
 }
 

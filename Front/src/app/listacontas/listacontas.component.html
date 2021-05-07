@@ -22,7 +22,7 @@
           </div>
         </div>
       </div>
-
+      
       <div id="tabela" class="mat-elevation-z8 responsive">
         <table mat-table [dataSource]="dataSource" matSort>
 
@@ -98,13 +98,16 @@
 
 
           <tr class="mat-row" *matNoDataRow>
-            <td class="mat-cell" colspan="6">Nenhum resultado encontrado" {{input.value}} "</td>
+            <!--<td *ngIf='(animationLoad)' class="mat-cell" colspan="6" style="padding-left: 45%; padding-right: 30%;"> <div class="c-loader" ></div></td>-->
+          <td style="padding-left: 20px;"><div *ngIf='(animationLoad)' class="c-loader" ></div></td>
+          <td *ngIf='!(animationLoad)' class="mat-cell" colspan="6">Nenhum resultado encontrado" {{input.value}} "</td>
           </tr>
         </table>
       </div>
       <div class="footer">
         <mat-paginator [pageSizeOptions]="[5, 10, 15]"></mat-paginator>
       </div>
+
     </div>
   </div>
 </div>

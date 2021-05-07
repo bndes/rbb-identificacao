@@ -104,3 +104,25 @@ th
   background-color: #b30e0e70;
 }
 
+
+
+
+.c-loader {
+  animation: is-rotating 1s infinite;
+  border: 6px solid #e5e5e5;
+  border-radius: 50%;
+  border-top-color:rgb(12, 50, 111);
+  height: 40px;
+  width: 40px;
+  
+  margin-top: 5px;
+  margin-bottom: 5px;
+  
+  
+}
+
+@keyframes is-rotating {
+  to {
+    transform: rotate(1turn);
+  }
+}

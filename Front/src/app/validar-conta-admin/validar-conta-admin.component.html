@@ -6,7 +6,8 @@
 
 
     <div style="padding-bottom: 200px; padding-top: 150px;" class="container-fluid">
-        <div class="br-table is-datatable" id="datatable-default">
+      
+        <div class="br-table is-datatable" id="datatable-default" >
           <div class="header">
             <div class="top-bar">
              <div style="border: 0.1px solid rgba(240, 248, 255, 0.459);" class="search-bar is-active " >
@@ -22,7 +23,7 @@
             </div>
             </div>
           </div>
-
+          
         <div id="tabela" class="mat-elevation-z8 responsive" >
           <table mat-table [dataSource]="dataSource" matSort>
 
@@ -185,12 +186,16 @@
               </ng-container>
 
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            <tr mat-row  *matRowDef="let row; columns: displayedColumns;"></tr>
+             
 
-
-            <tr class="mat-row" *matNoDataRow>
-              <td class="mat-cell" colspan="6">Nenhum resultado encontrado {{input.value}} </td>
+            <tr class="mat-row"  *matNoDataRow >
+              <!--<td *ngIf='(animationLoad)' class="mat-cell" colspan="6" style="padding-left: 45%; padding-right: 30%;" disabled> <div class="c-loader" ></div></td>-->
+              <td style="padding-left: 20px;"><div *ngIf='(animationLoad)' class="c-loader" ></div></td>
+              <td *ngIf='!(animationLoad)' class="mat-cell" colspan="6">Nenhum resultado encontrado {{input.value}}</td>
+              
             </tr>
+            
           </table>
 
         </div>
