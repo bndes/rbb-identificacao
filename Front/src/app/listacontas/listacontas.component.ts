@@ -135,14 +135,16 @@ export class ListacontasComponent implements OnInit {
           }, 3030)
 
           setInterval(() => {
-            this.estadoLista = this.estadoLista === "undefined" ? "vazia" : "cheia"
-            if ( users == undefined || users.length != Array.from(this.listaTransacoesPJ).length ) {
-              console.log("ngOnInit :: Atualiza se houve mudança.")
-              users = Array.from(this.listaTransacoesPJ);
-              this.dataSource = new MatTableDataSource(users);
-              this.dataSource.paginator = this.paginator;
-              this.dataSource.sort = this.sort;
-              this.ref.detectChanges()
+            this.estadoLista = this.estadoLista === "undefined" ? "vazia" : "cheia";
+            if(this.estadoLista=="cheia"){
+                if ( users == undefined || users.length != Array.from(this.listaTransacoesPJ).length ) {
+                console.log("ngOnInit :: Atualiza se houve mudança.")
+                users = Array.from(this.listaTransacoesPJ);
+                this.dataSource = new MatTableDataSource(users);
+                this.dataSource.paginator = this.paginator;
+                this.dataSource.sort = this.sort;
+                this.ref.detectChanges()
+                }
             }
           }, 1063)
 
