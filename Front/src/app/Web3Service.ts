@@ -118,8 +118,13 @@ export class Web3Service {
             //console.log("getCurrentAccountSync waiting for getSigner");
             return undefined;
         }
- */     var address = await this.ethereum.request({ method: 'eth_accounts' });
-        if(address){
+        
+ */         
+        var address = await this.ethereum.request({ method: 'eth_accounts' });
+        
+        
+       
+        if(address && address.length != 0){
           var stringAddress = address.toString();
           var checksumAddress = ethers.utils.getAddress(stringAddress);
           return checksumAddress;

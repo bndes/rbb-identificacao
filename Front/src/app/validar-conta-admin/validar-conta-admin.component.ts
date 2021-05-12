@@ -138,14 +138,16 @@ export class ValidarContaAdminComponent implements OnInit {
     }, 3030)
 
     setInterval(() => {
-      this.estadoLista = this.estadoLista === "undefined" ? "vazia" : "cheia"
-      if ( users == undefined || users.length != Array.from(this.listaTransacoesPJ).length ) {
-        console.log("ngOnInit :: Atualiza se houve mudança.")
-        users = Array.from(this.listaTransacoesPJ);
-        this.dataSource = new MatTableDataSource(users);
-        this.dataSource.paginator = this.paginator;
-        this.dataSource.sort = this.sort;
-        this.ref.detectChanges()
+      this.estadoLista = this.estadoLista === "undefined" ? "vazia" : "cheia";
+      if(this.estadoLista=="cheia"){
+        if ( users == undefined || users.length != Array.from(this.listaTransacoesPJ).length ) {
+          console.log("ngOnInit :: Atualiza se houve mudança.")
+          users = Array.from(this.listaTransacoesPJ);
+          this.dataSource = new MatTableDataSource(users);
+          this.dataSource.paginator = this.paginator;
+          this.dataSource.sort = this.sort;
+          this.ref.detectChanges();
+        }
       }
     }, 1030)
 
@@ -162,17 +164,18 @@ export class ValidarContaAdminComponent implements OnInit {
       let self = this;
 
       let newSelectedAccount = await this.web3Service.getCurrentAccountSync();
+      if(newSelectedAccount != undefined){
+        if ( !self.selectedAccount || (newSelectedAccount !== self.selectedAccount && newSelectedAccount)) {
 
-      if ( !self.selectedAccount || (newSelectedAccount !== self.selectedAccount && newSelectedAccount)) {
+          this.selectedAccount = newSelectedAccount;
+          console.log("selectedAccount=" + this.selectedAccount);
+          this.usuario = await this.recuperaRegistroBlockchain(this.selectedAccount);
 
-        this.selectedAccount = newSelectedAccount;
-        console.log("selectedAccount=" + this.selectedAccount);
-        this.usuario = await this.recuperaRegistroBlockchain(this.selectedAccount);
-        this.contaResponsavelPorValidacao =  await this.web3Service.isResponsibleForRegistryValidation(this.selectedAccount);
-        
-        
-      }
-
+          this.contaResponsavelPorValidacao =  await this.web3Service.isResponsibleForRegistryValidation(this.selectedAccount);
+          
+          
+        }
+    }
     }
 
   async recuperaRegistroBlockchain(enderecoBlockchain) : Promise<any> {
