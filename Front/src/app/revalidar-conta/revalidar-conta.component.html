@@ -4,7 +4,7 @@
   </div>
 
   <div class="container">
-    <div class="rightbox">
+    <div class="rightbox"  >
       <!-- <h1 style="font-size: 120%;" >Associar Conta Blockchain ao e-CNPJ</h1>
             <div class="br-input">
                 <label>Informe o CNPJ:</label>
@@ -17,7 +17,7 @@
                 <input name="razaoSocial" class="form-control form-control-sm" [(ngModel)]="cliente.dadosCadastrais.razaoSocial" readonly  disabled/>
             </div>
         -->
-      <div class="br-input">
+      <div class="br-input" *ngIf='this.selectedAccount!= undefined'>
         <label>Selecione a conta blockchain desejada no Metamask.A conta não deve
           estar no estado "Disponível" ou "Invalidada"</label>
         <input name="contaBlockchain" class="form-control form-control-sm" type="text" [ngModel]="selectedAccount"
@@ -32,7 +32,27 @@
           {{ contaEstaValida }}
         </div>
       </div>
-      <div class="br-input">
+      
+      <div class="br-input" *ngIf='this.selectedAccount== undefined'>
+        <label>Selecione a conta blockchain desejada no Metamask.A conta não deve
+          estar no estado "Disponível" ou "Invalidada"</label>
+        <input name="contaBlockchain" class="form-control form-control-sm" type="text" placeholder='Nenhuma conta conectada ao metamask'
+          readonly disabled [ngClass]="{
+            'color-danger': this.statusConta == false,
+            'color-success': this.statusConta == true
+          }" size="45" /> selecione a conta no metamask
+        <div class="msg-conta-invalida" [ngClass]="{
+            'text-danger': this.statusConta == false,
+            'text-success': this.statusConta == true
+          }">
+          {{ contaEstaValida }}
+        </div>
+      </div>
+
+
+
+
+      <div class="br-input" *ngIf='this.selectedAccount!= undefined && this.cliente.dadosCadastrais!= undefined'>
         <label>Razão Social:</label>
         <input name="razaoSocial" class="form-control form-control-sm"
           [(ngModel)]="this.cliente.dadosCadastrais.razaoSocial" readonly disabled />
