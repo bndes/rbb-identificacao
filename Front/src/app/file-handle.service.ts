@@ -95,10 +95,16 @@ export class FileHandleService {
     }
 
     this.uploader.onCompleteItem = (item:any, response:any, status:any, headers:any) => {
-             console.log("upload feito.", item, status, response);
-             componenteComDeclaracao.hashdeclaracao = response.toString().replace('\"','').replace('\"','');
-             componenteComDeclaracao.flagUploadConcluido = true;
-        };
+        if (status == 200) {
+          console.log("Upload concluido com sucesso.", item, status, response);
+          componenteComDeclaracao.hashdeclaracao = response.toString().replace('\"','').replace('\"','');
+          componenteComDeclaracao.flagUploadConcluido = true;
+        } else {
+          console.log("Falha na validação do upload.", item, status, response);
+          componenteComDeclaracao.hashdeclaracao = 'Erro no processamento do upload, tente novamente.'
+          componenteComDeclaracao.flagUploadConcluido = false;
+        }
+    };
   }
 
   chamaUpload() {
