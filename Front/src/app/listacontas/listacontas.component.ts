@@ -111,11 +111,12 @@ export class ListacontasComponent implements OnInit {
 
         let self = this;
         self.recuperaContaSelecionada();
-
-        setInterval(function () {
-            self.recuperaContaSelecionada(),
-                1000
-        });
+        setTimeout(() => {  
+            setInterval(function () {
+                self.recuperaContaSelecionada(),
+                    1000
+            });
+        }, 2030);
 
 
     }
@@ -168,7 +169,19 @@ export class ListacontasComponent implements OnInit {
 
             this.selectedAccount = newSelectedAccount;
             console.log("selectedAccount=" + this.selectedAccount);
+            try{
             this.usuario = this.recuperaRegistroBlockchain(this.selectedAccount);
+            }
+            catch(err){
+                
+                console.log("erro ao Recupera Registro Blockchain");
+                this.selectedAccount =undefined;
+                return;   
+            }
+            if(this.usuario === undefined){
+                this.selectedAccount =undefined;
+                return;
+              }
         }
 
     }
