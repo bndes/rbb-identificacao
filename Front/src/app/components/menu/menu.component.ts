@@ -47,10 +47,11 @@ export class MenuComponent implements OnInit {
   constructor(private web3Service: Web3Service) {
 
     let self = this;
-
-    setInterval(function () {
-      self.recuperaContaSelecionada(),
-      1000});
+    setTimeout(() => {  
+      setInterval(function () {
+        self.recuperaContaSelecionada(),
+        1000});
+    }, 2030);
 //TODO avaliar pra quando for pra producao
     console.log(
       `\n%cBuild Info:\n\n%c ❯ Environment: %c${
@@ -94,11 +95,20 @@ export class MenuComponent implements OnInit {
     let self = this;
 
     let newSelectedAccount = await this.web3Service.getCurrentAccountSync();
+    
     if ( !self.selectedAccount || (newSelectedAccount !== self.selectedAccount && newSelectedAccount)) {
       this.selectedAccount = newSelectedAccount;
+      console.log(newSelectedAccount);
       console.log("selectedAccount=" + this.selectedAccount);
-      self.usuario = await this.recuperaRegistroBlockchain(this.selectedAccount);
+      try{
+        self.usuario = await this.recuperaRegistroBlockchain(this.selectedAccount);
+      }
+      catch{
+        this.selectedAccount = undefined;
+      }
+      
     }
+    
   }
 
   async recuperaRegistroBlockchain(enderecoBlockchain) : Promise<any> {
@@ -108,6 +118,9 @@ export class MenuComponent implements OnInit {
     } else {
         console.log('this.usuario');
         console.log(this.usuario);
+        console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+        
+        console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
         return undefined;
     }
   }
