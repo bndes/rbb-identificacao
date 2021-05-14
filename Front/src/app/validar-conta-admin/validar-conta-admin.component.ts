@@ -87,7 +87,7 @@ export class ValidarContaAdminComponent implements OnInit {
     }
   }
 
-  
+
   listaTransacoesPJ: DashboardPessoaJuridica[] = undefined;
   blockchainNetworkPrefix: string;
 
@@ -97,7 +97,7 @@ export class ValidarContaAdminComponent implements OnInit {
   p: number = 1;
   order: string = 'dataHora';
   reverse: boolean = false;
-  
+
   contaResponsavelPorValidacao: any =false;
   selectedAccount: any;
 
@@ -115,7 +115,7 @@ export class ValidarContaAdminComponent implements OnInit {
 
           let self = this;
           self.recuperaContaSelecionada();
-          setTimeout(() => { 
+          setTimeout(() => {
             setInterval(function () {
               self.recuperaContaSelecionada(),
               1000});
@@ -147,6 +147,16 @@ export class ValidarContaAdminComponent implements OnInit {
           this.dataSource = new MatTableDataSource(users);
           this.dataSource.paginator = this.paginator;
           this.dataSource.sort = this.sort;
+          this.dataSource.sortingDataAccessor = (item, property) => {
+            switch (property) {
+               case 'name': return  item.razaoSocial;
+               case 'rbbid': return  item.RBBId;
+               case 'address': return  item.contaBlockchain;
+               case 'hashDeclaracao': return  item.hashDeclaracao;
+               case 'timestamp': return  item.dataHora;
+               default: return item[property];
+            }
+          };
           this.ref.detectChanges();
         }
       }
@@ -183,8 +193,8 @@ export class ValidarContaAdminComponent implements OnInit {
             return;
           }
           this.contaResponsavelPorValidacao =  await this.web3Service.isResponsibleForRegistryValidation(this.selectedAccount);
-          
-          
+
+
         }
     }
     }
@@ -283,7 +293,7 @@ export class ValidarContaAdminComponent implements OnInit {
             transacaoPJ.contaBlockchain, transacaoPJ.hashDeclaracao, "declaracao").subscribe(
             result => {
               if (result && result.pathAndName) {
-                transacaoPJ.filePathAndName=ConstantesService.serverUrl+result.pathAndName;
+                transacaoPJ.filePathAndName=ConstantesService.serverUrl+ ConstantesService.contextRoot +result.pathAndName;
               }
               else {
                 let texto = "Não foi possível encontrar informações associadas ao arquivo desse cadastro.";
@@ -340,7 +350,7 @@ export class ValidarContaAdminComponent implements OnInit {
       */
 
       //let texto = "Confirme a operação no metamask e aguarde a confirmação.";
-      //this.alertService.info(texto, this.alertOptions); 
+      //this.alertService.info(texto, this.alertOptions);
 
     }
 
@@ -384,7 +394,7 @@ export class ValidarContaAdminComponent implements OnInit {
       */
 
       //let texto = "Confirme a operação no metamask e aguarde a confirmação.";
-      //this.alertService.info(texto, this.alertOptions); 
+      //this.alertService.info(texto, this.alertOptions);
 
     }
 
@@ -407,7 +417,7 @@ export class ValidarContaAdminComponent implements OnInit {
           }
           else{
             let texto = "nao Erro ao pausar cadastro na blockchain possivel";
-            this.alertService.info(texto, this.alertOptions); 
+            this.alertService.info(texto, this.alertOptions);
           }
         }
       , function(error) {
@@ -429,7 +439,7 @@ export class ValidarContaAdminComponent implements OnInit {
       */
 
       //let texto = "Confirme a operação no metamask e aguarde a confirmação.";
-      //this.alertService.info(texto, this.alertOptions); 
+      //this.alertService.info(texto, this.alertOptions);
 
     }
 
@@ -474,7 +484,7 @@ export class ValidarContaAdminComponent implements OnInit {
       */
 
       //let texto = "Confirme a operação no metamask e aguarde a confirmação.";
-      //this.alertService.info(texto, this.alertOptions); 
+      //this.alertService.info(texto, this.alertOptions);
 
 
     }
@@ -518,18 +528,18 @@ export class ValidarContaAdminComponent implements OnInit {
       */
 
       //let texto = "Confirme a operação no metamask e aguarde a confirmação.";
-      //this.alertService.info(texto, this.alertOptions); 
+      //this.alertService.info(texto, this.alertOptions);
 
     }
     stopAnimationLoad(time){
       setTimeout(() => {
 
-        this.animationLoad=false;     
-        
-  
+        this.animationLoad=false;
+
+
       }, time)
     }
-  
+
 
 }
 

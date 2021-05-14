@@ -144,6 +144,16 @@ export class ListacontasComponent implements OnInit {
                 this.dataSource = new MatTableDataSource(users);
                 this.dataSource.paginator = this.paginator;
                 this.dataSource.sort = this.sort;
+                this.dataSource.sortingDataAccessor = (item, property) => {
+                  switch (property) {
+                     case 'name': return  item.razaoSocial;
+                     case 'rbbid': return  item.RBBId;
+                     case 'address': return  item.contaBlockchain;
+                     case 'hashDeclaracao': return  item.hashDeclaracao;
+                     case 'timestamp': return  item.dataHora;
+                     default: return item[property];
+                  }
+                };
                 this.ref.detectChanges()
                 }
             }

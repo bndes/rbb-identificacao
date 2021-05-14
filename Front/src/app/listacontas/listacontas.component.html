@@ -22,9 +22,9 @@
           </div>
         </div>
       </div>
-      
+
       <div id="tabela" class="mat-elevation-z8 responsive">
-        <table mat-table [dataSource]="dataSource" matSort>
+        <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8 responsive">
 
           <ng-container matColumnDef="rbbid">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> RBB ID </th>
@@ -57,7 +57,7 @@
           </ng-container>
 
           <ng-container matColumnDef="hashDeclaracao">
-            <th mat-header-cell *matHeaderCellDef> Hash documento </th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Hash documento </th>
             <td mat-cell *matCellDef="let row"> {{row.hashDeclaracao}} </td>
           </ng-container>
 
