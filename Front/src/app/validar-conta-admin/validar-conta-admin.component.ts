@@ -70,7 +70,7 @@ const TIMESTAMP: string[] = [
 export class ValidarContaAdminComponent implements OnInit {
 
   //displayedColumns: string[] = ['rbbid', 'cnpj', 'name', 'address' , 'perfil',  'evento', 'status', 'validacao', 'congelamento', 'congelamentoCNPJ'];
-  displayedColumns: string[] = [ 'cnpj', 'name', 'address' , 'perfil',  'status', 'validacao', 'congelamento', 'congelamentoCNPJ','rbbid'];
+  displayedColumns: string[] = [ 'cnpj', 'name', 'address' , 'perfil',  'status', 'validacao', 'declaracao', 'congelamento', 'congelamentoCNPJ','rbbid'];
   dataSource: MatTableDataSource<DashboardPessoaJuridica>;
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
@@ -293,7 +293,7 @@ export class ValidarContaAdminComponent implements OnInit {
             transacaoPJ.contaBlockchain, transacaoPJ.hashDeclaracao, "declaracao").subscribe(
             result => {
               if (result && result.pathAndName) {
-                transacaoPJ.filePathAndName=ConstantesService.serverUrl+ ConstantesService.contextRoot +result.pathAndName;
+                transacaoPJ.filePathAndName=ConstantesService.serverUrlRoot+ ConstantesService.contextRoot +result.pathAndName;
               }
               else {
                 let texto = "Não foi possível encontrar informações associadas ao arquivo desse cadastro.";
