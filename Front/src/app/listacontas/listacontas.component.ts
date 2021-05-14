@@ -111,7 +111,7 @@ export class ListacontasComponent implements OnInit {
 
         let self = this;
         self.recuperaContaSelecionada();
-        setTimeout(() => {  
+        setTimeout(() => {
             setInterval(function () {
                 self.recuperaContaSelecionada(),
                     1000
@@ -125,7 +125,7 @@ export class ListacontasComponent implements OnInit {
         let users;
 
         setTimeout(() => {
-            
+
             if (users == undefined || users.length != Array.from(this.listaTransacoesPJ).length) {
               console.log("ngOnInit :: Inicializa lista de transacoes");
               this.listaTransacoesPJ = [];
@@ -173,10 +173,10 @@ export class ListacontasComponent implements OnInit {
             this.usuario = this.recuperaRegistroBlockchain(this.selectedAccount);
             }
             catch(err){
-                
+
                 console.log("erro ao Recupera Registro Blockchain");
                 this.selectedAccount =undefined;
-                return;   
+                return;
             }
             if(this.usuario === undefined){
                 this.selectedAccount =undefined;
@@ -279,7 +279,7 @@ export class ListacontasComponent implements OnInit {
                 transacaoPJ.contaBlockchain, transacaoPJ.hashDeclaracao, "declaracao").subscribe(
                     result => {
                         if (result && result.pathAndName) {
-                            transacaoPJ.filePathAndName = ConstantesService.serverUrlRoot + result.pathAndName;
+                            transacaoPJ.filePathAndName = ConstantesService.serverUrlRoot + ConstantesService.contextRoot + result.pathAndName;
                         }
                         else {
                             let texto = "Não foi possível encontrar informações associadas ao arquivo desse cadastro.";
@@ -300,10 +300,10 @@ export class ListacontasComponent implements OnInit {
 
     stopAnimationLoad(time){
         setTimeout(() => {
-  
-          this.animationLoad=false;     
-          
-    
+
+          this.animationLoad=false;
+
+
         }, time)
       }
 

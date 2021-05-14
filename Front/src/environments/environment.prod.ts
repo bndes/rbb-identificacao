@@ -1,5 +1,6 @@
 export const environment = {
   production: true,
   serverUrl: 'api/',
-  serverUrlRoot: '/'
+  serverUrlRoot: '/',
+  contextRoot: '/identificacao/'
 };
