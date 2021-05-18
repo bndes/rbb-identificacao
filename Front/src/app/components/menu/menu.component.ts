@@ -97,15 +97,37 @@ export class MenuComponent implements OnInit {
     let newSelectedAccount = await this.web3Service.getCurrentAccountSync();
     
     if ( !self.selectedAccount || (newSelectedAccount !== self.selectedAccount && newSelectedAccount)) {
-      this.selectedAccount = newSelectedAccount;
+      //this.selectedAccount = newSelectedAccount;
       console.log(newSelectedAccount);
-      console.log("selectedAccount=" + this.selectedAccount);
+      //console.log("selectedAccount=" + this.selectedAccount);
       try{
-        self.usuario = await this.recuperaRegistroBlockchain(this.selectedAccount);
+        let user = await this.recuperaRegistroBlockchain(newSelectedAccount);
+
+        this.selectedAccount = newSelectedAccount;
+        console.log(this.selectedAccount);
+        self.usuario = user
+        
+        //self.usuario = await this.recuperaRegistroBlockchain(this.selectedAccount);
       }
-      catch{
+      
+      catch(err){
         this.selectedAccount = undefined;
+        self.usuario = undefined;
+        console.log(err);
+        if(err.code == "NETWORK_ERROR"){
+          //this.web3Service = new Web3Service(private http: HttpClient, private constantes: ConstantesService);
+          
+          console.log("NETWORK_ERROR");
+          console.log(err);
+          
+          await this.web3Service.changeNetwork();
+
+        }
+        
       }
+      
+      
+      
       
     }
     
@@ -118,9 +140,7 @@ export class MenuComponent implements OnInit {
     } else {
         console.log('this.usuario');
         console.log(this.usuario);
-        console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-        
-        console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+       
         return undefined;
     }
   }
