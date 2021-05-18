@@ -85,13 +85,13 @@
                 margin-bottom: 10px !important;
                 margin-top: 30px;
                 margin-right: 1000px;
-              ">
+              " >
               <button id="btArquivo" (click)="
                   hashdeclaracao = '';
                   uploadstart = true;
                   disable = false;
                   fileInput.click()
-                " class="br-button upload-button">
+                " class="br-button upload-button" [ngClass]="{disabledButton: this.contaEstaValida != 'Disponível'}">
                 <i class="fas fa-upload"></i>Upload
               </button>
 
@@ -112,7 +112,7 @@
               </div>
               <div class="upload-list"></div>
             </div>
-
+            <h2 *ngIf="this.contaEstaValida != 'Disponível'" style="font-size: 15px; font-family: 'Montserrat', sans-serif; color: red; font-weight: 500;">Selecione uma conta disponível</h2>
             <button class="br-button primary" [ngClass]="{
                 loading: load == true,
                 disabledButton: disable == true
