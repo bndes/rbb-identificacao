@@ -5,6 +5,7 @@ import { formattedError } from '@angular/compiler';
 import { Utils } from 'src/utils';
 import {ethers} from 'ethers';
 import MetaMaskOnboarding from "@metamask/onboarding"
+import { async } from 'rxjs';
 
 @Injectable()
 export class Web3Service {
@@ -89,6 +90,10 @@ export class Web3Service {
         console.log("BNDESRegistry=");
         console.log(this.RBBRegistrySmartContract);
 
+    }
+
+    async changeNetwork(){
+        await this.intializeWeb3();
     }
 
     public getInfoBlockchainNetwork(): any {
