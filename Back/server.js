@@ -405,7 +405,7 @@ async function buscaFileInfo(req, res) {
 
 		let cnpj     		  = req.body.cnpj;
 		let contrato 		  = req.body.contrato;
-		let blockchainAccount = req.body.blockchainAccount.toLowerCase();
+		let blockchainAccount = req.body.blockchainAccount;
 		let tipo     		  = req.body.tipo;
 		let hashFile 		  = req.body.hashFile;		
 
