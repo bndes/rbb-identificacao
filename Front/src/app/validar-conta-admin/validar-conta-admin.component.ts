@@ -15,6 +15,10 @@ import { ConstantesService } from '../ConstantesService';
 import { Router } from '@angular/router';
 import { AlertService } from '../_alert';
 
+
+
+import { TableButtonLogic } from './tableButtonLogic';
+
 // export interface UserData {
 //   id: string;
 //   name: string;
@@ -102,6 +106,8 @@ export class ValidarContaAdminComponent implements OnInit {
   selectedAccount: any;
 
   animationLoad: boolean = true;
+
+  logicButton:TableButtonLogic = new TableButtonLogic()
 
   alertOptions = {
     autoClose: true,
