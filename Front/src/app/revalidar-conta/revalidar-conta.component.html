@@ -4,19 +4,11 @@
   </div>
 
   <div class="container">
-    <div class="rightbox"  >
-      <!-- <h1 style="font-size: 120%;" >Associar Conta Blockchain ao e-CNPJ</h1>
-            <div class="br-input">
-                <label>Informe o CNPJ:</label>
-                <input name="cnpjWithMask" mask="00.000.000/0000-00" [(ngModel)]="cliente.cnpjWithMask"  class="form-control form-control-sm" (input)="changeCnpj()"
-                required [disabled]="this.flagUploadConcluido" />
-            </div>
 
-            <div class="br-input" >
-                <label>Razão Social:</label>
-                <input name="razaoSocial" class="form-control form-control-sm" [(ngModel)]="cliente.dadosCadastrais.razaoSocial" readonly  disabled/>
-            </div>
-        -->
+    <div class="rightbox">
+      <div class="leftbox">
+        <h1 class="title-leftbox">Revalidar ID</h1>
+      </div>
       <div class="br-input" *ngIf='this.selectedAccount!= undefined'>
         <label>Selecione a conta blockchain desejada no Metamask.A conta não deve
           estar no estado "Disponível" ou "Invalidada"</label>
@@ -32,7 +24,7 @@
           {{ contaEstaValida }}
         </div>
       </div>
-      
+
       <div class="br-input" *ngIf='this.selectedAccount== undefined'>
         <label>Selecione a conta blockchain desejada no Metamask.A conta não deve
           estar no estado "Disponível" ou "Invalidada"</label>
@@ -40,7 +32,7 @@
           readonly disabled [ngClass]="{
             'color-danger': this.statusConta == false,
             'color-success': this.statusConta == true
-          }" size="45" /> selecione a conta no metamask
+          }" size="45" /> Selecione uma conta no Metamask
         <div class="msg-conta-invalida" [ngClass]="{
             'text-danger': this.statusConta == false,
             'text-success': this.statusConta == true
@@ -59,11 +51,11 @@
       </div>
 
       <div style="
-          height: 1000px;
+          height: fit-content;
           background-color: #d2e4ff44;
           box-shadow: 0 0 3px #000000, 0 0 5px #b0b0b4;
-        " class="br-card conteudo form-group">
-        <div *ngIf="this.statusConta == true" style="height: 810px; background-color: #d2e4ff44" class="front">
+        " class="br-card conteudo form-group" *ngIf="cliente.dadosCadastrais">
+        <div *ngIf="this.statusConta == true" style="background-color: #d2e4ff44" class="front">
           <div class="header">
             <h1 *ngIf="this.contaAdminFlag == false" style="font-size: 20px; margin-top: 10px !important">
               Revalidar Conta Autorizada
@@ -228,10 +220,7 @@
         </div>
       </div>
     </div>
-    <div></div>
   </div>
 
-  <div class="leftbox">
-    <h1>Revalidar ID</h1>
-  </div>
+
 </body>
