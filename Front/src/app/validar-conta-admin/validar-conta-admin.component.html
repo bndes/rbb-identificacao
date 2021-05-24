@@ -142,7 +142,7 @@
               <td  style="text-align: center;" mat-cell *matCellDef="let row" >
                 <span *ngIf='true' >
 
-                  <span *ngIf='row.acao == 4' >
+                  <span *ngIf='row.acao == 4 ' >
                     <span *ngIf='!(logicButton.pausar(row,this.usuario,this.contaResponsavelPorValidacao,this.selectedAccount))'>
                       <button (click)='pause(row.contaBlockchain)' class="br-button search-trigger is-circle is-terciary" type="button" disabled>
                         <i class="fas fa-pause-circle"></i>
@@ -176,17 +176,17 @@
 
                   </span>
 
-                  <span *ngIf='row.acao == 1 || row.acao == 2 || row.acao == 3 || row.acao == 5' >
+                  <span *ngIf='row.acao == 1   || row.acao == 2 || row.acao == 3 || row.acao == 5' >
                     <button (click)='pause(row.contaBlockchain)' class="br-button search-trigger is-circle is-terciary" type="button" disabled>
                       <i class="fas fa-pause-circle"></i>
                     </button>
                   </span>
-                  <span *ngIf='(row.acao == 1 || row.acao == 2 || row.acao == 3 || row.acao == 5) && (!(contaResponsavelPorValidacao) || !(row.pausada) )' >
+                  <span *ngIf='(row.acao == 1 || row.acao == 2 || row.acao == 3 || row.acao == 5) && (!logicButton.reativar(row,this.usuario,this.contaResponsavelPorValidacao,this.selectedAccount) )' >
                     <button (click)='unpause(row.contaBlockchain)' class="br-button search-trigger is-circle is-terciary" type="button" disabled>
                       <i class="fas fa-play-circle"></i>
                     </button>
                   </span>
-                  <span *ngIf='(row.acao == 1 || row.acao == 2 || row.acao == 3 || row.acao == 5) && (contaResponsavelPorValidacao && row.pausada)' >
+                  <span *ngIf='(row.acao == 1 || row.acao == 2 || row.acao == 3 || row.acao == 5) && logicButton.reativar(row,this.usuario,this.contaResponsavelPorValidacao,this.selectedAccount)' >
                     <button (click)='unpause(row.contaBlockchain)' class="br-button search-trigger is-circle is-terciary" type="button" >
                       <i class="fas fa-play-circle"></i>
                     </button>
