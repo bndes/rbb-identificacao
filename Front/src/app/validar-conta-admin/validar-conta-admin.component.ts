@@ -103,6 +103,7 @@ export class ValidarContaAdminComponent implements OnInit {
   reverse: boolean = false;
 
   contaResponsavelPorValidacao: any =false;
+  contaResponsavelPorMonitoramento: any =false;
   selectedAccount: any;
 
   animationLoad: boolean = true;
@@ -199,6 +200,7 @@ export class ValidarContaAdminComponent implements OnInit {
             return;
           }
           this.contaResponsavelPorValidacao =  await this.web3Service.isResponsibleForRegistryValidation(this.selectedAccount);
+          this.contaResponsavelPorMonitoramento = await this.web3Service.isResponsibleForMonitoring(this.selectedAccount);
 
 
         }

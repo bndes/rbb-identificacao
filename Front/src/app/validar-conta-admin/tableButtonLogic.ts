@@ -1,6 +1,6 @@
 export class TableButtonLogic {
     public  validar(row ,user, isResponsavelPorValidacao){
-        if(user===undefined || user.statusAsString==="Invalidada" ) return false;
+        if(user===undefined || user.statusAsString==="Invalidada" || row.status === "Validada" ) return false;
         if(user.paused || row.pausada ) return false;
         if(user.roleAsString == "Admin" && row.perfil == "Regular" && user.cnpj== row.cnpj) return true;
         if(isResponsavelPorValidacao == true && row.perfil == "Admin") return true;
