@@ -305,7 +305,14 @@ async ReValidarRegular(cnpj: number, hashdeclaracao: string): Promise<any>  {
             const signer = this.accountProvider.getSigner();
             const contWithSigner = this.RBBRegistrySmartContract.connect(signer);
             
+            if ( await this.isResponsibleForMonitoring( usuarioEndereco ) ) {
+                console.log(contaBlockchain);
+                
+                (await contWithSigner.pauseAddressAfterMonitoring(contaBlockchain));
+                
 
+                return true;
+            }
 
             if ( usuario.roleAsString == "Admin" ) {
                 (await contWithSigner.pauseAddressSameOrg(contaBlockchain));
@@ -315,14 +322,7 @@ async ReValidarRegular(cnpj: number, hashdeclaracao: string): Promise<any>  {
                 (await contWithSigner.pauseAddressSameOrg(contaBlockchain));
                 return true;
             }
-            if ( await this.isResponsibleForMonitoring( usuarioEndereco ) ) {
-                console.log(contaBlockchain);
-                
-                (await contWithSigner.pauseAddressAfterMonitoring(contaBlockchain));
-                
-
-                return true;
-            }
+            
 
         } catch (error) {
             console.log("pause:" )
