@@ -328,38 +328,22 @@ async function trataUpload(req, res, next) {
 			if (err) {
 				// An error occurred when uploading
 				console.log(err);
-				return res.status(422).send("Um erro ocorreu. Somente são aceitos arquivos do tipo PDF.")
+				return res.status(422).send("Um erro ocorreu. Somente são aceitos arquivos do tipo PDF. ERRO :" + err)
 			}  
 			else {
 				// No error occured.			
 				let cnpj     = req.body.cnpj;
 				let contrato = req.body.contrato;	
 				let conta    = req.body.contaBlockchain;
-				let tipo     = req.body.tipo;
-
-				console.log("tipo=");
-				console.log(tipo);	
 
 				const tmp_path = req.file.path;
 				const hashedResult = await SERVER_FUNCTIONS.calculaHash(tmp_path);			
 				
 				let target_path = "";
+				
+				let fileName = SERVER_FUNCTIONS.montaNomeArquivoDeclaracao(cnpj, contrato, conta, hashedResult);
+				target_path = DIR_CAMINHO_DECLARACAO + fileName;
 
-				if (tipo=="declaracao") {					
-					let fileName = SERVER_FUNCTIONS.montaNomeArquivoDeclaracao(cnpj, contrato, conta, hashedResult);
-					target_path = DIR_CAMINHO_DECLARACAO + fileName;
-				}
-				else if (tipo=="comp_doacao") {
-					let fileName = SERVER_FUNCTIONS.montaNomeArquivoComprovanteDoacao(cnpj, hashedResult);
-					target_path = DIR_CAMINHO_COMPROVANTE_DOACAO + fileName;
-				}
-				else if (tipo=="comp_liq") {
-					let fileName = SERVER_FUNCTIONS.montaNomeArquivoComprovanteLiquidacao(cnpj, contrato, hashedResult);
-					target_path = DIR_CAMINHO_COMPROVANTE_LIQUIDACAO + fileName;
-				}		
-				else {
-					throw "erro tipo desconhecido para download de arquivo";
-				}
 								
 				// A better way to copy the uploaded file. 
 				const src  = fs.createReadStream(tmp_path);
