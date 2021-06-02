@@ -25,7 +25,6 @@
     "@angular/platform-browser-dynamic": "^10.0.14",
     "@angular/router": "^10.0.14",
     "@fortawesome/fontawesome-free": "^5.15.3",
-    "@govbr/design-system": "file:dsgov-latest.tgz",
     "@metamask/onboarding": "^1.0.0",
     "@ng-bootstrap/ng-bootstrap": "^8.0.4",
     "@popperjs/core": "^2.9.2",
