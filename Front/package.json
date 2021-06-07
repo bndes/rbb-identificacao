@@ -28,7 +28,6 @@
     "@metamask/onboarding": "^1.0.0",
     "@ng-bootstrap/ng-bootstrap": "^8.0.4",
     "@popperjs/core": "^2.9.2",
-    "@truffle/contract": "^4.3.17",
     "angular": "^1.8.2",
     "angular-build-info": "^2.0.1",
     "angular-material": "^1.2.2",
