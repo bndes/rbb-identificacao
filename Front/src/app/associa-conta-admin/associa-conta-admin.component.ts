@@ -140,7 +140,7 @@ export class AssociaContaAdminComponent implements OnInit {
     let self = this;
     let newSelectedAccount = await this.web3Service.getCurrentAccountSync();
     if ( !self.selectedAccount || (newSelectedAccount !== self.selectedAccount && newSelectedAccount)) {
-
+      this.cliente = new Cliente(); 
       if ( this.flagUploadConcluido == false ) {
         this.selectedAccount = newSelectedAccount;
         console.log("selectedAccount=" + this.selectedAccount);
@@ -195,8 +195,10 @@ export class AssociaContaAdminComponent implements OnInit {
         empresa => {
           console.log("associa...pedeDeclaracao(cnpj)");
           console.log(empresa);
-          self.declaracao_titulo =  JSON.stringify(empresa.declaracao_titulo);
-          self.declaracao_corpo =  JSON.stringify(empresa.declaracao_corpo);
+          //self.declaracao_titulo =  JSON.stringify(empresa.declaracao_titulo);
+          //self.declaracao_corpo =  JSON.stringify(empresa.declaracao_corpo);
+          self.declaracao_titulo =  empresa.declaracao_titulo;
+          self.declaracao_corpo = empresa.declaracao_corpo;
           
         },
         error => {
