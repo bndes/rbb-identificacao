@@ -168,10 +168,10 @@ let retorno;
 
                 console.log("pj do QSA");				
                 console.log(pj);
-		console.log("row 0");				
-                console.log(row[0]);
-		console.log("row");
-                console.log(row);
+		console.log("rows 0");				
+                console.log(rows[0]);
+		console.log("rows");
+                console.log(rows);
 
                 sql.close();
                 retorno = pj;
