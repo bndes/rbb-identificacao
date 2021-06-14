@@ -340,13 +340,17 @@ export class AssociaContaAdminComponent implements OnInit {
     let options = {
        pagesplit: true
     };
+    console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+    console.log(pdf.getFontList());
     
-    console.log(pdf);
-    
-
+   
     const splitTitulo = pdf.splitTextToSize(this.declaracao_titulo, 540);
+    //splitTitulo.setFontType('bold');
+    //pdf.addFont('Arial bold', 'Arial', 'normal');
+    pdf.setFont('helvetica','bold');
     pdf.text(splitTitulo,30,100);
 
+    pdf.setFont('helvetica','normal');
     const splitCorpo = pdf.splitTextToSize(this.declaracao_corpo, 540);
     pdf.text(splitCorpo,30,200);
 
