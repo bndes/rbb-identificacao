@@ -66,11 +66,24 @@ body{
 .rightbox .br-button{
   height: 5%;
   margin-top: 4%;
-  margin-left: 30%;
+  margin-left: 35%;
+  margin-bottom: 10%;
   font-size: 21px;
   height: 50px;
   width: 300px;
   margin-bottom: 50px;
+}
+
+
+
+.revalidarButton{
+  margin-left: 35% !important;
+  margin-bottom: 10%;
+  justify-content: center;
+  width: 30%;
+  height: 70%;
+  font-size: 30px;
+  justify-content: center;
 }
 
 h1 {
@@ -148,5 +161,76 @@ h2 {
 
 .refreshContaBlockchain {
   margin-top: 35px;
+}
+
+.rightbox .revalidarButton{
+  margin-left: 35% !important;
+  margin-bottom: 10%;
+  justify-content: center;
+  width: 30%;
+  height: 70%;
+  font-size: 30px;
+  justify-content: center;
+}
+
+
+
+
+
+@media(max-width: 900px){
+  .rightbox {
+    padding-top: 80px;
+    
+  }
+  .rightbox .revalidarButton{
+    font-size: 20px;
+  }
+}
+
+
+@media(max-width: 600px){
+  
+  .rightbox .revalidarButton{
+    font-size: 10px;
+    width: 120px;
+    margin-left: 5% !important;
+    
+  
+  }
+  .container{
+    border: none;
+    margin-left: auto;
+    width: 95%;
+  }
+  .leftbox{
+    left: -10px;
+  }
+  .rightbox .br-button{
+    width: 180px;
+  }
+}
+@media(max-width: 300px){
+  
+  .rightbox .revalidarButton{
+    font-size: 10px;
+    width: 120px;
+    margin-left: auto !important;
+    
+  
+  }
+  .container{
+    border: none;
+    margin-left: auto;
+    width: 95%;
+  }
+  .leftbox{
+    left: -10px;
+  }
+  .rightbox .br-button{
+    width: 180px;
+  }
+  .br-card .header, .br-card .content, .br-card .footer{
+    padding: 16px 16px 16px 0px;
+  }
 }
 

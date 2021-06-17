@@ -126,9 +126,11 @@ template h2 {
 }
 
 .rbb-menu{
-  min-width: 320px;
+  /*min-width: 320px;*/
   box-shadow: 0 3px 6px rgba(var(--rgb-secondary-09), 0.16);
   background: var(--color-secondary-01);
+  height: 120px; 
+  width: 100%;
 }
 
 .flex-container {
@@ -219,4 +221,34 @@ template h2 {
 .menu-line:hover{
   background-color: #071d41;
   color: white;
+}
+.conta-container{
+  flex-direction: row;
+  width: auto;
+}
+.header-content{
+  font-size: 10px;
+}
+@media(max-width: 600px){
+  .flex-container{
+    flex-direction:  column;
+
+  }
+
+  .header-content{
+    font-size: 8px;
+  }
+  .rbb-menu{
+    height: 300px;
+  }
+  .menu{
+    width: auto;
+  }
+  .info{
+    margin-left: 15px;
+
+  }
+  .conta-container{
+    width: 300px;
+  }
 }

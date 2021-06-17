@@ -188,15 +188,7 @@
               justify-content: center;
               margin-bottom: 12%;
             " class="footer">
-            <button *ngIf="this.contaAdminFlag == true" style="
-                margin-left: 35% !important;
-                margin-bottom: 10%;
-                justify-content: center;
-                width: 30%;
-                height: 70%;
-                font-size: 30px;
-                justify-content: center;
-              " class="br-button primary" [ngClass]="{
+            <button *ngIf="this.contaAdminFlag == true" class="br-button primary revalidarButton" [ngClass]="{
                 loading: load == true,
                 disabledButton: disable == true
               }" type="button" (click)="reativarContaClienteAdmin()">
