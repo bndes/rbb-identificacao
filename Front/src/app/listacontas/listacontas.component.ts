@@ -289,7 +289,12 @@ export class ListacontasComponent implements OnInit {
                 transacaoPJ.contaBlockchain, transacaoPJ.hashDeclaracao, "declaracao").subscribe(
                     result => {
                         if (result && result.pathAndName) {
-                            transacaoPJ.filePathAndName = ConstantesService.serverUrlRoot + result.pathAndName;
+                            if(ConstantesService.production){
+                                transacaoPJ.filePathAndName = ConstantesService.serverUrlRoot +"/identificacao"+ result.pathAndName;
+                            }
+                            else{
+                                transacaoPJ.filePathAndName = ConstantesService.serverUrlRoot + result.pathAndName;
+                            }
                         }
                         else {
                             let texto = "Não foi possível encontrar informações associadas ao arquivo desse cadastro.";
