@@ -290,7 +290,7 @@ export class ListacontasComponent implements OnInit {
                     result => {
                         if (result && result.pathAndName) {
                             if(ConstantesService.production){
-                                transacaoPJ.filePathAndName = ConstantesService.serverUrlRoot +"/identificacao"+ result.pathAndName;
+                                transacaoPJ.filePathAndName = ConstantesService.serverUrlRoot +"identificacao/"+ result.pathAndName;
                             }
                             else{
                                 transacaoPJ.filePathAndName = ConstantesService.serverUrlRoot + result.pathAndName;
