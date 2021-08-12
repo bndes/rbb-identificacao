@@ -1,0 +1,14 @@
+type ExampleEntity @entity {
+  id: ID!
+  count: BigInt!
+  addr: Bytes! # address
+  RBBId: BigInt! # uint256
+}
+
+type UserInvalidation @entity {
+  id: ID!
+  count: BigInt!
+  addr: Bytes! # address
+  RBBId: BigInt! # uint256
+  CNPJ: BigInt # uint256
+}
