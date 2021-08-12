@@ -1,0 +1,6 @@
+type UserInvalidation @entity {
+  id: ID!
+  addr: Bytes! # address
+  RBBId: BigInt! # uint256
+  CNPJ: BigInt # uint256
+}

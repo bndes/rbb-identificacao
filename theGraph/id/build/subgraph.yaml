@@ -1,0 +1,23 @@
+specVersion: 0.0.2
+schema:
+  file: schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: Contract
+    network: bid
+    source:
+      address: "0x9d1eD3b7019398a7149969b20568B7A028241Af2"
+      abi: Contract
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - UserInvalidation
+      abis:
+        - name: Contract
+          file: Contract/abis/Contract.json
+      eventHandlers:
+        - event: AccountInvalidation(address,uint256,uint64,address,uint8)
+          handler: handleAccountInvalidation
+      file: Contract/Contract.wasm
