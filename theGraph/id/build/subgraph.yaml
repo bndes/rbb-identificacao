@@ -13,11 +13,19 @@ dataSources:
       apiVersion: 0.0.4
       language: wasm/assemblyscript
       entities:
-        - UserInvalidation
+        - Account
       abis:
         - name: Contract
           file: Contract/abis/Contract.json
       eventHandlers:
         - event: AccountInvalidation(address,uint256,uint64,address,uint8)
           handler: handleAccountInvalidation
+        - event: AccountPaused(address,uint256,uint64,address,uint8)
+          handler: handleAccountPaused
+        - event: AccountUnpaused(address,uint256,uint64,address,uint8)
+          handler: handleAccountUnpaused
+        - event: AccountRegistration(address,uint256,uint64,string,uint256)
+          handler: handleAccountRegistration
+        - event: AccountValidation(address,uint256,uint64,address)
+          handler: handleAccountValidation
       file: Contract/Contract.wasm
