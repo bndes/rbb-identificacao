@@ -12,7 +12,7 @@ import {
   BigDecimal
 } from "@graphprotocol/graph-ts";
 
-export class UserInvalidation extends Entity {
+export class Account extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
@@ -20,17 +20,17 @@ export class UserInvalidation extends Entity {
 
   save(): void {
     let id = this.get("id");
-    assert(id !== null, "Cannot save UserInvalidation entity without an ID");
+    assert(id !== null, "Cannot save Account entity without an ID");
     assert(
       id.kind == ValueKind.STRING,
-      "Cannot save UserInvalidation entity with non-string ID. " +
+      "Cannot save Account entity with non-string ID. " +
         'Considering using .toHex() to convert the "id" to a string.'
     );
-    store.set("UserInvalidation", id.toString(), this);
+    store.set("Account", id.toString(), this);
   }
 
-  static load(id: string): UserInvalidation | null {
-    return store.get("UserInvalidation", id) as UserInvalidation | null;
+  static load(id: string): Account | null {
+    return store.get("Account", id) as Account | null;
   }
 
   get id(): string {
@@ -74,6 +74,66 @@ export class UserInvalidation extends Entity {
       this.unset("CNPJ");
     } else {
       this.set("CNPJ", Value.fromBigInt(value as BigInt));
+    }
+  }
+
+  get responsible(): Bytes | null {
+    let value = this.get("responsible");
+    if (value === null || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set responsible(value: Bytes | null) {
+    if (value === null) {
+      this.unset("responsible");
+    } else {
+      this.set("responsible", Value.fromBytes(value as Bytes));
+    }
+  }
+
+  get reason(): i32 {
+    let value = this.get("reason");
+    return value.toI32();
+  }
+
+  set reason(value: i32) {
+    this.set("reason", Value.fromI32(value));
+  }
+
+  get hashProof(): string | null {
+    let value = this.get("hashProof");
+    if (value === null || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set hashProof(value: string | null) {
+    if (value === null) {
+      this.unset("hashProof");
+    } else {
+      this.set("hashProof", Value.fromString(value as string));
+    }
+  }
+
+  get dateTimeExpiration(): BigInt | null {
+    let value = this.get("dateTimeExpiration");
+    if (value === null || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set dateTimeExpiration(value: BigInt | null) {
+    if (value === null) {
+      this.unset("dateTimeExpiration");
+    } else {
+      this.set("dateTimeExpiration", Value.fromBigInt(value as BigInt));
     }
   }
 }
