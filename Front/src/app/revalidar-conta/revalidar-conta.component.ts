@@ -50,10 +50,12 @@ export class RevalidarContaComponent implements OnInit {
     public fileHandleService: FileHandleService, public alertService: AlertService) {
 
       let self = this;
-
-      setInterval(function () {
-        self.recuperaContaSelecionada(),
-        1000});
+      
+      setTimeout(() => {      
+        setInterval(function () {
+          self.recuperaContaSelecionada(),
+          1000});
+      }, 2030);
       /*  
       setInterval(function () {
         self.checkCadastro(),
@@ -145,6 +147,12 @@ export class RevalidarContaComponent implements OnInit {
 
     let self = this;
     let newSelectedAccount = await this.web3Service.getCurrentAccountSync();
+    if(newSelectedAccount === undefined){
+      this.statusConta =false;
+      this.contaEstaValida="";
+      self.selectedAccount = undefined;
+      return;
+    }
     if ( !self.selectedAccount || (newSelectedAccount !== self.selectedAccount && newSelectedAccount)) {
       //if ( this.flagUploadConcluido == false ) {
         this.selectedAccount = newSelectedAccount;

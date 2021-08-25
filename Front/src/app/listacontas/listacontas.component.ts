@@ -92,7 +92,7 @@ export class ListacontasComponent implements OnInit {
     estadoLista: string = "undefined";
 
     usuario: any;
-
+    animationLoad: boolean = true;
     p: number = 1;
     order: string = 'dataHora';
     reverse: boolean = false;
@@ -111,11 +111,12 @@ export class ListacontasComponent implements OnInit {
 
         let self = this;
         self.recuperaContaSelecionada();
-
-        setInterval(function () {
-            self.recuperaContaSelecionada(),
-                1000
-        });
+        setTimeout(() => {
+            setInterval(function () {
+                self.recuperaContaSelecionada(),
+                    1000
+            });
+        }, 2030);
 
 
     }
@@ -135,18 +136,30 @@ export class ListacontasComponent implements OnInit {
           }, 3030)
 
           setInterval(() => {
-            this.estadoLista = this.estadoLista === "undefined" ? "vazia" : "cheia"
-            if ( users == undefined || users.length != Array.from(this.listaTransacoesPJ).length ) {
-              console.log("ngOnInit :: Atualiza se houve mudança.")
-              users = Array.from(this.listaTransacoesPJ);
-              this.dataSource = new MatTableDataSource(users);
-              this.dataSource.paginator = this.paginator;
-              this.dataSource.sort = this.sort;
-              this.ref.detectChanges()
+            this.estadoLista = this.estadoLista === "undefined" ? "vazia" : "cheia";
+            if(this.estadoLista=="cheia"){
+                if ( users == undefined || users.length != Array.from(this.listaTransacoesPJ).length ) {
+                console.log("ngOnInit :: Atualiza se houve mudança.")
+                users = Array.from(this.listaTransacoesPJ);
+                this.dataSource = new MatTableDataSource(users);
+                this.dataSource.paginator = this.paginator;
+                this.dataSource.sort = this.sort;
+                this.dataSource.sortingDataAccessor = (item, property) => {
+                  switch (property) {
+                     case 'name': return  item.razaoSocial;
+                     case 'rbbid': return  item.RBBId;
+                     case 'address': return  item.contaBlockchain;
+                     case 'hashDeclaracao': return  item.hashDeclaracao;
+                     case 'timestamp': return  item.dataHora;
+                     default: return item[property];
+                  }
+                };
+                this.ref.detectChanges()
+                }
             }
-          }, 330)
+          }, 1063)
 
-
+          this.stopAnimationLoad(300000);
 
 
         //const users = Array.from({length: 1}, (_, k) => createNewUser(k + 1));
@@ -166,7 +179,19 @@ export class ListacontasComponent implements OnInit {
 
             this.selectedAccount = newSelectedAccount;
             console.log("selectedAccount=" + this.selectedAccount);
+            try{
             this.usuario = this.recuperaRegistroBlockchain(this.selectedAccount);
+            }
+            catch(err){
+
+                console.log("erro ao Recupera Registro Blockchain");
+                this.selectedAccount =undefined;
+                return;
+            }
+            if(this.usuario === undefined){
+                this.selectedAccount =undefined;
+                return;
+              }
         }
 
     }
@@ -264,7 +289,12 @@ export class ListacontasComponent implements OnInit {
                 transacaoPJ.contaBlockchain, transacaoPJ.hashDeclaracao, "declaracao").subscribe(
                     result => {
                         if (result && result.pathAndName) {
-                            transacaoPJ.filePathAndName = ConstantesService.serverUrlRoot + result.pathAndName;
+                            if(ConstantesService.production){
+                                transacaoPJ.filePathAndName = ConstantesService.serverUrlRoot +"identificacao/"+ result.pathAndName;
+                            }
+                            else{
+                                transacaoPJ.filePathAndName = ConstantesService.serverUrlRoot + result.pathAndName;
+                            }
                         }
                         else {
                             let texto = "Não foi possível encontrar informações associadas ao arquivo desse cadastro.";
@@ -282,6 +312,15 @@ export class ListacontasComponent implements OnInit {
 
 
     }
+
+    stopAnimationLoad(time){
+        setTimeout(() => {
+
+          this.animationLoad=false;
+
+
+        }, time)
+      }
 
 }
 

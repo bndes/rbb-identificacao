@@ -63,7 +63,6 @@ contract RBBRegistry is IRBBRegistry, Ownable() {
     event AccountInvalidation       (address addr, uint RBBId, uint64 CNPJ, address responsible, uint8 reason);
     event AccountPaused             (address addr, uint RBBId, uint64 CNPJ, address responsible, uint8 reason);
     event AccountUnpaused           (address addr, uint RBBId, uint64 CNPJ, address responsible, uint8 reason);
-    event AccountRoleChange         (address addr, uint RBBId, uint64 CNPJ, address responsible, BlockchainAccountRole roleBefore, BlockchainAccountRole roleNew);
     event AccountReactivation       (address addr, string hashProof, uint256 dateTimeExpiration);
 
     event RegistryExpirationChange  (address addr, uint256 dateTimeExpirationBefore, uint256 dateTimeExpirationNew);

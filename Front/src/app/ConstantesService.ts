@@ -3,8 +3,8 @@ import { environment } from '../environments/environment';
 
 @Injectable()
 export class ConstantesService {
-
-  public static serverUrl: string = environment.serverUrl; 
-  public static serverUrlRoot: string = environment.serverUrlRoot;  
-
-}
+  public static production: boolean = environment.production;
+  public static serverUrl: string = environment.serverUrl;
+  public static serverUrlRoot: string = environment.serverUrlRoot;
+ 
+}//

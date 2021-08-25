@@ -85,14 +85,16 @@ export class AssociaContaAdminComponent implements OnInit {
     this.cliente.cnpj = Utils.removeSpecialCharacters(this.cliente.cnpjWithMask);
     let cnpj = this.cliente.cnpj;
     this.inicializaDadosDerivadosPessoaJuridica();
-
+    
     if ( cnpj.length == 14 ) {
+
       console.log (" Buscando o CNPJ do cliente (14 digitos fornecidos)...  " + cnpj)
       await this.recuperaClientePorCNPJ(cnpj);
       console.log("this.selectedAccount = " + this.selectedAccount + " | cnpj = " + cnpj);
       console.log(this.cliente.dadosCadastrais);
 
     }
+    
     this.preparaUpload(this.cliente.cnpj, this.subcreditoSelecionado, this.selectedAccount, this);
   }
 
@@ -138,7 +140,7 @@ export class AssociaContaAdminComponent implements OnInit {
     let self = this;
     let newSelectedAccount = await this.web3Service.getCurrentAccountSync();
     if ( !self.selectedAccount || (newSelectedAccount !== self.selectedAccount && newSelectedAccount)) {
-
+      this.cliente = new Cliente(); 
       if ( this.flagUploadConcluido == false ) {
         this.selectedAccount = newSelectedAccount;
         console.log("selectedAccount=" + this.selectedAccount);
@@ -186,14 +188,18 @@ export class AssociaContaAdminComponent implements OnInit {
   }
 
   pedeEpreenchePDF(self, cnpj) {
+    
     if (self.cliente.dadosCadastrais) {
 
       self.pessoaJuridicaService.pedeDeclaracao(cnpj, self.selectedAccount).subscribe(
         empresa => {
           console.log("associa...pedeDeclaracao(cnpj)");
           console.log(empresa);
-          self.declaracao_titulo =  JSON.stringify(empresa.declaracao_titulo);
-          self.declaracao_corpo =  JSON.stringify(empresa.declaracao_corpo);
+          //self.declaracao_titulo =  JSON.stringify(empresa.declaracao_titulo);
+          //self.declaracao_corpo =  JSON.stringify(empresa.declaracao_corpo);
+          self.declaracao_titulo =  empresa.declaracao_titulo;
+          self.declaracao_corpo = empresa.declaracao_corpo;
+          
         },
         error => {
           console.log("associa...pedeDeclaracao(cnpj)");
@@ -215,23 +221,28 @@ export class AssociaContaAdminComponent implements OnInit {
 
     this.pessoaJuridicaService.recuperaEmpresaPorCnpj(cnpj).subscribe(
       empresa => {
+        
         if (empresa && empresa.dadosCadastrais) {
+          
           console.log("empresa encontrada - ");
           console.log(empresa);
           this.inicializaDadosDerivadosPessoaJuridica();
 
           self.cliente.dadosCadastrais = empresa["dadosCadastrais"];
-
-          for (var i = 0; i < empresa["subcreditos"].length; i++) {
+          
+          console.log( empresa);
+          /*for (var i = 0; i < empresa["subcreditos"].length; i++) {
 
             let subStr = JSON.parse(JSON.stringify(empresa["subcreditos"][i]));
             //self.includeAccountIfNoAssociated(self, cnpj, subStr);
 
-          }
+          }*/
+          
           self.pedeEpreenchePDF(self, cnpj);
-
+          
         }
         else {
+          
           //Do no clean fields to better UX
           let texto = "CNPJ não identificado";
           console.log(texto);
@@ -329,11 +340,17 @@ export class AssociaContaAdminComponent implements OnInit {
     let options = {
        pagesplit: true
     };
-    console.log(pdf);
-
+    console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+    console.log(pdf.getFontList());
+    
+   
     const splitTitulo = pdf.splitTextToSize(this.declaracao_titulo, 540);
+    //splitTitulo.setFontType('bold');
+    //pdf.addFont('Arial bold', 'Arial', 'normal');
+    pdf.setFont('helvetica','bold');
     pdf.text(splitTitulo,30,100);
 
+    pdf.setFont('helvetica','normal');
     const splitCorpo = pdf.splitTextToSize(this.declaracao_corpo, 540);
     pdf.text(splitCorpo,30,200);
 

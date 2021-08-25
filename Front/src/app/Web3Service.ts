@@ -5,6 +5,7 @@ import { formattedError } from '@angular/compiler';
 import { Utils } from 'src/utils';
 import {ethers} from 'ethers';
 import MetaMaskOnboarding from "@metamask/onboarding"
+import { async } from 'rxjs';
 
 @Injectable()
 export class Web3Service {
@@ -91,6 +92,10 @@ export class Web3Service {
 
     }
 
+    async changeNetwork(){
+        await this.intializeWeb3();
+    }
+
     public getInfoBlockchainNetwork(): any {
 
         let blockchainNetworkAsString = "Localhost";
@@ -118,8 +123,13 @@ export class Web3Service {
             //console.log("getCurrentAccountSync waiting for getSigner");
             return undefined;
         }
- */     var address = await this.ethereum.request({ method: 'eth_accounts' });
-        if(address){
+        
+ */         
+        var address = await this.ethereum.request({ method: 'eth_accounts' });
+        
+        
+       
+        if(address && address.length != 0){
           var stringAddress = address.toString();
           var checksumAddress = ethers.utils.getAddress(stringAddress);
           return checksumAddress;
@@ -295,7 +305,14 @@ async ReValidarRegular(cnpj: number, hashdeclaracao: string): Promise<any>  {
             const signer = this.accountProvider.getSigner();
             const contWithSigner = this.RBBRegistrySmartContract.connect(signer);
             
+            if ( await this.isResponsibleForMonitoring( usuarioEndereco ) ) {
+                console.log(contaBlockchain);
+                
+                (await contWithSigner.pauseAddressAfterMonitoring(contaBlockchain));
+                
 
+                return true;
+            }
 
             if ( usuario.roleAsString == "Admin" ) {
                 (await contWithSigner.pauseAddressSameOrg(contaBlockchain));
@@ -305,14 +322,7 @@ async ReValidarRegular(cnpj: number, hashdeclaracao: string): Promise<any>  {
                 (await contWithSigner.pauseAddressSameOrg(contaBlockchain));
                 return true;
             }
-            if ( await this.isResponsibleForMonitoring( usuarioEndereco ) ) {
-                console.log(contaBlockchain);
-                
-                (await contWithSigner.pauseAddressAfterMonitoring(contaBlockchain));
-                
-
-                return true;
-            }
+            
 
         } catch (error) {
             console.log("pause:" )

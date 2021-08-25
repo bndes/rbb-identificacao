@@ -6,7 +6,8 @@
 
 
     <div style="padding-bottom: 200px; padding-top: 150px;" class="container-fluid">
-        <div class="br-table is-datatable" id="datatable-default">
+
+        <div class="br-table is-datatable" id="datatable-default" >
           <div class="header">
             <div class="top-bar">
              <div style="border: 0.1px solid rgba(240, 248, 255, 0.459);" class="search-bar is-active " >
@@ -58,6 +59,14 @@
               </td>
             </ng-container>
 
+            <ng-container matColumnDef="declaracao">
+              <th mat-header-cell *matHeaderCellDef> Declaração </th>
+              <td style="text-align: center; font-weight: 550; font-size: 16px; " mat-cell *matCellDef="let row">
+                <span *ngIf='row.filePathAndName'><a href="{{row.filePathAndName}}" target="_blank">Arquivo</a></span>
+                <span *ngIf='!row.filePathAndName'>-</span>
+              </td>
+            </ng-container>
+
             <ng-container matColumnDef="evento">
               <th mat-header-cell *matHeaderCellDef mat-sort-header> Evento </th>
               <td  mat-cell *matCellDef="let row"> {{row.evento}} </td>
@@ -78,22 +87,46 @@
               <th mat-header-cell *matHeaderCellDef > Validar/Invalidar </th>
               <td  style="text-align: center;" mat-cell *matCellDef="let row" >
                 <!-- {{row.acao}} -->
-                <span *ngIf='(row.acao==1 || row.acao==2 || row.acao==3) && ((this.contaResponsavelPorValidacao == true && row.perfil == "Admin") || (usuario.roleAsString == "Admin" && row.perfil == "Regular"))' >
+                <!--<span *ngIf='(row.acao==1 || row.acao==2 || row.acao==3) && (usuario!=undefined) && ((this.contaResponsavelPorValidacao == true && row.perfil == "Admin") || (usuario.roleAsString == "Admin" && row.perfil == "Regular" && usuario.cnpj== row.cnpj))' >
                   <button (click)='validarCadastro(row.contaBlockchain)' class="br-button search-trigger is-circle is-terciary" type="button">
                     <i class="fas fa-check-circle"></i>
                   </button>
                 </span>
-                <span *ngIf='row.acao==4 || !((this.contaResponsavelPorValidacao == true && row.perfil == "Admin") || (usuario.roleAsString == "Admin" && row.perfil == "Regular"))' >
+                
+                <span *ngIf='row.acao==4 || (usuario==undefined)||!((this.contaResponsavelPorValidacao == true && row.perfil == "Admin") || (usuario.roleAsString == "Admin" && row.perfil == "Regular"  && usuario.cnpj== row.cnpj ))' >
                   <button (click)='validarCadastro(row.contaBlockchain)' class="br-button search-trigger is-circle is-terciary" type="button" disabled>
                     <i class="fas fa-check-circle"></i>
                   </button>
                 </span>
-                <span *ngIf='(row.acao==1 || row.acao==2 || row.acao==3 || row.acao==4) && this.contaResponsavelPorValidacao == true' >
+                <span *ngIf='(row.acao==1 || row.acao==2 || row.acao==3 || row.acao==4) && (usuario!=undefined) &&((this.contaResponsavelPorValidacao == true && row.perfil == "Admin") || (usuario.roleAsString == "Admin" && row.perfil == "Regular"  && usuario.cnpj== row.cnpj))' >
                   <button (click)='invalidarCadastro(row.contaBlockchain)' class="br-button search-trigger is-circle is-terciary" type="button">
                     <i class="fas fa-times-circle"></i>
                   </button>
                 </span>
-                <span *ngIf='row.acao == 5 || !(this.contaResponsavelPorValidacao == true)' >
+                <span *ngIf='row.acao == 5 ||(usuario==undefined)|| !((this.contaResponsavelPorValidacao == true && row.perfil == "Admin") || (usuario.roleAsString == "Admin" && row.perfil == "Regular"  && usuario.cnpj== row.cnpj))' >
+                  <!--<button (click)='validarCadastro(row.contaBlockchain)' class="br-button search-trigger is-circle is-terciary" type="button" disabled>
+                    <i class="fas fa-check-circle"></i>
+                  </button>--><!--
+                  <button (click)='invalidarCadastro(row.contaBlockchain)' class="br-button search-trigger is-circle is-terciary" type="button" disabled>
+                    <i class="fas fa-times-circle"></i>
+                  </button>
+                </span>-->
+                <span *ngIf='(row.acao==1 || row.acao==2 || row.acao==3) && (logicButton.validar(row,this.usuario,this.contaResponsavelPorValidacao))' >
+                  <button (click)='validarCadastro(row.contaBlockchain)' class="br-button search-trigger is-circle is-terciary" type="button">
+                    <i class="fas fa-check-circle"></i>
+                  </button>
+                </span>
+                <span *ngIf='row.acao==4|| row.acao==5 || !(logicButton.validar(row,this.usuario,this.contaResponsavelPorValidacao))' >
+                  <button (click)='validarCadastro(row.contaBlockchain)' class="br-button search-trigger is-circle is-terciary" type="button" disabled>
+                    <i class="fas fa-check-circle"></i>
+                  </button>
+                </span>
+                <span *ngIf='(row.acao==1 || row.acao==2 || row.acao==3 || row.acao==4) && (logicButton.invalidar(row,this.usuario,this.contaResponsavelPorValidacao))' >
+                  <button (click)='invalidarCadastro(row.contaBlockchain)' class="br-button search-trigger is-circle is-terciary" type="button">
+                    <i class="fas fa-times-circle"></i>
+                  </button>
+                </span>
+                <span *ngIf='row.acao == 5 ||(usuario==undefined)|| !(logicButton.invalidar(row,this.usuario,this.contaResponsavelPorValidacao))' >
                   <!--<button (click)='validarCadastro(row.contaBlockchain)' class="br-button search-trigger is-circle is-terciary" type="button" disabled>
                     <i class="fas fa-check-circle"></i>
                   </button>-->
@@ -109,13 +142,13 @@
               <td  style="text-align: center;" mat-cell *matCellDef="let row" >
                 <span *ngIf='true' >
 
-                  <span *ngIf='row.acao == 4' >
-                    <span *ngIf=' row.pausada || !((usuario.roleAsString == "Regular" && this.selectedAccount==row.contaBlockchain) ||(usuario.roleAsString == "Admin" && usuario.cnpj== row.cnpj  && (this.selectedAccount==row.contaBlockchain || row.perfil == "Regular"))|| contaResponsavelPorValidacao)'>
+                  <span *ngIf='row.acao == 4 ' >
+                    <span *ngIf='!(logicButton.pausar(row,this.usuario,this.contaResponsavelPorMonitoramento,this.selectedAccount))'>
                       <button (click)='pause(row.contaBlockchain)' class="br-button search-trigger is-circle is-terciary" type="button" disabled>
                         <i class="fas fa-pause-circle"></i>
                       </button>
                     </span>
-                    <span *ngIf='!row.pausada && ((usuario.roleAsString == "Regular" && this.selectedAccount==row.contaBlockchain) ||(usuario.roleAsString == "Admin" && usuario.cnpj== row.cnpj && (this.selectedAccount==row.contaBlockchain || row.perfil == "Regular"))|| contaResponsavelPorValidacao) ' >
+                    <span *ngIf='logicButton.pausar(row,this.usuario,this.contaResponsavelPorMonitoramento,this.selectedAccount)' >
                       <button (click)='pause(row.contaBlockchain)' class="br-button search-trigger is-circle is-terciary" type="button">
                         <i class="fas fa-pause-circle"></i>
                       </button>
@@ -130,12 +163,12 @@
                         <i class="fas fa-pause-circle"></i>
                       </button>
                     </span>-->
-                    <span *ngIf=' row.pausada && ((usuario.roleAsString == "Admin" && usuario.cnpj== row.cnpj)|| contaResponsavelPorValidacao)'>
+                    <span *ngIf='logicButton.reativar(row,this.usuario,this.contaResponsavelPorMonitoramento,this.selectedAccount)'>
                       <button (click)='unpause(row.contaBlockchain)' class="br-button search-trigger is-circle is-terciary" type="button">
                         <i class="fas fa-play-circle"></i>
                       </button>
                     </span>
-                    <span *ngIf='!row.pausada || !((usuario.roleAsString == "Admin" && usuario.cnpj== row.cnpj) || contaResponsavelPorValidacao)'>
+                    <span *ngIf='!(logicButton.reativar(row,this.usuario,this.contaResponsavelPorMonitoramento,this.selectedAccount))'>
                       <button (click)='unpause(row.contaBlockchain)' class="br-button search-trigger is-circle is-terciary" type="button" disabled>
                         <i class="fas fa-play-circle"></i>
                       </button>
@@ -143,17 +176,17 @@
 
                   </span>
 
-                  <span *ngIf='row.acao == 1 || row.acao == 2 || row.acao == 3 || row.acao == 5' >
+                  <span *ngIf='row.acao == 1   || row.acao == 2 || row.acao == 3 || row.acao == 5' >
                     <button (click)='pause(row.contaBlockchain)' class="br-button search-trigger is-circle is-terciary" type="button" disabled>
                       <i class="fas fa-pause-circle"></i>
                     </button>
                   </span>
-                  <span *ngIf='(row.acao == 1 || row.acao == 2 || row.acao == 3 || row.acao == 5) && (!(contaResponsavelPorValidacao) || !(row.pausada) )' >
+                  <span *ngIf='(row.acao == 1 || row.acao == 2 || row.acao == 3 || row.acao == 5) && (!logicButton.reativar(row,this.usuario,this.contaResponsavelPorMonitoramento,this.selectedAccount) )' >
                     <button (click)='unpause(row.contaBlockchain)' class="br-button search-trigger is-circle is-terciary" type="button" disabled>
                       <i class="fas fa-play-circle"></i>
                     </button>
                   </span>
-                  <span *ngIf='(row.acao == 1 || row.acao == 2 || row.acao == 3 || row.acao == 5) && (contaResponsavelPorValidacao && row.pausada)' >
+                  <span *ngIf='(row.acao == 1 || row.acao == 2 || row.acao == 3 || row.acao == 5) && logicButton.reativar(row,this.usuario,this.contaResponsavelPorMonitoramento,this.selectedAccount)' >
                     <button (click)='unpause(row.contaBlockchain)' class="br-button search-trigger is-circle is-terciary" type="button" >
                       <i class="fas fa-play-circle"></i>
                     </button>
@@ -168,13 +201,13 @@
                 <td  style="text-align: center;" mat-cell *matCellDef="let row" >
                   <span *ngIf='true' >
 
-                    <span *ngIf='true && ((usuario.cnpj== row.cnpj))' >
+                    <span *ngIf='true && logicButton.pauseCNPJ(row,this.usuario)' >
                       <button (click)='pauseCNPJ(row.RBBId)' class="br-button search-trigger is-circle is-terciary" type="button">
                         <i class="fas fa-pause-circle"></i>
                       </button>
                     </span>
 
-                    <span *ngIf='false || !((  usuario.cnpj== row.cnpj))' >
+                    <span *ngIf='false || !logicButton.pauseCNPJ(row,this.usuario)' >
                       <button (click)='pauseCNPJ(row.RBBId)' class="br-button search-trigger is-circle is-terciary" type="button" disabled>
                         <i class="fas fa-pause-circle"></i>
                       </button>
@@ -185,16 +218,20 @@
               </ng-container>
 
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            <tr mat-row  *matRowDef="let row; columns: displayedColumns;"></tr>
 
 
-            <tr class="mat-row" *matNoDataRow>
-              <td class="mat-cell" colspan="6">Nenhum resultado encontrado {{input.value}} </td>
+            <tr class="mat-row"  *matNoDataRow >
+              <!--<td *ngIf='(animationLoad)' class="mat-cell" colspan="6" style="padding-left: 45%; padding-right: 30%;" disabled> <div class="c-loader" ></div></td>-->
+              <td style="padding-left: 20px;"><div *ngIf='(animationLoad)' class="c-loader" ></div></td>
+              <td *ngIf='!(animationLoad)' class="mat-cell" colspan="6">Nenhum resultado encontrado {{input.value}}</td>
+
             </tr>
+
           </table>
 
         </div>
-        <div style="width: 100%; " class="footer responsive"><mat-paginator [pageSizeOptions]="[5, 10, 15]"></mat-paginator></div>
+        <div style="width: 100%; " class="footer responsive"><mat-paginator [pageSizeOptions]="[15, 25, 50]"></mat-paginator></div>
       </div>
     </div>
   </div>

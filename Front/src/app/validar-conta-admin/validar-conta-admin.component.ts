@@ -15,6 +15,10 @@ import { ConstantesService } from '../ConstantesService';
 import { Router } from '@angular/router';
 import { AlertService } from '../_alert';
 
+
+
+import { TableButtonLogic } from './tableButtonLogic';
+
 // export interface UserData {
 //   id: string;
 //   name: string;
@@ -70,7 +74,7 @@ const TIMESTAMP: string[] = [
 export class ValidarContaAdminComponent implements OnInit {
 
   //displayedColumns: string[] = ['rbbid', 'cnpj', 'name', 'address' , 'perfil',  'evento', 'status', 'validacao', 'congelamento', 'congelamentoCNPJ'];
-  displayedColumns: string[] = [ 'cnpj', 'name', 'address' , 'perfil',  'status', 'validacao', 'congelamento', 'congelamentoCNPJ','rbbid'];
+  displayedColumns: string[] = [ 'cnpj', 'name', 'address' , 'perfil',  'status', 'validacao', 'declaracao', 'congelamento', 'congelamentoCNPJ','rbbid'];
   dataSource: MatTableDataSource<DashboardPessoaJuridica>;
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
@@ -93,13 +97,18 @@ export class ValidarContaAdminComponent implements OnInit {
 
   estadoLista: string = "undefined";
 
-  usuario: any;
+  usuario: any=undefined;
   p: number = 1;
   order: string = 'dataHora';
   reverse: boolean = false;
 
   contaResponsavelPorValidacao: any =false;
+  contaResponsavelPorMonitoramento: any =false;
   selectedAccount: any;
+
+  animationLoad: boolean = true;
+
+  logicButton:TableButtonLogic = new TableButtonLogic()
 
   alertOptions = {
     autoClose: true,
@@ -113,10 +122,11 @@ export class ValidarContaAdminComponent implements OnInit {
 
           let self = this;
           self.recuperaContaSelecionada();
-
-          setInterval(function () {
-            self.recuperaContaSelecionada(),
-            1000});
+          setTimeout(() => {
+            setInterval(function () {
+              self.recuperaContaSelecionada(),
+              1000});
+          }, 2030);
 
 
   }
@@ -136,18 +146,30 @@ export class ValidarContaAdminComponent implements OnInit {
     }, 3030)
 
     setInterval(() => {
-      this.estadoLista = this.estadoLista === "undefined" ? "vazia" : "cheia"
-      if ( users == undefined || users.length != Array.from(this.listaTransacoesPJ).length ) {
-        console.log("ngOnInit :: Atualiza se houve mudança.")
-        users = Array.from(this.listaTransacoesPJ);
-        this.dataSource = new MatTableDataSource(users);
-        this.dataSource.paginator = this.paginator;
-        this.dataSource.sort = this.sort;
-        this.ref.detectChanges()
+      this.estadoLista = this.estadoLista === "undefined" ? "vazia" : "cheia";
+      if(this.estadoLista=="cheia"){
+        if ( users == undefined || users.length != Array.from(this.listaTransacoesPJ).length ) {
+          console.log("ngOnInit :: Atualiza se houve mudança.")
+          users = Array.from(this.listaTransacoesPJ);
+          this.dataSource = new MatTableDataSource(users);
+          this.dataSource.paginator = this.paginator;
+          this.dataSource.sort = this.sort;
+          this.dataSource.sortingDataAccessor = (item, property) => {
+            switch (property) {
+               case 'name': return  item.razaoSocial;
+               case 'rbbid': return  item.RBBId;
+               case 'address': return  item.contaBlockchain;
+               case 'hashDeclaracao': return  item.hashDeclaracao;
+               case 'timestamp': return  item.dataHora;
+               default: return item[property];
+            }
+          };
+          this.ref.detectChanges();
+        }
       }
-    }, 63)
+    }, 1030)
 
-
+    this.stopAnimationLoad(300000);
     //const users = Array.from({length: 1}, (_, k) => createNewUser(k + 1));
 
 
@@ -160,17 +182,29 @@ export class ValidarContaAdminComponent implements OnInit {
       let self = this;
 
       let newSelectedAccount = await this.web3Service.getCurrentAccountSync();
+      if(newSelectedAccount != undefined){
+        if ( !self.selectedAccount || (newSelectedAccount !== self.selectedAccount && newSelectedAccount)) {
 
-      if ( !self.selectedAccount || (newSelectedAccount !== self.selectedAccount && newSelectedAccount)) {
+          this.selectedAccount = newSelectedAccount;
+          console.log("selectedAccount=" + this.selectedAccount);
+          try{
+          this.usuario = await this.recuperaRegistroBlockchain(this.selectedAccount);
+          }
+          catch(err){
+            console.log("erro ao  recupera registro blockchain");
+            this.selectedAccount =undefined;
+            return;
+          }
+          if(this.usuario === undefined){
+            this.selectedAccount =undefined;
+            return;
+          }
+          this.contaResponsavelPorValidacao =  await this.web3Service.isResponsibleForRegistryValidation(this.selectedAccount);
+          this.contaResponsavelPorMonitoramento = await this.web3Service.isResponsibleForMonitoring(this.selectedAccount);
 
-        this.selectedAccount = newSelectedAccount;
-        console.log("selectedAccount=" + this.selectedAccount);
-        this.usuario = await this.recuperaRegistroBlockchain(this.selectedAccount);
-        this.contaResponsavelPorValidacao =  await this.web3Service.isResponsibleForRegistryValidation(this.selectedAccount);
-        
-        
-      }
 
+        }
+    }
     }
 
   async recuperaRegistroBlockchain(enderecoBlockchain) : Promise<any> {
@@ -180,6 +214,7 @@ export class ValidarContaAdminComponent implements OnInit {
       } else {
           console.log('this.usuario');
           console.log(this.usuario);
+          return undefined
       }
 
   }
@@ -266,7 +301,13 @@ export class ValidarContaAdminComponent implements OnInit {
             transacaoPJ.contaBlockchain, transacaoPJ.hashDeclaracao, "declaracao").subscribe(
             result => {
               if (result && result.pathAndName) {
-                transacaoPJ.filePathAndName=ConstantesService.serverUrl+result.pathAndName;
+                if(ConstantesService.production){
+                  transacaoPJ.filePathAndName = ConstantesService.serverUrlRoot +"identificacao/"+ result.pathAndName;
+                }
+                else{
+                  transacaoPJ.filePathAndName = ConstantesService.serverUrlRoot + result.pathAndName;
+                }
+                
               }
               else {
                 let texto = "Não foi possível encontrar informações associadas ao arquivo desse cadastro.";
@@ -323,7 +364,7 @@ export class ValidarContaAdminComponent implements OnInit {
       */
 
       //let texto = "Confirme a operação no metamask e aguarde a confirmação.";
-      //this.alertService.info(texto, this.alertOptions); 
+      //this.alertService.info(texto, this.alertOptions);
 
     }
 
@@ -367,7 +408,7 @@ export class ValidarContaAdminComponent implements OnInit {
       */
 
       //let texto = "Confirme a operação no metamask e aguarde a confirmação.";
-      //this.alertService.info(texto, this.alertOptions); 
+      //this.alertService.info(texto, this.alertOptions);
 
     }
 
@@ -390,7 +431,7 @@ export class ValidarContaAdminComponent implements OnInit {
           }
           else{
             let texto = "nao Erro ao pausar cadastro na blockchain possivel";
-            this.alertService.info(texto, this.alertOptions); 
+            this.alertService.info(texto, this.alertOptions);
           }
         }
       , function(error) {
@@ -412,7 +453,7 @@ export class ValidarContaAdminComponent implements OnInit {
       */
 
       //let texto = "Confirme a operação no metamask e aguarde a confirmação.";
-      //this.alertService.info(texto, this.alertOptions); 
+      //this.alertService.info(texto, this.alertOptions);
 
     }
 
@@ -457,7 +498,7 @@ export class ValidarContaAdminComponent implements OnInit {
       */
 
       //let texto = "Confirme a operação no metamask e aguarde a confirmação.";
-      //this.alertService.info(texto, this.alertOptions); 
+      //this.alertService.info(texto, this.alertOptions);
 
 
     }
@@ -501,9 +542,18 @@ export class ValidarContaAdminComponent implements OnInit {
       */
 
       //let texto = "Confirme a operação no metamask e aguarde a confirmação.";
-      //this.alertService.info(texto, this.alertOptions); 
+      //this.alertService.info(texto, this.alertOptions);
 
     }
+    stopAnimationLoad(time){
+      setTimeout(() => {
+
+        this.animationLoad=false;
+
+
+      }, time)
+    }
+
 
 }
 

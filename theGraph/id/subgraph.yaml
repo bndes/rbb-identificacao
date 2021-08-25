@@ -1,0 +1,31 @@
+specVersion: 0.0.2
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: Contract
+    network: rbb
+    source:
+      address: ""
+      abi: Contract
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - Account
+      abis:
+        - name: Contract
+          file: ./abis/Contract.json
+      eventHandlers:
+        - event: AccountInvalidation(address,uint256,uint64,address,uint8)
+          handler: handleAccountInvalidation
+        - event: AccountPaused(address,uint256,uint64,address,uint8)
+          handler: handleAccountPaused
+        - event: AccountUnpaused(address,uint256,uint64,address,uint8)
+          handler: handleAccountUnpaused
+        - event: AccountRegistration(address,uint256,uint64,string,uint256)
+          handler: handleAccountRegistration
+        - event: AccountValidation(address,uint256,uint64,address)
+          handler: handleAccountValidation
+      file: ./src/mapping.ts

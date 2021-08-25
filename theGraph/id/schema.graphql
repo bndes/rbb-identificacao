@@ -1,0 +1,10 @@
+type Account @entity {
+  id: ID!
+  addr: Bytes! # address
+  RBBId: BigInt! # uint256
+  CNPJ: BigInt # uint256
+  responsible: Bytes # address
+  reason: Int # uint8
+  hashProof: String
+  dateTimeExpiration: BigInt
+}

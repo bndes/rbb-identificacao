@@ -94,8 +94,8 @@ var n = contrato_json_BNDESRegistry.networks;
 
 console.log("config.infra.rede_blockchain (1=Main|4=Rinkeby|4447=local) = " + config.infra.rede_blockchain);
 // Var Banco de dados
-const pool = new sql.ConnectionPool(configAcessoBDPJ);
-const poolConnect = pool.connect(err => {});
+//const pool = new sql.ConnectionPool(configAcessoBDPJ);
+//const poolConnect = pool.connect(err => {});
 
 //ABI = contrato_json_BNDESToken['abi']
 
@@ -183,6 +183,9 @@ app.post('/api/constantesFrontPJ', function (req, res) {
 app.post('/api/pj-por-cnpj', buscaPJPorCnpj);
 console.log('/api/pj-por-cnpj::mockPJ=' + mockPJ);
 	function buscaPJPorCnpj (req, res, next) {
+		console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaa');
+		console.log(configAcessoBDPJ);
+		console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaa');
 		console.log('buscaPJPorCnpj::mockPJ=' + mockPJ);
 		let cnpjRecebido = req.body.cnpj;
 
@@ -249,7 +252,8 @@ console.log('/api/pj-por-cnpj::mockPJ=' + mockPJ);
 		}
 		else {
 
-			poolConnect.then(pool => {
+			//poolConnect.then(pool => {
+			new sql.ConnectionPool(configAcessoBDPJ).connect().then(pool => {
 				return pool.request()
 									 .input('cnpj', sql.VarChar(14), cnpjRecebido)
 									 .query(config.negocio.query_cnpj)
@@ -274,13 +278,13 @@ console.log('/api/pj-por-cnpj::mockPJ=' + mockPJ);
 					console.log(pj);
 	
 					res.status(200).json(pj);				
-					//sql.close();
+					sql.close();
 	
 	
 				}).catch(err => {
 					console.log(err);
 					res.status(500).send({ message: "${err}"})
-					//sql.close();
+					sql.close();
 				});
 	
 
@@ -324,38 +328,22 @@ async function trataUpload(req, res, next) {
 			if (err) {
 				// An error occurred when uploading
 				console.log(err);
-				return res.status(422).send("Um erro ocorreu. Somente são aceitos arquivos do tipo PDF.")
+				return res.status(422).send("Um erro ocorreu. Somente são aceitos arquivos do tipo PDF. ERRO :" + err)
 			}  
 			else {
 				// No error occured.			
 				let cnpj     = req.body.cnpj;
 				let contrato = req.body.contrato;	
 				let conta    = req.body.contaBlockchain;
-				let tipo     = req.body.tipo;
-
-				console.log("tipo=");
-				console.log(tipo);	
 
 				const tmp_path = req.file.path;
 				const hashedResult = await SERVER_FUNCTIONS.calculaHash(tmp_path);			
 				
 				let target_path = "";
+				
+				let fileName = SERVER_FUNCTIONS.montaNomeArquivoDeclaracao(cnpj, contrato, conta, hashedResult);
+				target_path = DIR_CAMINHO_DECLARACAO + fileName;
 
-				if (tipo=="declaracao") {					
-					let fileName = SERVER_FUNCTIONS.montaNomeArquivoDeclaracao(cnpj, contrato, conta, hashedResult);
-					target_path = DIR_CAMINHO_DECLARACAO + fileName;
-				}
-				else if (tipo=="comp_doacao") {
-					let fileName = SERVER_FUNCTIONS.montaNomeArquivoComprovanteDoacao(cnpj, hashedResult);
-					target_path = DIR_CAMINHO_COMPROVANTE_DOACAO + fileName;
-				}
-				else if (tipo=="comp_liq") {
-					let fileName = SERVER_FUNCTIONS.montaNomeArquivoComprovanteLiquidacao(cnpj, contrato, hashedResult);
-					target_path = DIR_CAMINHO_COMPROVANTE_LIQUIDACAO + fileName;
-				}		
-				else {
-					throw "erro tipo desconhecido para download de arquivo";
-				}
 								
 				// A better way to copy the uploaded file. 
 				const src  = fs.createReadStream(tmp_path);
@@ -401,7 +389,7 @@ async function buscaFileInfo(req, res) {
 
 		let cnpj     		  = req.body.cnpj;
 		let contrato 		  = req.body.contrato;
-		let blockchainAccount = req.body.blockchainAccount.toLowerCase();
+		let blockchainAccount = req.body.blockchainAccount;
 		let tipo     		  = req.body.tipo;
 		let hashFile 		  = req.body.hashFile;		
 

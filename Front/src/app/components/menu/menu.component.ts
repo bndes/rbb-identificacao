@@ -47,10 +47,11 @@ export class MenuComponent implements OnInit {
   constructor(private web3Service: Web3Service) {
 
     let self = this;
-
-    setInterval(function () {
-      self.recuperaContaSelecionada(),
-      1000});
+    setTimeout(() => {  
+      setInterval(function () {
+        self.recuperaContaSelecionada(),
+        1000});
+    }, 2030);
 //TODO avaliar pra quando for pra producao
     console.log(
       `\n%cBuild Info:\n\n%c ❯ Environment: %c${
@@ -94,11 +95,42 @@ export class MenuComponent implements OnInit {
     let self = this;
 
     let newSelectedAccount = await this.web3Service.getCurrentAccountSync();
+    
     if ( !self.selectedAccount || (newSelectedAccount !== self.selectedAccount && newSelectedAccount)) {
-      this.selectedAccount = newSelectedAccount;
-      console.log("selectedAccount=" + this.selectedAccount);
-      self.usuario = await this.recuperaRegistroBlockchain(this.selectedAccount);
+      //this.selectedAccount = newSelectedAccount;
+      console.log(newSelectedAccount);
+      //console.log("selectedAccount=" + this.selectedAccount);
+      try{
+        let user = await this.recuperaRegistroBlockchain(newSelectedAccount);
+
+        this.selectedAccount = newSelectedAccount;
+        console.log(this.selectedAccount);
+        self.usuario = user
+        
+        //self.usuario = await this.recuperaRegistroBlockchain(this.selectedAccount);
+      }
+      
+      catch(err){
+        this.selectedAccount = undefined;
+        self.usuario = undefined;
+        console.log(err);
+        if(err.code == "NETWORK_ERROR"){
+          //this.web3Service = new Web3Service(private http: HttpClient, private constantes: ConstantesService);
+          
+          console.log("NETWORK_ERROR");
+          console.log(err);
+          
+          await this.web3Service.changeNetwork();
+
+        }
+        
+      }
+      
+      
+      
+      
     }
+    
   }
 
   async recuperaRegistroBlockchain(enderecoBlockchain) : Promise<any> {
@@ -108,6 +140,7 @@ export class MenuComponent implements OnInit {
     } else {
         console.log('this.usuario');
         console.log(this.usuario);
+       
         return undefined;
     }
   }

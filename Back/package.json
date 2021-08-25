@@ -15,7 +15,6 @@
     "dotenv": "^8.2.0",
     "ethers": "^5.0.32",
     "express": "^4.17.1",
-    "file-system": "^2.2.2",
     "formidable": "^1.2.1",
     "https": "^1.0.0",
     "keccak": "^1.4.0",

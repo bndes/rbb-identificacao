@@ -162,12 +162,22 @@ let retorno;
                 {
                     cnpj: rows[0]["CNPJ_EMPRESA"],
                     dadosCadastrais: {
-                        razaoSocial: rows[0]["NOME_EMPRESARIAL"]
+                        razaoSocial: rows[0]["NOME_EMPRESARIAL"],
+			logradouro: rows[0]["DESC_TIPO_LOGRADOURO"] + " " +rows[0]["END_LOGRADOURO"], 
+			numero:     rows[0]["END_NUMERO"],
+			bairro:     rows[0]["END_BAIRRO"],
+                       	cep:        rows[0]["END_CEP"],
+                        municipio:  rows[0]["MUNICIPIO"],
+                        uf:         rows[0]["ESTADO"]
                     }
                 }
 
                 console.log("pj do QSA");				
                 console.log(pj);
+		console.log("rows 0");				
+                console.log(rows[0]);
+		console.log("rows");
+                console.log(rows);
 
                 sql.close();
                 retorno = pj;
