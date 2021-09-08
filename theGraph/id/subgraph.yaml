@@ -6,7 +6,7 @@ dataSources:
     name: Contract
     network: rbb
     source:
-      address: ""
+      address: "0xE698048391381DF2dEB85c80dDB679dC7bA9C5A3"
       abi: Contract
     mapping:
       kind: ethereum/events
