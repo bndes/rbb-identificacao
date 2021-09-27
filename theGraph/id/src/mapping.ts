@@ -1,12 +1,12 @@
 import { BigInt } from "@graphprotocol/graph-ts"
 import {
-  Contract,
+  RBBRegistry,
   AccountInvalidation,
   AccountPaused,
   AccountUnpaused,
   AccountRegistration,
   AccountValidation,
-} from "../generated/Contract/Contract"
+} from "../generated/RBBRegistry/RBBRegistry"
 import { Account } from "../generated/schema"
 
 export function handleAccountInvalidation(event: AccountInvalidation): void {

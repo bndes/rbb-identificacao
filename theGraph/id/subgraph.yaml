@@ -3,11 +3,11 @@ schema:
   file: ./schema.graphql
 dataSources:
   - kind: ethereum/contract
-    name: Contract
+    name: RBBRegistry
     network: rbb
     source:
       address: "0xE698048391381DF2dEB85c80dDB679dC7bA9C5A3"
-      abi: Contract
+      abi: RBBRegistry
       startBlock: 14840946
     mapping:
       kind: ethereum/events
@@ -16,8 +16,8 @@ dataSources:
       entities:
         - Account
       abis:
-        - name: Contract
-          file: ./abis/Contract.json
+        - name: RBBRegistry
+          file: ./abis/RBBRegistry.json
       eventHandlers:
         - event: AccountInvalidation(address,uint256,uint64,address,uint8)
           handler: handleAccountInvalidation
